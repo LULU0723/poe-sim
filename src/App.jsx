@@ -1,5 +1,5 @@
 import React, { useState, useMemo, useRef, useEffect } from 'react';
-import { Plus, Trash2, ShieldAlert, GitMerge, Settings2, Info, Wand2, Upload, Download, Map as MapIcon, List, Target, FolderOpen, Unlock, Lock, RotateCcw } from 'lucide-react';
+import { Plus, Trash2, ShieldAlert, GitMerge, Settings2, Info, Wand2, Upload, Download, Map as MapIcon, List, Target, FolderOpen, Unlock, Lock, RotateCcw, ZoomIn, ZoomOut } from 'lucide-react';
 
 // --- 天賦樹靜態數據 ---
 const TREE_DATA = {
@@ -197,6 +197,9 @@ export default function App() {
     const [viewMode, setViewMode] = useState('map'); 
     const [savedPresets, setSavedPresets] = useState({});
     
+    // --- 新增：地圖縮放系統 ---
+    const [zoom, setZoom] = useState(1);
+
     // --- 新增：座標編輯與校準系統 ---
     const [coords, setCoords] = useState(INITIAL_COORDS);
     const [isEditMode, setIsEditMode] = useState(false);
@@ -223,7 +226,7 @@ export default function App() {
         return () => window.removeEventListener('pointerup', handleGlobalPointerUp);
     }, []);
 
-    // 處理拖曳節點座標邏輯
+    // 處理拖曳節點座標邏輯 (不受縮放比例影響)
     const handleMapPointerMove = (e) => {
         if (!isEditMode || !draggingNode || !mapRef.current) return;
         const rect = mapRef.current.getBoundingClientRect();
@@ -657,9 +660,23 @@ export default function App() {
                 <div className="lg:col-span-6 xl:col-span-6 bg-slate-900/50 rounded-xl border border-slate-800 p-2 overflow-hidden flex flex-col h-[80vh]">
                     <h2 className="text-lg font-semibold text-purple-300 mb-2 px-2 flex items-center justify-between shrink-0">
                         <span>天賦樹 {viewMode === 'map' ? '(視覺地圖)' : '(結構清單)'}</span>
-                        {/* --- 新增：校準模式工具列 --- */}
                         {viewMode === 'map' && (
-                            <div className="flex gap-2">
+                            <div className="flex flex-wrap items-center gap-2">
+                                {/* --- 新增：放大鏡縮放控制器 --- */}
+                                <div className="flex items-center bg-slate-950 rounded border border-slate-700 shadow-sm">
+                                    <button onClick={() => setZoom(z => Math.max(0.5, z - 0.2))} className="p-1 hover:bg-slate-800 text-slate-400 hover:text-white rounded-l transition-colors" title="縮小">
+                                        <ZoomOut size={16} />
+                                    </button>
+                                    <span className="text-[11px] font-mono w-10 text-center text-slate-300 font-bold select-none">
+                                        {Math.round(zoom * 100)}%
+                                    </span>
+                                    <button onClick={() => setZoom(z => Math.min(3, z + 0.2))} className="p-1 hover:bg-slate-800 text-slate-400 hover:text-white rounded-r transition-colors" title="放大">
+                                        <ZoomIn size={16} />
+                                    </button>
+                                </div>
+                                <div className="w-px h-4 bg-slate-700 mx-1"></div>
+
+                                {/* 校準模式按鈕 */}
                                 {isEditMode && (
                                     <button onClick={resetCoords} className="flex items-center gap-1 text-[11px] bg-red-900/50 hover:bg-red-800 text-red-200 px-2 py-1 rounded border border-red-700 transition-colors">
                                         <RotateCcw size={12}/> 重置座標
@@ -667,7 +684,7 @@ export default function App() {
                                 )}
                                 <button 
                                     onClick={toggleEditMode} 
-                                    className={`flex items-center gap-1 text-[11px] px-2 py-1 rounded border transition-colors ${isEditMode ? 'bg-yellow-600/30 text-yellow-300 border-yellow-500' : 'bg-slate-800 text-slate-400 border-slate-600 hover:bg-slate-700'}`}
+                                    className={`flex items-center gap-1 text-[11px] px-2 py-1.5 rounded border shadow-sm transition-colors ${isEditMode ? 'bg-yellow-600/30 text-yellow-300 border-yellow-500' : 'bg-slate-800 text-slate-400 border-slate-600 hover:bg-slate-700'}`}
                                 >
                                     {isEditMode ? <Unlock size={12}/> : <Lock size={12}/>}
                                     {isEditMode ? '完成校準 (自動儲存)' : '解鎖節點以手動校準'}
@@ -677,87 +694,95 @@ export default function App() {
                     </h2>
                     
                     {viewMode === 'map' ? (
-                        <div className="flex-1 relative overflow-auto custom-scrollbar bg-slate-950 rounded-lg border border-slate-800 flex justify-center items-center p-2 shadow-inner">
-                            <div 
-                                ref={mapRef}
-                                className={`relative w-full max-w-[800px] aspect-[1083/951] bg-gradient-to-tr from-slate-900 to-slate-950 rounded-lg touch-none transition-colors ${isEditMode ? 'outline outline-2 outline-yellow-500/50 shadow-[0_0_20px_rgba(234,179,8,0.2)]' : ''}`}
-                                onPointerMove={handleMapPointerMove}
-                            >
-                                {/* SVG 連線繪製層 */}
-                                <svg className="absolute inset-0 w-full h-full pointer-events-none" viewBox="0 0 100 100" preserveAspectRatio="none">
-                                    <image href="/tree.jpg" x="0" y="0" width="100" height="100" preserveAspectRatio="none" opacity="0.4" style={{ mixBlendMode: 'screen' }} onError={(e) => e.target.style.display = 'none'} />
-                                    {Object.entries(TREE_DATA).map(([id, node]) => {
-                                        if (!node || !node.children) return null;
-                                        return node.children.map(childId => {
-                                            const childNode = TREE_DATA[childId];
-                                            if (!childNode) return null;
-                                            const isParentActive = activeNodes.has(id);
-                                            const isChildActive = activeNodes.has(childId);
-                                            const canActivateChild = isParentActive; 
-                                            let strokeClass = "stroke-slate-800";
-                                            let strokeWidth = 0.2;
-                                            if (isParentActive && isChildActive) {
-                                                strokeClass = "stroke-purple-500 drop-shadow-[0_0_2px_rgba(168,85,247,0.8)]";
-                                                strokeWidth = 0.4;
-                                            } else if (canActivateChild) {
-                                                strokeClass = "stroke-slate-600";
-                                                strokeWidth = 0.3;
-                                            }
-                                            return <line 
-                                                key={`${id}-${childId}`} 
-                                                x1={coords[id]?.x ?? node.x} 
-                                                y1={coords[id]?.y ?? node.y} 
-                                                x2={coords[childId]?.x ?? childNode.x} 
-                                                y2={coords[childId]?.y ?? childNode.y} 
-                                                className={`transition-all duration-300 ${strokeClass}`} 
-                                                strokeWidth={strokeWidth} 
-                                                vectorEffect="non-scaling-stroke" 
-                                            />;
-                                        });
-                                    })}
-                                </svg>
-                                {/* 互動節點層 */}
-                                {Object.entries(TREE_DATA).map(([id, node]) => {
-                                    if (!node) return null;
-                                    const isActive = activeNodes.has(id);
-                                    const canActivate = id === 'start' || activeNodes.has(node.req);
-                                    let nodeClass = `absolute w-6 h-6 -ml-3 -mt-3 rounded-full flex items-center justify-center border-2 shadow-lg transition-all group ${isEditMode ? 'hover:scale-125' : ''} `;
-                                    
-                                    if (isActive) nodeClass += "bg-purple-700 border-purple-300 shadow-[0_0_12px_rgba(168,85,247,0.8)] z-20 scale-110";
-                                    else if (canActivate || isEditMode) nodeClass += "bg-slate-700 border-slate-400 hover:bg-blue-600 hover:border-blue-300 z-10";
-                                    else nodeClass += "bg-slate-900 border-slate-800 opacity-50 z-0";
-                                    
-                                    if (id === 'start') nodeClass += isActive ? " !bg-blue-600 !border-blue-300 w-10 h-10 -ml-5 -mt-5" : " w-10 h-10 -ml-5 -mt-5";
-                                    
-                                    return (
-                                        <div 
-                                            key={id} 
-                                            className={nodeClass} 
-                                            style={{ 
-                                                left: `${coords[id]?.x ?? node.x}%`, 
-                                                top: `${coords[id]?.y ?? node.y}%`,
-                                                cursor: isEditMode ? (draggingNode === id ? 'grabbing' : 'grab') : (canActivate ? 'pointer' : 'not-allowed')
-                                            }} 
-                                            onPointerDown={(e) => {
-                                                if (isEditMode) {
-                                                    e.stopPropagation();
-                                                    setDraggingNode(id);
-                                                } else if (canActivate) {
-                                                    toggleNode(id);
+                        <div className="flex-1 relative overflow-auto custom-scrollbar bg-slate-950 rounded-lg border border-slate-800 shadow-inner">
+                            {/* --- 修改：包裝層支援完美縮放與滾動 --- */}
+                            <div className="min-w-full min-h-full flex p-2">
+                                <div 
+                                    ref={mapRef}
+                                    className={`relative m-auto aspect-[1083/951] touch-none transition-all duration-200 ease-out ${isEditMode ? 'outline outline-2 outline-yellow-500/50 shadow-[0_0_20px_rgba(234,179,8,0.2)]' : ''}`}
+                                    style={{ 
+                                        width: `${zoom * 100}%`, 
+                                        maxWidth: `${zoom * 800}px`,
+                                        minWidth: `${zoom * 300}px` 
+                                    }}
+                                    onPointerMove={handleMapPointerMove}
+                                >
+                                    {/* SVG 連線繪製層 */}
+                                    <svg className="absolute inset-0 w-full h-full pointer-events-none" viewBox="0 0 100 100" preserveAspectRatio="none">
+                                        <image href="/tree.jpg" x="0" y="0" width="100" height="100" preserveAspectRatio="none" opacity="0.4" style={{ mixBlendMode: 'screen' }} onError={(e) => e.target.style.display = 'none'} />
+                                        {Object.entries(TREE_DATA).map(([id, node]) => {
+                                            if (!node || !node.children) return null;
+                                            return node.children.map(childId => {
+                                                const childNode = TREE_DATA[childId];
+                                                if (!childNode) return null;
+                                                const isParentActive = activeNodes.has(id);
+                                                const isChildActive = activeNodes.has(childId);
+                                                const canActivateChild = isParentActive; 
+                                                let strokeClass = "stroke-slate-800";
+                                                let strokeWidth = 0.2;
+                                                if (isParentActive && isChildActive) {
+                                                    strokeClass = "stroke-purple-500 drop-shadow-[0_0_2px_rgba(168,85,247,0.8)]";
+                                                    strokeWidth = 0.4;
+                                                } else if (canActivateChild) {
+                                                    strokeClass = "stroke-slate-600";
+                                                    strokeWidth = 0.3;
                                                 }
-                                            }}
-                                        >
-                                            <span className={`font-bold select-none ${id === 'start' ? 'text-xs' : 'text-[9px]'} ${isActive ? 'text-white' : 'text-slate-300'}`}>
-                                                {id === 'start' ? '起' : id}
-                                            </span>
-                                            <div className="absolute bottom-full mb-2 hidden group-hover:block whitespace-nowrap bg-slate-900 text-slate-200 text-xs px-2 py-1 rounded border border-slate-700 pointer-events-none z-50">
-                                                <span className="font-bold text-purple-400">{id}</span>: {node.name}
-                                                {isEditMode && <div className="text-[10px] text-yellow-400 mt-1">拖曳以移動位置</div>}
-                                                {!canActivate && !isEditMode && <div className="text-[10px] text-red-400 mt-1">需解鎖前置節點</div>}
+                                                return <line 
+                                                    key={`${id}-${childId}`} 
+                                                    x1={coords[id]?.x ?? node.x} 
+                                                    y1={coords[id]?.y ?? node.y} 
+                                                    x2={coords[childId]?.x ?? childNode.x} 
+                                                    y2={coords[childId]?.y ?? childNode.y} 
+                                                    className={`transition-all duration-300 ${strokeClass}`} 
+                                                    strokeWidth={strokeWidth} 
+                                                    vectorEffect="non-scaling-stroke" 
+                                                />;
+                                            });
+                                        })}
+                                    </svg>
+                                    {/* 互動節點層 */}
+                                    {Object.entries(TREE_DATA).map(([id, node]) => {
+                                        if (!node) return null;
+                                        const isActive = activeNodes.has(id);
+                                        const canActivate = id === 'start' || activeNodes.has(node.req);
+                                        let nodeClass = `absolute w-6 h-6 -ml-3 -mt-3 rounded-full flex items-center justify-center border-2 shadow-lg transition-all group ${isEditMode ? 'hover:scale-125' : ''} `;
+                                        
+                                        if (isActive) nodeClass += "bg-purple-700 border-purple-300 shadow-[0_0_12px_rgba(168,85,247,0.8)] z-20 scale-110";
+                                        else if (canActivate || isEditMode) nodeClass += "bg-slate-700 border-slate-400 hover:bg-blue-600 hover:border-blue-300 z-10";
+                                        else nodeClass += "bg-slate-900 border-slate-800 opacity-50 z-0";
+                                        
+                                        if (id === 'start') nodeClass += isActive ? " !bg-blue-600 !border-blue-300 w-10 h-10 -ml-5 -mt-5" : " w-10 h-10 -ml-5 -mt-5";
+                                        
+                                        return (
+                                            <div 
+                                                key={id} 
+                                                className={nodeClass} 
+                                                style={{ 
+                                                    left: `${coords[id]?.x ?? node.x}%`, 
+                                                    top: `${coords[id]?.y ?? node.y}%`,
+                                                    cursor: isEditMode ? (draggingNode === id ? 'grabbing' : 'grab') : (canActivate ? 'pointer' : 'not-allowed')
+                                                }} 
+                                                onPointerDown={(e) => {
+                                                    if (isEditMode) {
+                                                        e.stopPropagation();
+                                                        setDraggingNode(id);
+                                                    } else if (canActivate) {
+                                                        toggleNode(id);
+                                                    }
+                                                }}
+                                            >
+                                                <span className={`font-bold select-none ${id === 'start' ? 'text-xs' : 'text-[9px]'} ${isActive ? 'text-white' : 'text-slate-300'}`}>
+                                                    {id === 'start' ? '起' : id}
+                                                </span>
+                                                <div className="absolute bottom-full mb-2 hidden group-hover:block whitespace-nowrap bg-slate-900 text-slate-200 text-xs px-2 py-1 rounded border border-slate-700 pointer-events-none z-50">
+                                                    <span className="font-bold text-purple-400">{id}</span>: {node.name}
+                                                    {isEditMode && <div className="text-[10px] text-yellow-400 mt-1">拖曳以移動位置</div>}
+                                                    {!canActivate && !isEditMode && <div className="text-[10px] text-red-400 mt-1">需解鎖前置節點</div>}
+                                                </div>
                                             </div>
-                                        </div>
-                                    );
-                                })}
+                                        );
+                                    })}
+                                </div>
                             </div>
                         </div>
                     ) : (
@@ -853,7 +878,7 @@ export default function App() {
             </div>
             
             <style dangerouslySetInnerHTML={{__html: `
-                .custom-scrollbar::-webkit-scrollbar { width: 6px; }
+                .custom-scrollbar::-webkit-scrollbar { width: 6px; height: 6px; }
                 .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
                 .custom-scrollbar::-webkit-scrollbar-thumb { background: #475569; border-radius: 10px; }
                 .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: #64748b; }
