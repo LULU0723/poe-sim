@@ -1,7 +1,7 @@
 import React, { useState, useMemo, useRef, useEffect } from 'react';
-import { Plus, Trash2, ShieldAlert, GitMerge, Settings2, Info, Wand2, Upload, Download, Map as MapIcon, List, Target, FolderOpen } from 'lucide-react';
+import { Plus, Trash2, ShieldAlert, GitMerge, Settings2, Info, Wand2, Upload, Download, Map as MapIcon, List, Target, FolderOpen, Unlock, Lock, RotateCcw } from 'lucide-react';
 
-// --- 天賦樹靜態數據 (座標已根據 1083x951 原圖精確校準) ---
+// --- 天賦樹靜態數據 ---
 const TREE_DATA = {
     'start': { name: '起點', cost: 0, children: ['a', 'g'], x: 80.8, y: 81.5 },
     'a': { name: 'a (連線+10)', cost: 1, req: 'start', children: ['b', 'G'], x: 82.2, y: 61.5 },
@@ -72,6 +72,12 @@ const TREE_DATA = {
     'N4': { name: 'N4 (+500%屬性)', cost: 1, req: 'N', mutex: 'N', mods: { '屬性': 5.0 }, x: 24.9, y: 89.5 },
     'N5': { name: 'N5 (+500%抗性)', cost: 1, req: 'N', mutex: 'N', mods: { '抗性': 5.0 }, x: 26.7, y: 82.6 }
 };
+
+// 提取初始座標
+const INITIAL_COORDS = {};
+Object.keys(TREE_DATA).forEach(k => {
+    INITIAL_COORDS[k] = { x: TREE_DATA[k].x, y: TREE_DATA[k].y };
+});
 
 const DEFAULT_AFFIXES = [
     { id: '1', type: 'prefix', name: '最大生命', tags: '生命', baseWeight: 9000, category: 'target' },
@@ -148,10 +154,9 @@ const AffixRow = ({ affix, updateAffix, removeAffix }) => (
     </div>
 );
 
-// 傳統清單節點組件
 const TreeNode = ({ nodeId, depth = 0, activeNodes, toggleNode }) => {
     const node = TREE_DATA[nodeId];
-    if (!node) return null; // 防護機制：節點不存在時不渲染
+    if (!node) return null; 
 
     const isActive = activeNodes.has(nodeId);
     const canActivate = nodeId === 'start' || activeNodes.has(node.req);
@@ -189,24 +194,68 @@ export default function App() {
     const [affixes, setAffixes] = useState(DEFAULT_AFFIXES);
     const [toast, setToast] = useState('');
     const [isOptimizing, setIsOptimizing] = useState(false);
-    const [viewMode, setViewMode] = useState('map'); // 'list' 或 'map'
-    const [savedPresets, setSavedPresets] = useState({}); // 新增：儲存預設檔的 state
+    const [viewMode, setViewMode] = useState('map'); 
+    const [savedPresets, setSavedPresets] = useState({});
+    
+    // --- 新增：座標編輯與校準系統 ---
+    const [coords, setCoords] = useState(INITIAL_COORDS);
+    const [isEditMode, setIsEditMode] = useState(false);
+    const [draggingNode, setDraggingNode] = useState(null);
+    const mapRef = useRef(null);
+    
     const fileInputRef = useRef(null);
-    const bulkInputRef = useRef(null); // 新增：批次匯入的 ref
+    const bulkInputRef = useRef(null);
 
-    // --- 新增：初始化載入本地預設庫 ---
+    // 初始化：載入本地預設庫與自訂座標
     useEffect(() => {
-        const loaded = localStorage.getItem('poe_genesis_presets');
-        if (loaded) {
-            try {
-                setSavedPresets(JSON.parse(loaded));
-            } catch (e) {
-                console.error("載入預設失敗");
-            }
+        const loadedPresets = localStorage.getItem('poe_genesis_presets');
+        if (loadedPresets) {
+            try { setSavedPresets(JSON.parse(loadedPresets)); } catch (e) { }
         }
+        const loadedCoords = localStorage.getItem('poe_genesis_coords');
+        if (loadedCoords) {
+            try { setCoords({ ...INITIAL_COORDS, ...JSON.parse(loadedCoords) }); } catch (e) { }
+        }
+
+        // 綁定全域放開滑鼠事件，防止拖曳時滑鼠離開畫面卡住
+        const handleGlobalPointerUp = () => setDraggingNode(null);
+        window.addEventListener('pointerup', handleGlobalPointerUp);
+        return () => window.removeEventListener('pointerup', handleGlobalPointerUp);
     }, []);
 
-    // --- 安全的輔助讀取函數 (防護機制升級) ---
+    // 處理拖曳節點座標邏輯
+    const handleMapPointerMove = (e) => {
+        if (!isEditMode || !draggingNode || !mapRef.current) return;
+        const rect = mapRef.current.getBoundingClientRect();
+        let x = ((e.clientX - rect.left) / rect.width) * 100;
+        let y = ((e.clientY - rect.top) / rect.height) * 100;
+        // 限制在 0~100 範圍內
+        x = Math.max(0, Math.min(100, x));
+        y = Math.max(0, Math.min(100, y));
+        
+        setCoords(prev => ({ ...prev, [draggingNode]: { x, y } }));
+    };
+
+    // 切換編輯模式並自動存檔
+    const toggleEditMode = () => {
+        if (isEditMode) {
+            localStorage.setItem('poe_genesis_coords', JSON.stringify(coords));
+            showToast("💾 座標校準已自動儲存於本地！");
+        } else {
+            showToast("🛠️ 已開啟座標校準模式，請拖曳節點！");
+        }
+        setIsEditMode(!isEditMode);
+    };
+
+    // 重置所有自訂座標
+    const resetCoords = () => {
+        if(window.confirm("確定要重置所有座標回預設值嗎？")) {
+            setCoords(INITIAL_COORDS);
+            localStorage.removeItem('poe_genesis_coords');
+            showToast("🔄 座標已還原回預設值");
+        }
+    };
+
     const getDescendants = (nodeId) => {
         let descendants = [];
         const node = TREE_DATA[nodeId];
@@ -242,7 +291,6 @@ export default function App() {
         return false;
     };
 
-    // 自動推導目前的目標基底 (用於下拉選單顯示)
     const currentBase = useMemo(() => {
         const bases = ['G1', 'G2', 'G3', 'G4', 'G5', 'H1', 'H2', 'H3', 'i'];
         for (let b of bases) {
@@ -251,17 +299,13 @@ export default function App() {
         return 'none';
     }, [activeNodes]);
 
-    // 切換目標裝備基底
     const handleBaseChange = (newBase) => {
         setActiveNodes(prev => {
             const next = new Set(prev);
-            
-            // 先清除所有基底節點
             const bases = ['G1', 'G2', 'G3', 'G4', 'G5', 'H1', 'H2', 'H3', 'i'];
             bases.forEach(b => next.delete(b));
 
             if (newBase !== 'none' && TREE_DATA[newBase]) {
-                // 加入新基底，並自動往上尋找所有前置節點把它們點亮
                 next.add(newBase);
                 let curr = TREE_DATA[newBase];
                 while(curr && curr.req && TREE_DATA[curr.req]) {
@@ -279,7 +323,7 @@ export default function App() {
         setActiveNodes(prev => {
             const next = new Set(prev);
             const node = TREE_DATA[nodeId];
-            if (!node) return prev; // 防護機制
+            if (!node) return prev; 
 
             if (next.has(nodeId)) {
                 next.delete(nodeId);
@@ -414,7 +458,7 @@ export default function App() {
                 for (let id of utilityNodes) {
                     if (finalSet.has(id)) continue;
                     let node = TREE_DATA[id];
-                    if (!node) continue; // 防護機制
+                    if (!node) continue; 
                     if (node.req && !finalSet.has(node.req)) continue; 
                     if (node.mutex && hasMutex(finalSet, node.mutex)) continue; 
                     if (currentCost + node.cost <= 20) {
@@ -473,38 +517,32 @@ export default function App() {
         reader.readAsText(file);
     };
 
-    // --- 新增：批次匯入多個 JSON 成為預設檔 ---
     const handleBulkImport = async (event) => {
         const files = event.target.files;
         if (!files.length) return;
-        
         let newPresets = { ...savedPresets };
         let count = 0;
-
         for (let i = 0; i < files.length; i++) {
             const file = files[i];
             const text = await file.text();
             try {
                 const data = JSON.parse(text);
-                const presetName = file.name.replace('.json', ''); // 用檔名當作預設名稱
+                const presetName = file.name.replace('.json', '');
                 newPresets[presetName] = data;
                 count++;
             } catch(e) {
                 console.error("無法解析檔案: ", file.name);
             }
         }
-
         setSavedPresets(newPresets);
         localStorage.setItem('poe_genesis_presets', JSON.stringify(newPresets));
         showToast(`📂 成功將 ${count} 個檔案加入預設庫！`);
         event.target.value = null;
     };
 
-    // --- 新增：載入選擇的預設檔 ---
     const handleLoadPreset = (presetName) => {
         if (!presetName || !savedPresets[presetName]) return;
         const data = savedPresets[presetName];
-        
         if (Array.isArray(data)) {
             setAffixes(data);
         } else if (data.affixes) {
@@ -512,15 +550,6 @@ export default function App() {
             if (data.base) handleBaseChange(data.base);
         }
         showToast(`✨ 已載入預設：${presetName}`);
-    };
-
-    // --- 新增：刪除單一預設檔 ---
-    const handleDeletePreset = (presetName) => {
-        const newPresets = { ...savedPresets };
-        delete newPresets[presetName];
-        setSavedPresets(newPresets);
-        localStorage.setItem('poe_genesis_presets', JSON.stringify(newPresets));
-        showToast(`🗑️ 已刪除預設：${presetName}`);
     };
 
     const addAffix = (type) => {
@@ -547,14 +576,13 @@ export default function App() {
                     <h1 className="text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-blue-400 flex items-center gap-2">
                         <GitMerge /> 創世之樹 策略最佳化模擬器
                     </h1>
-                    <p className="text-slate-400 text-sm mt-1">
+                    <p className="text-slate-400 text-sm mt-1 flex items-center gap-2">
                         支援原圖 UI 熱區點擊與演算法最佳化配置
+                        {isEditMode && <span className="text-yellow-400 font-bold bg-yellow-900/40 px-2 py-0.5 rounded text-xs animate-pulse">⚙️ 節點校準模式開啟中...</span>}
                     </p>
                 </div>
                 
                 <div className="flex flex-wrap justify-center items-center gap-3 bg-slate-900 p-2 lg:p-3 rounded-lg border border-slate-800 shadow-inner">
-                    
-                    {/* --- 新增：目標基底選擇器 --- */}
                     <div className="flex items-center gap-2 bg-slate-950 rounded border border-slate-700 px-3 py-1.5 shadow-sm">
                         <Target className="text-purple-400" size={16} />
                         <span className="text-slate-400 text-xs font-bold hidden sm:inline">目標基底:</span>
@@ -562,6 +590,7 @@ export default function App() {
                             value={currentBase}
                             onChange={(e) => handleBaseChange(e.target.value)}
                             className="bg-transparent text-slate-100 text-sm font-bold outline-none cursor-pointer focus:ring-0"
+                            disabled={isEditMode}
                         >
                             <option value="none" className="bg-slate-900 text-slate-300">不指定 (Any)</option>
                             <optgroup label="防具 (Armour)" className="bg-slate-800 text-slate-400">
@@ -584,18 +613,11 @@ export default function App() {
 
                     <div className="h-5 w-px bg-slate-700 mx-1 hidden sm:block"></div>
 
-                    {/* UI 切換按鈕 */}
                     <div className="flex bg-slate-950 rounded border border-slate-700 overflow-hidden mr-2">
-                        <button 
-                            onClick={() => setViewMode('map')}
-                            className={`flex items-center gap-1 px-3 py-1.5 text-xs font-bold transition-colors ${viewMode === 'map' ? 'bg-blue-600 text-white' : 'text-slate-400 hover:bg-slate-800'}`}
-                        >
+                        <button onClick={() => setViewMode('map')} className={`flex items-center gap-1 px-3 py-1.5 text-xs font-bold transition-colors ${viewMode === 'map' ? 'bg-blue-600 text-white' : 'text-slate-400 hover:bg-slate-800'}`}>
                             <MapIcon size={14}/> 視覺地圖
                         </button>
-                        <button 
-                            onClick={() => setViewMode('list')}
-                            className={`flex items-center gap-1 px-3 py-1.5 text-xs font-bold transition-colors ${viewMode === 'list' ? 'bg-blue-600 text-white' : 'text-slate-400 hover:bg-slate-800'}`}
-                        >
+                        <button onClick={() => setViewMode('list')} className={`flex items-center gap-1 px-3 py-1.5 text-xs font-bold transition-colors ${viewMode === 'list' ? 'bg-blue-600 text-white' : 'text-slate-400 hover:bg-slate-800'}`}>
                             <List size={14}/> 結構清單
                         </button>
                     </div>
@@ -610,13 +632,7 @@ export default function App() {
                     
                     <div className="h-5 w-px bg-slate-700 mx-1 hidden xl:block"></div>
 
-                    <button 
-                        onClick={runOptimization}
-                        disabled={isOptimizing}
-                        className={`flex items-center gap-1 px-3 py-1.5 rounded text-sm font-bold shadow-lg transition-all ${
-                            isOptimizing ? 'bg-slate-700 text-slate-400 cursor-not-allowed' : 'bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-500 hover:to-blue-500 text-white shadow-purple-900/30 hover:scale-105'
-                        }`}
-                    >
+                    <button onClick={runOptimization} disabled={isOptimizing || isEditMode} className={`flex items-center gap-1 px-3 py-1.5 rounded text-sm font-bold shadow-lg transition-all ${isOptimizing || isEditMode ? 'bg-slate-700 text-slate-400 cursor-not-allowed' : 'bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-500 hover:to-blue-500 text-white shadow-purple-900/30 hover:scale-105'}`}>
                         <Wand2 size={14} className={isOptimizing ? "animate-spin" : ""} /> 
                         最佳化
                     </button>
@@ -631,27 +647,42 @@ export default function App() {
                         </button>
                     </div>
 
-                    <button 
-                        onClick={() => setActiveNodes(new Set(['start']))}
-                        className="text-xs bg-slate-800 hover:bg-red-900 border border-slate-600 text-slate-300 hover:text-white px-2 py-1.5 rounded transition-colors"
-                    >
+                    <button onClick={() => setActiveNodes(new Set(['start']))} className="text-xs bg-slate-800 hover:bg-red-900 border border-slate-600 text-slate-300 hover:text-white px-2 py-1.5 rounded transition-colors">
                         重置
                     </button>
                 </div>
             </header>
 
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-                
-                {/* 左側：天賦樹分配器 (地圖模式 or 清單模式) */}
                 <div className="lg:col-span-6 xl:col-span-6 bg-slate-900/50 rounded-xl border border-slate-800 p-2 overflow-hidden flex flex-col h-[80vh]">
                     <h2 className="text-lg font-semibold text-purple-300 mb-2 px-2 flex items-center justify-between shrink-0">
                         <span>天賦樹 {viewMode === 'map' ? '(視覺地圖)' : '(結構清單)'}</span>
+                        {/* --- 新增：校準模式工具列 --- */}
+                        {viewMode === 'map' && (
+                            <div className="flex gap-2">
+                                {isEditMode && (
+                                    <button onClick={resetCoords} className="flex items-center gap-1 text-[11px] bg-red-900/50 hover:bg-red-800 text-red-200 px-2 py-1 rounded border border-red-700 transition-colors">
+                                        <RotateCcw size={12}/> 重置座標
+                                    </button>
+                                )}
+                                <button 
+                                    onClick={toggleEditMode} 
+                                    className={`flex items-center gap-1 text-[11px] px-2 py-1 rounded border transition-colors ${isEditMode ? 'bg-yellow-600/30 text-yellow-300 border-yellow-500' : 'bg-slate-800 text-slate-400 border-slate-600 hover:bg-slate-700'}`}
+                                >
+                                    {isEditMode ? <Unlock size={12}/> : <Lock size={12}/>}
+                                    {isEditMode ? '完成校準 (自動儲存)' : '解鎖節點以手動校準'}
+                                </button>
+                            </div>
+                        )}
                     </h2>
                     
                     {viewMode === 'map' ? (
                         <div className="flex-1 relative overflow-auto custom-scrollbar bg-slate-950 rounded-lg border border-slate-800 flex justify-center items-center p-2 shadow-inner">
-                            {/* 將容器比例由 aspect-[4/3] 修改為精確吻合圖片的 aspect-[1083/951] */}
-                            <div className="relative w-full max-w-[800px] aspect-[1083/951] bg-gradient-to-tr from-slate-900 to-slate-950 rounded-lg">
+                            <div 
+                                ref={mapRef}
+                                className={`relative w-full max-w-[800px] aspect-[1083/951] bg-gradient-to-tr from-slate-900 to-slate-950 rounded-lg touch-none transition-colors ${isEditMode ? 'outline outline-2 outline-yellow-500/50 shadow-[0_0_20px_rgba(234,179,8,0.2)]' : ''}`}
+                                onPointerMove={handleMapPointerMove}
+                            >
                                 {/* SVG 連線繪製層 */}
                                 <svg className="absolute inset-0 w-full h-full pointer-events-none" viewBox="0 0 100 100" preserveAspectRatio="none">
                                     <image href="/tree.jpg" x="0" y="0" width="100" height="100" preserveAspectRatio="none" opacity="0.4" style={{ mixBlendMode: 'screen' }} onError={(e) => e.target.style.display = 'none'} />
@@ -660,15 +691,11 @@ export default function App() {
                                         return node.children.map(childId => {
                                             const childNode = TREE_DATA[childId];
                                             if (!childNode) return null;
-
                                             const isParentActive = activeNodes.has(id);
                                             const isChildActive = activeNodes.has(childId);
-                                            const canActivateChild = isParentActive; // 只要父節點亮了，子節點就處於可點擊狀態
-                                            
-                                            // 決定線條樣式
+                                            const canActivateChild = isParentActive; 
                                             let strokeClass = "stroke-slate-800";
                                             let strokeWidth = 0.2;
-                                            
                                             if (isParentActive && isChildActive) {
                                                 strokeClass = "stroke-purple-500 drop-shadow-[0_0_2px_rgba(168,85,247,0.8)]";
                                                 strokeWidth = 0.4;
@@ -676,52 +703,57 @@ export default function App() {
                                                 strokeClass = "stroke-slate-600";
                                                 strokeWidth = 0.3;
                                             }
-
-                                            return (
-                                                <line 
-                                                    key={`${id}-${childId}`}
-                                                    x1={node.x} y1={node.y} 
-                                                    x2={childNode.x} y2={childNode.y} 
-                                                    className={`transition-all duration-300 ${strokeClass}`}
-                                                    strokeWidth={strokeWidth}
-                                                    vectorEffect="non-scaling-stroke"
-                                                />
-                                            );
+                                            return <line 
+                                                key={`${id}-${childId}`} 
+                                                x1={coords[id]?.x ?? node.x} 
+                                                y1={coords[id]?.y ?? node.y} 
+                                                x2={coords[childId]?.x ?? childNode.x} 
+                                                y2={coords[childId]?.y ?? childNode.y} 
+                                                className={`transition-all duration-300 ${strokeClass}`} 
+                                                strokeWidth={strokeWidth} 
+                                                vectorEffect="non-scaling-stroke" 
+                                            />;
                                         });
                                     })}
                                 </svg>
-
                                 {/* 互動節點層 */}
                                 {Object.entries(TREE_DATA).map(([id, node]) => {
                                     if (!node) return null;
                                     const isActive = activeNodes.has(id);
                                     const canActivate = id === 'start' || activeNodes.has(node.req);
+                                    let nodeClass = `absolute w-6 h-6 -ml-3 -mt-3 rounded-full flex items-center justify-center border-2 shadow-lg transition-all group ${isEditMode ? 'hover:scale-125' : ''} `;
                                     
-                                    // 決定節點外觀
-                                    let nodeClass = "absolute w-6 h-6 -ml-3 -mt-3 rounded-full flex items-center justify-center border-2 shadow-lg transition-all group ";
                                     if (isActive) nodeClass += "bg-purple-700 border-purple-300 shadow-[0_0_12px_rgba(168,85,247,0.8)] z-20 scale-110";
-                                    else if (canActivate) nodeClass += "bg-slate-700 border-slate-400 hover:bg-blue-600 hover:border-blue-300 cursor-pointer z-10";
-                                    else nodeClass += "bg-slate-900 border-slate-800 opacity-50 cursor-not-allowed z-0";
-
-                                    // 起點特別大
+                                    else if (canActivate || isEditMode) nodeClass += "bg-slate-700 border-slate-400 hover:bg-blue-600 hover:border-blue-300 z-10";
+                                    else nodeClass += "bg-slate-900 border-slate-800 opacity-50 z-0";
+                                    
                                     if (id === 'start') nodeClass += isActive ? " !bg-blue-600 !border-blue-300 w-10 h-10 -ml-5 -mt-5" : " w-10 h-10 -ml-5 -mt-5";
-
+                                    
                                     return (
                                         <div 
-                                            key={id}
-                                            className={nodeClass}
-                                            style={{ left: `${node.x}%`, top: `${node.y}%` }}
-                                            onClick={() => canActivate && toggleNode(id)}
+                                            key={id} 
+                                            className={nodeClass} 
+                                            style={{ 
+                                                left: `${coords[id]?.x ?? node.x}%`, 
+                                                top: `${coords[id]?.y ?? node.y}%`,
+                                                cursor: isEditMode ? (draggingNode === id ? 'grabbing' : 'grab') : (canActivate ? 'pointer' : 'not-allowed')
+                                            }} 
+                                            onPointerDown={(e) => {
+                                                if (isEditMode) {
+                                                    e.stopPropagation();
+                                                    setDraggingNode(id);
+                                                } else if (canActivate) {
+                                                    toggleNode(id);
+                                                }
+                                            }}
                                         >
-                                            {/* 節點內的文字標籤 */}
                                             <span className={`font-bold select-none ${id === 'start' ? 'text-xs' : 'text-[9px]'} ${isActive ? 'text-white' : 'text-slate-300'}`}>
                                                 {id === 'start' ? '起' : id}
                                             </span>
-
-                                            {/* Tooltip (滑鼠懸停顯示說明) */}
                                             <div className="absolute bottom-full mb-2 hidden group-hover:block whitespace-nowrap bg-slate-900 text-slate-200 text-xs px-2 py-1 rounded border border-slate-700 pointer-events-none z-50">
                                                 <span className="font-bold text-purple-400">{id}</span>: {node.name}
-                                                {!canActivate && <div className="text-[10px] text-red-400 mt-1">需解鎖前置節點</div>}
+                                                {isEditMode && <div className="text-[10px] text-yellow-400 mt-1">拖曳以移動位置</div>}
+                                                {!canActivate && !isEditMode && <div className="text-[10px] text-red-400 mt-1">需解鎖前置節點</div>}
                                             </div>
                                         </div>
                                     );
@@ -735,10 +767,7 @@ export default function App() {
                     )}
                 </div>
 
-                {/* 右側：詞綴權重計算機 */}
                 <div className="lg:col-span-6 xl:col-span-6 flex flex-col gap-4 overflow-y-auto max-h-[80vh] custom-scrollbar pr-2">
-                    
-                    {/* --- 新增：本地預設庫操作區 --- */}
                     <div className="bg-slate-900/50 rounded-xl border border-slate-800 p-3 flex flex-col sm:flex-row items-center justify-between gap-3 shadow-sm">
                         <div className="flex items-center gap-2 w-full sm:w-auto">
                             <FolderOpen size={18} className="text-yellow-500 shrink-0" />
@@ -746,7 +775,7 @@ export default function App() {
                             <select 
                                 onChange={(e) => {
                                     if(e.target.value) handleLoadPreset(e.target.value);
-                                    e.target.value = ""; // 點選完重置，方便下次重複選
+                                    e.target.value = ""; 
                                 }} 
                                 defaultValue=""
                                 className="bg-slate-950 text-slate-200 border border-slate-700 rounded px-2 py-1.5 text-sm outline-none cursor-pointer flex-1 w-full max-w-[200px]"
@@ -759,23 +788,17 @@ export default function App() {
                         </div>
                         
                         <div className="flex gap-2 w-full sm:w-auto">
-                            <button 
-                                onClick={() => bulkInputRef.current.click()} 
-                                className="flex-1 sm:flex-none text-xs bg-slate-800 hover:bg-slate-700 px-3 py-1.5 rounded border border-slate-600 text-slate-300 transition-colors whitespace-nowrap"
-                            >
-                                ➕ 批次匯入 (可多選)
+                            <button onClick={() => bulkInputRef.current.click()} className="flex-1 sm:flex-none text-xs bg-slate-800 hover:bg-slate-700 px-3 py-1.5 rounded border border-slate-600 text-slate-300 transition-colors whitespace-nowrap">
+                                ➕ 批次匯入
                             </button>
                             <input type="file" multiple accept=".json" ref={bulkInputRef} onChange={handleBulkImport} className="hidden" />
                             
-                            {/* 簡易刪除庫存按鈕 */}
-                            <button 
-                                onClick={() => {
+                            <button onClick={() => {
                                     setSavedPresets({});
                                     localStorage.removeItem('poe_genesis_presets');
                                     showToast("🧹 已清空所有預設檔");
                                 }}
-                                className="text-xs bg-slate-800 hover:bg-red-900 px-2 py-1.5 rounded border border-slate-600 text-slate-400 hover:text-slate-200 transition-colors"
-                                title="清空預設庫"
+                                className="text-xs bg-slate-800 hover:bg-red-900 px-2 py-1.5 rounded border border-slate-600 text-slate-400 hover:text-slate-200 transition-colors" title="清空預設庫"
                             >
                                 <Trash2 size={14}/>
                             </button>
