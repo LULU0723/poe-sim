@@ -1,0 +1,234 @@
+[
+  {
+    "id": "1775723900001",
+    "type": "prefix",
+    "name": "# 最大生命",
+    "tags": "生命",
+    "baseWeight": 9000,
+    "category": "neutral"
+  },
+  {
+    "id": "1775723900002",
+    "type": "prefix",
+    "name": "# 最大魔力",
+    "tags": "魔力",
+    "baseWeight": 12000,
+    "category": "neutral"
+  },
+  {
+    "id": "1775723900003",
+    "type": "prefix",
+    "name": "# 最大能量護盾",
+    "tags": "防禦、能量護盾",
+    "baseWeight": 7000,
+    "category": "neutral"
+  },
+  {
+    "id": "1775723900004",
+    "type": "prefix",
+    "name": "攻擊附加 # 至 # 物理傷害",
+    "tags": "物理、攻擊",
+    "baseWeight": 4000,
+    "category": "neutral"
+  },
+  {
+    "id": "1775723900005",
+    "type": "prefix",
+    "name": "攻擊附加 # 至 # 火焰傷害",
+    "tags": "元素、火焰、攻擊",
+    "baseWeight": 3000,
+    "category": "neutral"
+  },
+  {
+    "id": "1775723900006",
+    "type": "prefix",
+    "name": "攻擊附加 # 至 # 冰冷傷害",
+    "tags": "元素、冰冷、攻擊",
+    "baseWeight": 3000,
+    "category": "neutral"
+  },
+  {
+    "id": "1775723900007",
+    "type": "prefix",
+    "name": "攻擊附加 # 至 # 閃電傷害",
+    "tags": "元素、閃電、攻擊",
+    "baseWeight": 3000,
+    "category": "neutral"
+  },
+  {
+    "id": "1775723900008",
+    "type": "prefix",
+    "name": "增加 #% 能量護盾",
+    "tags": "防禦、能量護盾",
+    "baseWeight": 7000,
+    "category": "neutral"
+  },
+  {
+    "id": "1775723900009",
+    "type": "prefix",
+    "name": "增加 #% 能量護盾增加 #% 暈眩恢復和格擋恢復",
+    "tags": "防禦、能量護盾",
+    "baseWeight": 6000,
+    "category": "neutral"
+  },
+  {
+    "id": "1775723900010",
+    "type": "prefix",
+    "name": "# 最大能量護盾# 最大生命",
+    "tags": "生命、防禦、能量護盾",
+    "baseWeight": 2000,
+    "category": "neutral"
+  },
+  {
+    "id": "1775723900011",
+    "type": "prefix",
+    "name": "# 最大能量護盾# 最大魔力",
+    "tags": "魔力、防禦、能量護盾",
+    "baseWeight": 2000,
+    "category": "neutral"
+  },
+  {
+    "id": "1775723900012",
+    "type": "prefix",
+    "name": "增加 #% 物品稀有度",
+    "tags": "丟置",
+    "baseWeight": 2000,
+    "category": "neutral"
+  },
+  {
+    "id": "1775723900013",
+    "type": "suffix",
+    "name": "# 敏捷",
+    "tags": "能力",
+    "baseWeight": 10000,
+    "category": "neutral"
+  },
+  {
+    "id": "1775723900014",
+    "type": "suffix",
+    "name": "# 智慧",
+    "tags": "能力",
+    "baseWeight": 9000,
+    "category": "neutral"
+  },
+  {
+    "id": "1775723900015",
+    "type": "suffix",
+    "name": "(0.2—0.4)% 的物理攻擊傷害偷取生命",
+    "tags": "生命、物理、攻擊",
+    "baseWeight": 1000,
+    "category": "neutral"
+  },
+  {
+    "id": "1775723900016",
+    "type": "suffix",
+    "name": "(0.2—0.4)% 物理攻擊傷害偷取魔力",
+    "tags": "魔力、物理、攻擊",
+    "baseWeight": 1000,
+    "category": "neutral"
+  },
+  {
+    "id": "1775723900017",
+    "type": "suffix",
+    "name": "增加 #% 物品稀有度",
+    "tags": "丟置",
+    "baseWeight": 2000,
+    "category": "neutral"
+  },
+  {
+    "id": "1775723900018",
+    "type": "suffix",
+    "name": "增加 #% 攻擊速度",
+    "tags": "攻擊、速度",
+    "baseWeight": 2000,
+    "category": "neutral"
+  },
+  {
+    "id": "1775723900019",
+    "type": "suffix",
+    "name": "# 命中值",
+    "tags": "攻擊",
+    "baseWeight": 5600,
+    "category": "neutral"
+  },
+  {
+    "id": "1775723900020",
+    "type": "suffix",
+    "name": "# 每秒生命回復",
+    "tags": "生命",
+    "baseWeight": 8000,
+    "category": "neutral"
+  },
+  {
+    "id": "1775723900021",
+    "type": "suffix",
+    "name": "#% 火焰抗性",
+    "tags": "元素、火焰、抗性",
+    "baseWeight": 8000,
+    "category": "neutral"
+  },
+  {
+    "id": "1775723900022",
+    "type": "suffix",
+    "name": "#% 冰冷抗性",
+    "tags": "元素、冰冷、抗性",
+    "baseWeight": 8000,
+    "category": "neutral"
+  },
+  {
+    "id": "1775723900023",
+    "type": "suffix",
+    "name": "#% 閃電抗性",
+    "tags": "元素、閃電、抗性",
+    "baseWeight": 8000,
+    "category": "neutral"
+  },
+  {
+    "id": "1775723900024",
+    "type": "suffix",
+    "name": "#% 混沌抗性",
+    "tags": "混沌、抗性",
+    "baseWeight": 1500,
+    "category": "neutral"
+  },
+  {
+    "id": "1775723900025",
+    "type": "suffix",
+    "name": "每用攻擊擊中一個敵人，獲得 2 生命",
+    "tags": "生命、攻擊",
+    "baseWeight": 1000,
+    "category": "neutral"
+  },
+  {
+    "id": "1775723900026",
+    "type": "suffix",
+    "name": "每個被擊殺的敵人，獲得 # 生命",
+    "tags": "生命",
+    "baseWeight": 3000,
+    "category": "neutral"
+  },
+  {
+    "id": "1775723900027",
+    "type": "suffix",
+    "name": "每個被擊殺的敵人，獲得 # 魔力",
+    "tags": "魔力",
+    "baseWeight": 3000,
+    "category": "neutral"
+  },
+  {
+    "id": "1775723900028",
+    "type": "suffix",
+    "name": "減少 #% 能力值需求",
+    "tags": "",
+    "baseWeight": 900,
+    "category": "neutral"
+  },
+  {
+    "id": "1775723900029",
+    "type": "suffix",
+    "name": "增加 #% 能量護盾充能率",
+    "tags": "防禦、能量護盾",
+    "baseWeight": 5000,
+    "category": "neutral"
+  }
+]

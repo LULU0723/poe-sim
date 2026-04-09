@@ -1,6 +1,6 @@
 [
   {
-    "id": "1775639723570",
+    "id": "1775723700001",
     "type": "prefix",
     "name": "# 最大生命",
     "tags": "生命",
@@ -8,7 +8,7 @@
     "category": "neutral"
   },
   {
-    "id": "1775639731857",
+    "id": "1775723700002",
     "type": "prefix",
     "name": "攻擊附加 # 至 # 物理傷害",
     "tags": "物理、攻擊",
@@ -16,15 +16,15 @@
     "category": "neutral"
   },
   {
-    "id": "1775639732169",
+    "id": "1775723700003",
     "type": "prefix",
-    "name": "攻擊附加 # 至 # 火焰傷害 ",
+    "name": "攻擊附加 # 至 # 火焰傷害",
     "tags": "元素、火焰、攻擊",
     "baseWeight": 3000,
     "category": "neutral"
   },
   {
-    "id": "1775639732473",
+    "id": "1775723700004",
     "type": "prefix",
     "name": "攻擊附加 # 至 # 冰冷傷害",
     "tags": "元素、冰冷、攻擊",
@@ -32,79 +32,79 @@
     "category": "neutral"
   },
   {
-    "id": "1775639732825",
+    "id": "1775723700005",
     "type": "prefix",
-    "name": "攻擊附加 # 至 # 閃電傷害 ",
+    "name": "攻擊附加 # 至 # 閃電傷害",
     "tags": "元素、閃電、攻擊",
     "baseWeight": 3000,
     "category": "neutral"
   },
   {
-    "id": "1775639733065",
+    "id": "1775723700006",
     "type": "prefix",
     "name": "增加 #% 閃避值",
-    "tags": "防禦",
+    "tags": "防禦、閃避",
     "baseWeight": 7000,
     "category": "neutral"
   },
   {
-    "id": "1775639733266",
+    "id": "1775723700007",
     "type": "prefix",
     "name": "增加 #% 閃避值增加 #% 暈眩恢復和格擋恢復",
-    "tags": "防禦",
+    "tags": "防禦、閃避",
     "baseWeight": 6000,
     "category": "neutral"
   },
   {
-    "id": "1775639733433",
+    "id": "1775723700008",
     "type": "prefix",
     "name": "# 點閃避值",
-    "tags": "防禦",
+    "tags": "防禦、閃避",
     "baseWeight": 7000,
     "category": "neutral"
   },
   {
-    "id": "1775639738881",
+    "id": "1775723700009",
     "type": "prefix",
     "name": "# 點閃避值# 最大生命",
-    "tags": "防禦、生命",
+    "tags": "生命、防禦、閃避",
     "baseWeight": 2000,
     "category": "neutral"
   },
   {
-    "id": "1775639739145",
+    "id": "1775723700010",
     "type": "prefix",
-    "name": "增加 #% 物品稀有度 ",
+    "name": "增加 #% 物品稀有度",
     "tags": "丟置",
     "baseWeight": 2000,
     "category": "neutral"
   },
   {
-    "id": "1775639909503",
+    "id": "1775723700011",
     "type": "suffix",
-    "name": "# 敏捷 ",
+    "name": "# 敏捷",
     "tags": "能力",
     "baseWeight": 10000,
     "category": "neutral"
   },
   {
-    "id": "1775639909879",
+    "id": "1775723700012",
     "type": "suffix",
     "name": "(0.2—0.4)% 的物理攻擊傷害偷取生命",
-    "tags": " 生命、物理、攻擊",
+    "tags": "生命、物理、攻擊",
     "baseWeight": 1000,
     "category": "neutral"
   },
   {
-    "id": "1775639910215",
+    "id": "1775723700013",
     "type": "suffix",
     "name": "(0.2—0.4)% 物理攻擊傷害偷取魔力",
-    "tags": " 魔力、物理、攻擊",
+    "tags": "魔力、物理、攻擊",
     "baseWeight": 1000,
     "category": "neutral"
   },
   {
-    "id": "1775639910519",
+    "id": "1775723700014",
     "type": "suffix",
     "name": "增加 #% 物品稀有度",
     "tags": "丟置",
@@ -112,7 +112,7 @@
     "category": "neutral"
   },
   {
-    "id": "1775639910871",
+    "id": "1775723700015",
     "type": "suffix",
     "name": "增加 #% 攻擊速度",
     "tags": "攻擊、速度",
@@ -120,23 +120,23 @@
     "category": "neutral"
   },
   {
-    "id": "1775639911152",
+    "id": "1775723700016",
     "type": "suffix",
-    "name": "# 命中值 ",
+    "name": "# 命中值",
     "tags": "攻擊",
     "baseWeight": 5600,
     "category": "neutral"
   },
   {
-    "id": "1775639911495",
+    "id": "1775723700017",
     "type": "suffix",
-    "name": "# 每秒生命回復 ",
+    "name": "# 每秒生命回復",
     "tags": "生命",
     "baseWeight": 8000,
     "category": "neutral"
   },
   {
-    "id": "1775639911815",
+    "id": "1775723700018",
     "type": "suffix",
     "name": "#% 火焰抗性",
     "tags": "元素、火焰、抗性",
@@ -144,7 +144,7 @@
     "category": "neutral"
   },
   {
-    "id": "1775639912119",
+    "id": "1775723700019",
     "type": "suffix",
     "name": "#% 冰冷抗性",
     "tags": "元素、冰冷、抗性",
@@ -152,7 +152,7 @@
     "category": "neutral"
   },
   {
-    "id": "1775639912446",
+    "id": "1775723700020",
     "type": "suffix",
     "name": "#% 閃電抗性",
     "tags": "元素、閃電、抗性",
@@ -160,15 +160,15 @@
     "category": "neutral"
   },
   {
-    "id": "1775639912759",
+    "id": "1775723700021",
     "type": "suffix",
-    "name": "#% 渾沌抗性",
-    "tags": "渾沌、抗性",
+    "name": "#% 混沌抗性",
+    "tags": "混沌、抗性",
     "baseWeight": 1500,
     "category": "neutral"
   },
   {
-    "id": "1775639913079",
+    "id": "1775723700022",
     "type": "suffix",
     "name": "每用攻擊擊中一個敵人，獲得 2 生命",
     "tags": "生命、攻擊",
@@ -176,23 +176,23 @@
     "category": "neutral"
   },
   {
-    "id": "1775639913454",
+    "id": "1775723700023",
     "type": "suffix",
-    "name": "每個被擊殺的敵人，獲得 # 生命 ",
+    "name": "每個被擊殺的敵人，獲得 # 生命",
     "tags": "生命",
     "baseWeight": 3000,
     "category": "neutral"
   },
   {
-    "id": "1775639913783",
+    "id": "1775723700024",
     "type": "suffix",
-    "name": "每個被擊殺的敵人，獲得 # 魔力 ",
+    "name": "每個被擊殺的敵人，獲得 # 魔力",
     "tags": "魔力",
     "baseWeight": 3000,
     "category": "neutral"
   },
   {
-    "id": "1775639914095",
+    "id": "1775723700025",
     "type": "suffix",
     "name": "減少 #% 能力值需求",
     "tags": "",
@@ -200,7 +200,7 @@
     "category": "neutral"
   },
   {
-    "id": "1775639914359",
+    "id": "1775723700026",
     "type": "suffix",
     "name": "#% 壓抑法術傷害率",
     "tags": "",
