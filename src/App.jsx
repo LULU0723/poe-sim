@@ -6,7 +6,7 @@ import { Plus, Trash2, ShieldAlert, GitMerge, Settings2, Info, Wand2, Upload, Do
 // ==========================================
 const BUILT_IN_PRESETS = {
     'Helmet': {
-        name: '🪖 頭盔 (Helmet)', treeBase: 'G2', isArmour: true,
+        name: '⛑️ 頭盔 (Helmet)', treeBase: 'G2', isArmour: true,
         attributes: {
             'str': { name: '💪 純力 (護甲)', file: '/presets/helmet_str.json' },
             'dex': { name: '🦅 純敏 (閃避)', file: '/presets/helmet_dex.json' },
