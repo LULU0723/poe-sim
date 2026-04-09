@@ -107,7 +107,7 @@ const BASE_STRATEGIES = {
     }
 };
 
-// --- 天賦樹靜態數據 (已修復 g1~g6 的數學 mods) ---
+// --- 天賦樹靜態數據 ---
 const TREE_DATA = {
     'start': { name: '起點', cost: 0, children: ['a', 'g'], x: 80.8, y: 81.5 },
     'a': { name: 'a (連線+10)', cost: 1, req: 'start', children: ['b', 'G'], x: 82.2, y: 61.5 },
@@ -285,7 +285,6 @@ export default function App() {
         setIsEditMode(!isEditMode);
     };
 
-    // --- 安全升級版：一鍵套用基底策略 ---
     const applyAdvisorStrategy = (strategyType) => {
         try {
             const targetBase = BUILT_IN_PRESETS[builtInCat].treeBase;
@@ -321,8 +320,31 @@ export default function App() {
         }
     };
 
+    // --- 修正後的 讀取詞綴與策略 功能 ---
     const handleLoadBuiltIn = async () => {
         const presetData = BUILT_IN_PRESETS[builtInCat]?.attributes[builtInAttr];
+        
+        // 1. 優先更新 UI 與天賦樹 (就算找不到 JSON 檔案也能作用)
+        const targetBase = BUILT_IN_PRESETS[builtInCat].treeBase;
+        if (targetBase) {
+            setActiveNodes(prev => {
+                const next = new Set(prev);
+                const bases = ['G1', 'G2', 'G3', 'G4', 'G5', 'H1', 'H2', 'H3', 'i'];
+                bases.forEach(b => next.delete(b));
+                next.add(targetBase);
+                let curr = TREE_DATA[targetBase];
+                while(curr && curr.req && TREE_DATA[curr.req]) { next.add(curr.req); curr = TREE_DATA[curr.req]; }
+                return next;
+            });
+        }
+        
+        if (BUILT_IN_PRESETS[builtInCat].isArmour) {
+            setShowAdvisor(true);
+        } else {
+            setShowAdvisor(false);
+        }
+
+        // 2. 嘗試去讀取對應的 JSON 檔案
         if (presetData && presetData.file) {
             try {
                 const response = await fetch(presetData.file);
@@ -331,25 +353,14 @@ export default function App() {
                 if (Array.isArray(data)) setAffixes(data);
                 else if (data.affixes) setAffixes(data.affixes);
                 
-                const targetBase = BUILT_IN_PRESETS[builtInCat].treeBase;
-                if (targetBase) {
-                    setActiveNodes(prev => {
-                        const next = new Set(prev);
-                        const bases = ['G1', 'G2', 'G3', 'G4', 'G5', 'H1', 'H2', 'H3', 'i'];
-                        bases.forEach(b => next.delete(b));
-                        next.add(targetBase);
-                        let curr = TREE_DATA[targetBase];
-                        while(curr && curr.req && TREE_DATA[curr.req]) { next.add(curr.req); curr = TREE_DATA[curr.req]; }
-                        return next;
-                    });
-                }
-                
                 showToast(`📥 成功載入：${BUILT_IN_PRESETS[builtInCat].name} - ${presetData.name}`);
-                if (BUILT_IN_PRESETS[builtInCat].isArmour) setShowAdvisor(true);
-                else setShowAdvisor(false);
-
-            } catch (error) { showToast(`⚠️ 找不到檔案！請將檔案置於 ${presetData.file}`); }
-        } else { showToast("⚠️ 此基底屬性尚未設定檔案路徑 (file)！"); }
+            } catch (error) { 
+                // 檔案不存在時不會再中斷程式，只會跳出這個溫馨提示
+                showToast(`⚠️ 詞綴庫尚未建檔！但已為您切換天賦基底與策略。`); 
+            }
+        } else { 
+            showToast("⚠️ 此基底尚未設定檔案路徑！"); 
+        }
     };
 
     const getDescendants = (nodeId) => {
@@ -415,14 +426,12 @@ export default function App() {
     };
     const currentModifiers = useMemo(() => getModifiers(activeNodes), [activeNodes]);
 
-    // --- 安全升級版：計算機率防呆機制 ---
     const calculateAffixesChances = (affixList, mods) => {
         try {
             if (!Array.isArray(affixList)) return [];
             let preTotal = 0; let sufTotal = 0;
             const results = affixList.map(affix => {
                 let multiplier = 1.0;
-                // 防止 JSON 沒有 tags 時引發崩潰，強制轉字串
                 const affixTags = String(affix.tags || '').split(/[,，、]+/).map(t => t.trim()).filter(t => t);
                 affixTags.forEach(tag => { if (mods[tag]) multiplier += mods[tag]; });
                 multiplier = Math.max(0, multiplier);
@@ -517,7 +526,6 @@ export default function App() {
     };
 
     const handleExport = () => {
-        // ... (這部分維持與先前一樣)
         const dataToExport = { affixes: affixes };
         const blob = new Blob([JSON.stringify(dataToExport, null, 2)], { type: "application/json" });
         const url = URL.createObjectURL(blob);
@@ -636,9 +644,10 @@ export default function App() {
                     </h2>
                     
                     {viewMode === 'map' ? (
-                        <div className="flex-1 relative overflow-auto custom-scrollbar bg-slate-950 rounded-lg border border-slate-800 shadow-inner">
-                            <div className="min-w-full min-h-full flex p-2">
-                                <div ref={mapRef} className={`relative m-auto aspect-[1083/951] touch-none transition-all duration-200 ease-out ${isEditMode ? 'outline outline-2 outline-yellow-500/50 shadow-[0_0_20px_rgba(234,179,8,0.2)]' : ''}`} style={{ width: `${zoom * 100}%`, maxWidth: `${zoom * 800}px`, minWidth: `${zoom * 300}px` }} onPointerMove={handleMapPointerMove}>
+                        <div className="flex-1 overflow-auto custom-scrollbar bg-slate-950 rounded-lg border border-slate-800 shadow-inner p-2 md:p-4">
+                            {/* --- 修正：使用 items-start 避免 Flexbox 裁切超出畫面的地圖 --- */}
+                            <div className="w-full flex justify-center items-start min-w-max">
+                                <div ref={mapRef} className={`relative aspect-[1083/951] touch-none transition-all duration-200 ease-out ${isEditMode ? 'outline outline-2 outline-yellow-500/50 shadow-[0_0_20px_rgba(234,179,8,0.2)]' : ''}`} style={{ width: `${zoom * 100}%`, maxWidth: `${zoom * 800}px`, minWidth: `${zoom * 300}px` }} onPointerMove={handleMapPointerMove}>
                                     <svg className="absolute inset-0 w-full h-full pointer-events-none" viewBox="0 0 100 100" preserveAspectRatio="none">
                                         <image href="/tree.jpg" x="0" y="0" width="100" height="100" preserveAspectRatio="none" opacity="0.4" style={{ mixBlendMode: 'screen' }} onError={(e) => e.target.style.display = 'none'} />
                                         {Object.entries(TREE_DATA).map(([id, node]) => {
