@@ -1,0 +1,202 @@
+[
+  {
+    "id": "1775723000001",
+    "type": "prefix",
+    "name": "# 最大生命",
+    "tags": "生命",
+    "baseWeight": 10000,
+    "category": "neutral"
+  },
+  {
+    "id": "1775723000002",
+    "type": "prefix",
+    "name": "# 最大魔力",
+    "tags": "魔力",
+    "baseWeight": 12000,
+    "category": "neutral"
+  },
+  {
+    "id": "1775723000003",
+    "type": "prefix",
+    "name": "增加 #% 閃避與能量護盾",
+    "tags": "防禦、閃避、能量護盾",
+    "baseWeight": 7000,
+    "category": "neutral"
+  },
+  {
+    "id": "1775723000004",
+    "type": "prefix",
+    "name": "增加 #% 閃避與能量護盾增加 #% 暈眩恢復和格擋恢復",
+    "tags": "防禦、閃避、能量護盾",
+    "baseWeight": 6000,
+    "category": "neutral"
+  },
+  {
+    "id": "1775723000005",
+    "type": "prefix",
+    "name": "# 點閃避值# 最大能量護盾",
+    "tags": "防禦、閃避、能量護盾",
+    "baseWeight": 5000,
+    "category": "neutral"
+  },
+  {
+    "id": "1775723000006",
+    "type": "prefix",
+    "name": "# 點閃避值# 最大生命",
+    "tags": "生命、防禦、閃避",
+    "baseWeight": 1500,
+    "category": "neutral"
+  },
+  {
+    "id": "1775723000007",
+    "type": "prefix",
+    "name": "# 最大能量護盾# 最大生命",
+    "tags": "生命、防禦、能量護盾",
+    "baseWeight": 1500,
+    "category": "neutral"
+  },
+  {
+    "id": "1775723000008",
+    "type": "prefix",
+    "name": "# 最大能量護盾# 最大魔力",
+    "tags": "魔力、防禦、能量護盾",
+    "baseWeight": 1500,
+    "category": "neutral"
+  },
+  {
+    "id": "1775723000009",
+    "type": "prefix",
+    "name": "增加 #% 物品稀有度",
+    "tags": "丟置",
+    "baseWeight": 3000,
+    "category": "neutral"
+  },
+  {
+    "id": "1775723000010",
+    "type": "prefix",
+    "name": "全部召喚物技能寶石 # 等級",
+    "tags": "召喚物、寶石",
+    "baseWeight": 275,
+    "category": "neutral"
+  },
+  {
+    "id": "1775723000011",
+    "type": "prefix",
+    "name": "反射 # 物理傷害給近戰攻擊者",
+    "tags": "物理",
+    "baseWeight": 2000,
+    "category": "neutral"
+  },
+  {
+    "id": "1775723000012",
+    "type": "suffix",
+    "name": "# 敏捷",
+    "tags": "能力",
+    "baseWeight": 4500,
+    "category": "neutral"
+  },
+  {
+    "id": "1775723000013",
+    "type": "suffix",
+    "name": "# 智慧",
+    "tags": "能力",
+    "baseWeight": 10000,
+    "category": "neutral"
+  },
+  {
+    "id": "1775723000014",
+    "type": "suffix",
+    "name": "增加 #% 物品稀有度",
+    "tags": "丟置",
+    "baseWeight": 4000,
+    "category": "neutral"
+  },
+  {
+    "id": "1775723000015",
+    "type": "suffix",
+    "name": "# 命中值",
+    "tags": "攻擊",
+    "baseWeight": 5600,
+    "category": "neutral"
+  },
+  {
+    "id": "1775723000016",
+    "type": "suffix",
+    "name": "# 每秒生命回復",
+    "tags": "生命",
+    "baseWeight": 9000,
+    "category": "neutral"
+  },
+  {
+    "id": "1775723000017",
+    "type": "suffix",
+    "name": "#% 火焰抗性",
+    "tags": "元素、火焰、抗性",
+    "baseWeight": 8000,
+    "category": "neutral"
+  },
+  {
+    "id": "1775723000018",
+    "type": "suffix",
+    "name": "#% 冰冷抗性",
+    "tags": "元素、冰冷、抗性",
+    "baseWeight": 8000,
+    "category": "neutral"
+  },
+  {
+    "id": "1775723000019",
+    "type": "suffix",
+    "name": "#% 閃電抗性",
+    "tags": "元素、閃電、抗性",
+    "baseWeight": 8000,
+    "category": "neutral"
+  },
+  {
+    "id": "1775723000020",
+    "type": "suffix",
+    "name": "#% 混沌抗性",
+    "tags": "混沌、抗性",
+    "baseWeight": 1500,
+    "category": "neutral"
+  },
+  {
+    "id": "1775723000021",
+    "type": "suffix",
+    "name": "增加 #% 暈眩恢復和格擋恢復",
+    "tags": "",
+    "baseWeight": 6000,
+    "category": "neutral"
+  },
+  {
+    "id": "1775723000022",
+    "type": "suffix",
+    "name": "減少 #% 能力值需求",
+    "tags": "",
+    "baseWeight": 1300,
+    "category": "neutral"
+  },
+  {
+    "id": "1775723000023",
+    "type": "suffix",
+    "name": "增加 #% 全域命中值增加 #% 照亮範圍",
+    "tags": "攻擊",
+    "baseWeight": 3000,
+    "category": "neutral"
+  },
+  {
+    "id": "1775723000024",
+    "type": "suffix",
+    "name": "#% 壓抑法術傷害率",
+    "tags": "",
+    "baseWeight": 2500,
+    "category": "neutral"
+  },
+  {
+    "id": "1775723000025",
+    "type": "suffix",
+    "name": "增加 #% 能量護盾充能率",
+    "tags": "防禦、能量護盾",
+    "baseWeight": 2500,
+    "category": "neutral"
+  }
+]

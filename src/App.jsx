@@ -435,20 +435,154 @@ export default function App() {
     };
     const calculatedAffixes = useMemo(() => calculateAffixesChances(affixes, currentModifiers), [affixes, currentModifiers]);
 
-    // 省略 evaluateSetScore / runOptimization / handleExport / handleImport / handleBulkImport / handleLoadPreset ... 
-    // 這些函數保持與原本完全相同，不會被影響。
-    
-    // (為了字數限制，我將純功能代碼壓縮，確保你能順利貼上執行)
-    const evaluateSetScore=(t,e)=>{const o=getModifiers(t),r=calculateAffixesChances(e,o);let s=0;return r.forEach(t=>{"target"===t.category?s+=1e3*t.chance:"acceptable"===t.category?s+=100*t.chance:"unwanted"===t.category&&(s-=1e3*t.chance)}),s-=.1*getCost(t),s};
-    const runOptimization=()=>{setIsOptimizing(!0),setTimeout(()=>{let t=-1/0,e=new Set(["start"]);const o=[null,"A1","A2","A3","A4","A5"],r=[null,"B1","B2","B3","B4"],s=[null,"C1","C2","C3","C4","C5"],c=[null,"L1","L2","L3","L4","L5"],a=[null,"M1","M2","M3","M4"],n=[null,"N1","N2","N3","N4","N5"];for(let i of o)for(let d of r)for(let h of s)for(let u of c)for(let p of a)for(let x of n){let m=new Set(["start"]);(i||d||h)&&(m.add("a"),m.add("b"),m.add("c")),i&&(m.add("d"),m.add("A"),m.add(i)),d&&(m.add("e"),m.add("B"),m.add(d)),h&&(m.add("f"),m.add("C"),m.add(h)),(u||p||x)&&(m.add("g"),m.add("j")),u&&(m.add("k"),m.add("L"),m.add(u)),p&&(m.add("m"),m.add("M"),m.add(p)),x&&(m.add("n"),m.add("N"),m.add(x));const f=getCost(m);if(f<=20){const o=evaluateSetScore(m,affixes);o>t&&(t=o,e=m)}}let l=new Set(e),g=getCost(l),T=Array.from(activeNodes).filter(t=>!l.has(t)),b=!0;for(;b;){b=!false;for(let E of T){if(l.has(E))continue;let A=TREE_DATA[E];if(!A||A.req&&!l.has(A.req)||A.mutex&&hasMutex(l,A.mutex))continue;g+A.cost<=20&&(l.add(E),g+=A.cost,b=!0)}}setActiveNodes(l),setIsOptimizing(!1),showToast("✨ 最佳化完成！已為您搭配出最高權重的天賦路徑。")},50)};
-    const handleExport=()=>{const t=document.createElement("a");t.href=URL.createObjectURL(new Blob([JSON.stringify({affixes:affixes},null,2)],{type:"application/json"})),t.download="poe_genesis_affixes.json",document.body.appendChild(t),t.click(),document.body.removeChild(t),showToast("💾 詞綴設定已匯出！")};
-    const handleImport=t=>{const e=t.target.files[0];if(!e)return;const o=new FileReader;o.onload=t=>{try{const e=JSON.parse(t.target.result);Array.isArray(e)?setAffixes(e):e.affixes&&Array.isArray(e.affixes)&&setAffixes(e.affixes),showToast("✅ 成功匯入詞綴資料！")}catch(t){showToast("❌ 檔案格式錯誤。")}e.value=null},o.readAsText(e)};
-    const handleBulkImport=async t=>{const e=t.target.files;if(!e.length)return;let o={...savedPresets},r=0;for(let s=0;s<e.length;s++){const c=e[s];try{o[c.name.replace(".json","")]=JSON.parse(await c.text()),r++}catch(t){}}setSavedPresets(o),localStorage.setItem("poe_genesis_presets",JSON.stringify(o)),showToast(`📂 成功將 ${r} 個檔案加入個人預設庫！`),t.target.value=null};
-    const handleLoadPreset=t=>{const e=savedPresets[t];e&&(Array.isArray(e)?setAffixes(e):e.affixes&&setAffixes(e.affixes),showToast(`✨ 已載入個人預設：${t}`))};
-    const addAffix=t=>{setAffixes([...affixes,{id:Date.now().toString(),type:t,name:"新詞綴",tags:"",baseWeight:1e3,category:"neutral"}])};
-    const updateAffix=(t,e,o)=>{setAffixes(affixes.map(r=>r.id===t?{...r,[e]:o}:r))};
-    const removeAffix=t=>{setAffixes(affixes.filter(e=>e.id!==t))};
+    // 展開還原原本被壓縮的函數
+    const evaluateSetScore = (testSet, affixList) => {
+        const mods = getModifiers(testSet);
+        const evaluated = calculateAffixesChances(affixList, mods);
+        let score = 0;
+        evaluated.forEach(affix => {
+            if (affix.category === 'target') score += affix.chance * 1000;
+            else if (affix.category === 'acceptable') score += affix.chance * 100;
+            else if (affix.category === 'unwanted') score -= affix.chance * 1000;
+        });
+        score -= getCost(testSet) * 0.1;
+        return score;
+    };
 
+    const runOptimization = () => {
+        setIsOptimizing(true);
+        setTimeout(() => {
+            let bestScore = -Infinity;
+            let bestSet = new Set(['start']);
+            const A_opts = [null, 'A1', 'A2', 'A3', 'A4', 'A5'];
+            const B_opts = [null, 'B1', 'B2', 'B3', 'B4'];
+            const C_opts = [null, 'C1', 'C2', 'C3', 'C4', 'C5'];
+            const L_opts = [null, 'L1', 'L2', 'L3', 'L4', 'L5'];
+            const M_opts = [null, 'M1', 'M2', 'M3', 'M4'];
+            const N_opts = [null, 'N1', 'N2', 'N3', 'N4', 'N5'];
+
+            for (let a of A_opts) { for (let b of B_opts) { for (let c of C_opts) {
+            for (let l of L_opts) { for (let m of M_opts) { for (let n of N_opts) {
+                let testSet = new Set(['start']);
+                if (a || b || c) { testSet.add('a'); testSet.add('b'); testSet.add('c'); }
+                if (a) { testSet.add('d'); testSet.add('A'); testSet.add(a); }
+                if (b) { testSet.add('e'); testSet.add('B'); testSet.add(b); }
+                if (c) { testSet.add('f'); testSet.add('C'); testSet.add(c); }
+                if (l || m || n) { testSet.add('g'); testSet.add('j'); }
+                if (l) { testSet.add('k'); testSet.add('L'); testSet.add(l); }
+                if (m) { testSet.add('m'); testSet.add('M'); testSet.add(m); }
+                if (n) { testSet.add('n'); testSet.add('N'); testSet.add(n); }
+
+                const cost = getCost(testSet);
+                if (cost <= 20) {
+                    const score = evaluateSetScore(testSet, affixes);
+                    if (score > bestScore) {
+                        bestScore = score;
+                        bestSet = testSet;
+                    }
+                }
+            }}}}}}
+
+            let finalSet = new Set(bestSet);
+            let currentCost = getCost(finalSet);
+            let utilityNodes = Array.from(activeNodes).filter(id => !finalSet.has(id));
+            
+            let addedAny = true;
+            while(addedAny) {
+                addedAny = false;
+                for (let id of utilityNodes) {
+                    if (finalSet.has(id)) continue;
+                    let node = TREE_DATA[id];
+                    if (!node) continue; 
+                    if (node.req && !finalSet.has(node.req)) continue; 
+                    if (node.mutex && hasMutex(finalSet, node.mutex)) continue; 
+                    if (currentCost + node.cost <= 20) {
+                        finalSet.add(id);
+                        currentCost += node.cost;
+                        addedAny = true;
+                    }
+                }
+            }
+            setActiveNodes(finalSet);
+            setIsOptimizing(false);
+            showToast("✨ 最佳化完成！已為您搭配出最高權重的天賦路徑。");
+        }, 50);
+    };
+
+    const handleExport = () => {
+        const dataToExport = { base: currentBase, affixes: affixes };
+        const blob = new Blob([JSON.stringify(dataToExport, null, 2)], { type: "application/json" });
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = `poe_genesis_affixes.json`;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        URL.revokeObjectURL(url);
+        showToast("💾 詞綴設定已匯出！");
+    };
+
+    const handleImport = (event) => {
+        const file = event.target.files[0];
+        if (!file) return;
+        const reader = new FileReader();
+        reader.onload = (e) => {
+            try {
+                const importedData = JSON.parse(e.target.result);
+                if (Array.isArray(importedData)) {
+                    setAffixes(importedData);
+                } else if (importedData.affixes && Array.isArray(importedData.affixes)) {
+                    setAffixes(importedData.affixes);
+                }
+                showToast("✅ 成功匯入詞綴資料！");
+            } catch (err) {
+                showToast("❌ 檔案格式錯誤。");
+            }
+            event.target.value = null;
+        };
+        reader.readAsText(file);
+    };
+
+    const handleBulkImport = async (event) => {
+        const files = event.target.files;
+        if (!files.length) return;
+        let newPresets = { ...savedPresets };
+        let count = 0;
+        for (let i = 0; i < files.length; i++) {
+            const file = files[i];
+            try {
+                const data = JSON.parse(await file.text());
+                newPresets[file.name.replace('.json', '')] = data;
+                count++;
+            } catch(e) {}
+        }
+        setSavedPresets(newPresets);
+        localStorage.setItem('poe_genesis_presets', JSON.stringify(newPresets));
+        showToast(`📂 成功將 ${count} 個檔案加入個人預設庫！`);
+        event.target.value = null;
+    };
+
+    const handleLoadPreset = (presetName) => {
+        const data = savedPresets[presetName];
+        if (data) {
+            if (Array.isArray(data)) setAffixes(data);
+            else if (data.affixes) {
+                setAffixes(data.affixes);
+            }
+            showToast(`✨ 已載入個人預設：${presetName}`);
+        }
+    };
+
+    const addAffix = (type) => {
+        setAffixes([...affixes, { id: Date.now().toString(), type, name: '新詞綴', tags: '', baseWeight: 1000, category: 'neutral' }]);
+    };
+    const updateAffix = (id, field, value) => {
+        setAffixes(affixes.map(a => a.id === id ? { ...a, [field]: value } : a));
+    };
+    const removeAffix = (id) => {
+        setAffixes(affixes.filter(a => a.id !== id));
+    };
 
     return (
         <div className="min-h-screen bg-slate-950 text-slate-200 p-4 lg:p-8 font-sans selection:bg-purple-900">
@@ -533,6 +667,12 @@ export default function App() {
                                         return (
                                             <div key={id} className={nodeClass} style={{ left: `${coords[id]?.x ?? node.x}%`, top: `${coords[id]?.y ?? node.y}%`, cursor: isEditMode ? (draggingNode === id ? 'grabbing' : 'grab') : (canActivate ? 'pointer' : 'not-allowed') }} onPointerDown={(e) => { if (isEditMode) { e.stopPropagation(); setDraggingNode(id); } else if (canActivate) { toggleNode(id); } }}>
                                                 <span className={`font-bold select-none ${id === 'start' ? 'text-xs' : 'text-[9px]'} ${isActive ? 'text-white' : 'text-slate-300'}`}>{id === 'start' ? '起' : id}</span>
+                                                {/* --- 恢復這段被刪除的提示工具 (Tooltip) 程式碼 --- */}
+                                                <div className="absolute bottom-full mb-2 hidden group-hover:block whitespace-nowrap bg-slate-900 text-slate-200 text-xs px-2 py-1 rounded border border-slate-700 pointer-events-none z-50">
+                                                    <span className="font-bold text-purple-400">{id}</span>: {node.name}
+                                                    {isEditMode && <div className="text-[10px] text-yellow-400 mt-1">拖曳以移動位置</div>}
+                                                    {!canActivate && !isEditMode && <div className="text-[10px] text-red-400 mt-1">需解鎖前置節點</div>}
+                                                </div>
                                             </div>
                                         );
                                     })}

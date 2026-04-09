@@ -1,0 +1,170 @@
+[
+  {
+    "id": "1775717500001",
+    "type": "prefix",
+    "name": "# 最大生命",
+    "tags": "生命",
+    "baseWeight": 10000,
+    "category": "neutral"
+  },
+  {
+    "id": "1775717500002",
+    "type": "prefix",
+    "name": "# 最大魔力",
+    "tags": "魔力",
+    "baseWeight": 11000,
+    "category": "neutral"
+  },
+  {
+    "id": "1775717500003",
+    "type": "prefix",
+    "name": "# 最大能量護盾",
+    "tags": "防禦、能量護盾",
+    "baseWeight": 12000,
+    "category": "neutral"
+  },
+  {
+    "id": "1775717500004",
+    "type": "prefix",
+    "name": "# 點護甲",
+    "tags": "防禦、護甲",
+    "baseWeight": 8000,
+    "category": "neutral"
+  },
+  {
+    "id": "1775717500005",
+    "type": "prefix",
+    "name": "攻擊技能增加 #% 元素傷害",
+    "tags": "元素、攻擊",
+    "baseWeight": 1800,
+    "category": "neutral"
+  },
+  {
+    "id": "1775717500006",
+    "type": "prefix",
+    "name": "作用於你的藥劑增加 #% 效果",
+    "tags": "",
+    "baseWeight": 750,
+    "category": "neutral"
+  },
+  {
+    "id": "1775717500007",
+    "type": "prefix",
+    "name": "增加 #% 藥劑生命恢復率",
+    "tags": "生命",
+    "baseWeight": 3000,
+    "category": "neutral"
+  },
+  {
+    "id": "1775717500008",
+    "type": "prefix",
+    "name": "增加 #% 藥劑魔力恢復率",
+    "tags": "魔力",
+    "baseWeight": 3000,
+    "category": "neutral"
+  },
+  {
+    "id": "1775717500009",
+    "type": "prefix",
+    "name": "反射 # 物理傷害給近戰攻擊者",
+    "tags": "物理",
+    "baseWeight": 2000,
+    "category": "neutral"
+  },
+  {
+    "id": "1775717500010",
+    "type": "suffix",
+    "name": "# 力量",
+    "tags": "能力",
+    "baseWeight": 10000,
+    "category": "neutral"
+  },
+  {
+    "id": "1775717500011",
+    "type": "suffix",
+    "name": "# 每秒生命回復",
+    "tags": "生命",
+    "baseWeight": 9000,
+    "category": "neutral"
+  },
+  {
+    "id": "1775717500012",
+    "type": "suffix",
+    "name": "減少 #% 敵人暈眩門檻",
+    "tags": "",
+    "baseWeight": 5000,
+    "category": "neutral"
+  },
+  {
+    "id": "1775717500013",
+    "type": "suffix",
+    "name": "#% 火焰抗性",
+    "tags": "元素、火焰、抗性",
+    "baseWeight": 8000,
+    "category": "neutral"
+  },
+  {
+    "id": "1775717500014",
+    "type": "suffix",
+    "name": "#% 冰冷抗性",
+    "tags": "元素、冰冷、抗性",
+    "baseWeight": 8000,
+    "category": "neutral"
+  },
+  {
+    "id": "1775717500015",
+    "type": "suffix",
+    "name": "#% 閃電抗性",
+    "tags": "元素、閃電、抗性",
+    "baseWeight": 8000,
+    "category": "neutral"
+  },
+  {
+    "id": "1775717500016",
+    "type": "suffix",
+    "name": "#% 混沌抗性",
+    "tags": "混沌、抗性",
+    "baseWeight": 1500,
+    "category": "neutral"
+  },
+  {
+    "id": "1775717500017",
+    "type": "suffix",
+    "name": "增加 #% 暈眩恢復和格擋恢復",
+    "tags": "",
+    "baseWeight": 6000,
+    "category": "neutral"
+  },
+  {
+    "id": "1775717500018",
+    "type": "suffix",
+    "name": "增加 #% 敵人暈眩時間",
+    "tags": "",
+    "baseWeight": 5000,
+    "category": "neutral"
+  },
+  {
+    "id": "1775717500019",
+    "type": "suffix",
+    "name": "增加 #% 藥劑充能獲取",
+    "tags": "",
+    "baseWeight": 3000,
+    "category": "neutral"
+  },
+  {
+    "id": "1775717500020",
+    "type": "suffix",
+    "name": "減少 #% 藥劑充能使用",
+    "tags": "",
+    "baseWeight": 1000,
+    "category": "neutral"
+  },
+  {
+    "id": "1775717500021",
+    "type": "suffix",
+    "name": "增加 #% 藥劑效果持續時間",
+    "tags": "",
+    "baseWeight": 2500,
+    "category": "neutral"
+  }
+]

@@ -1,0 +1,122 @@
+[
+  {
+    "id": "1775716300001",
+    "type": "prefix",
+    "name": "# 最大生命",
+    "tags": "生命",
+    "baseWeight": 13000,
+    "category": "neutral"
+  },
+  {
+    "id": "1775716300002",
+    "type": "prefix",
+    "name": "增加 #% 閃避值",
+    "tags": "防禦、閃避",
+    "baseWeight": 8000,
+    "category": "neutral"
+  },
+  {
+    "id": "1775716300003",
+    "type": "prefix",
+    "name": "增加 #% 閃避值增加 #% 暈眩恢復和格擋恢復",
+    "tags": "防禦、閃避",
+    "baseWeight": 6000,
+    "category": "neutral"
+  },
+  {
+    "id": "1775716300004",
+    "type": "prefix",
+    "name": "# 點閃避值",
+    "tags": "防禦、閃避",
+    "baseWeight": 11000,
+    "category": "neutral"
+  },
+  {
+    "id": "1775716300005",
+    "type": "prefix",
+    "name": "# 點閃避值# 最大生命",
+    "tags": "生命、防禦、閃避",
+    "baseWeight": 3500,
+    "category": "neutral"
+  },
+  {
+    "id": "1775716300006",
+    "type": "prefix",
+    "name": "反射 # 物理傷害給近戰攻擊者",
+    "tags": "物理",
+    "baseWeight": 4000,
+    "category": "neutral"
+  },
+  {
+    "id": "1775716300007",
+    "type": "suffix",
+    "name": "# 敏捷",
+    "tags": "能力",
+    "baseWeight": 9000,
+    "category": "neutral"
+  },
+  {
+    "id": "1775716300008",
+    "type": "suffix",
+    "name": "# 每秒生命回復",
+    "tags": "生命",
+    "baseWeight": 11000,
+    "category": "neutral"
+  },
+  {
+    "id": "1775716300009",
+    "type": "suffix",
+    "name": "#% 火焰抗性",
+    "tags": "元素、火焰、抗性",
+    "baseWeight": 8000,
+    "category": "neutral"
+  },
+  {
+    "id": "1775716300010",
+    "type": "suffix",
+    "name": "#% 冰冷抗性",
+    "tags": "元素、冰冷、抗性",
+    "baseWeight": 8000,
+    "category": "neutral"
+  },
+  {
+    "id": "1775716300011",
+    "type": "suffix",
+    "name": "#% 閃電抗性",
+    "tags": "元素、閃電、抗性",
+    "baseWeight": 8000,
+    "category": "neutral"
+  },
+  {
+    "id": "1775716300012",
+    "type": "suffix",
+    "name": "#% 混沌抗性",
+    "tags": "混沌、抗性",
+    "baseWeight": 1500,
+    "category": "neutral"
+  },
+  {
+    "id": "1775716300013",
+    "type": "suffix",
+    "name": "增加 #% 暈眩恢復和格擋恢復",
+    "tags": "",
+    "baseWeight": 6000,
+    "category": "neutral"
+  },
+  {
+    "id": "1775716300014",
+    "type": "suffix",
+    "name": "減少 #% 能力值需求",
+    "tags": "",
+    "baseWeight": 1700,
+    "category": "neutral"
+  },
+  {
+    "id": "1775716300015",
+    "type": "suffix",
+    "name": "#% 壓抑法術傷害率",
+    "tags": "",
+    "baseWeight": 5000,
+    "category": "neutral"
+  }
+]

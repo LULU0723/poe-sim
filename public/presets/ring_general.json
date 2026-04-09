@@ -1,0 +1,282 @@
+[
+  {
+    "id": "1775717400001",
+    "type": "prefix",
+    "name": "# 最大生命",
+    "tags": "生命",
+    "baseWeight": 8000,
+    "category": "neutral"
+  },
+  {
+    "id": "1775717400002",
+    "type": "prefix",
+    "name": "# 最大魔力",
+    "tags": "魔力",
+    "baseWeight": 13000,
+    "category": "neutral"
+  },
+  {
+    "id": "1775717400003",
+    "type": "prefix",
+    "name": "# 最大能量護盾",
+    "tags": "防禦、能量護盾",
+    "baseWeight": 11000,
+    "category": "neutral"
+  },
+  {
+    "id": "1775717400004",
+    "type": "prefix",
+    "name": "攻擊附加 # 至 # 物理傷害",
+    "tags": "物理、攻擊",
+    "baseWeight": 6000,
+    "category": "neutral"
+  },
+  {
+    "id": "1775717400005",
+    "type": "prefix",
+    "name": "攻擊附加 # 至 # 火焰傷害",
+    "tags": "元素、火焰、攻擊",
+    "baseWeight": 3250,
+    "category": "neutral"
+  },
+  {
+    "id": "1775717400006",
+    "type": "prefix",
+    "name": "攻擊附加 # 至 # 冰冷傷害",
+    "tags": "元素、冰冷、攻擊",
+    "baseWeight": 3250,
+    "category": "neutral"
+  },
+  {
+    "id": "1775717400007",
+    "type": "prefix",
+    "name": "攻擊附加 # 至 # 閃電傷害",
+    "tags": "元素、閃電、攻擊",
+    "baseWeight": 3250,
+    "category": "neutral"
+  },
+  {
+    "id": "1775717400008",
+    "type": "prefix",
+    "name": "# 點閃避值",
+    "tags": "防禦、閃避",
+    "baseWeight": 7000,
+    "category": "neutral"
+  },
+  {
+    "id": "1775717400009",
+    "type": "prefix",
+    "name": "攻擊技能增加 #% 元素傷害",
+    "tags": "元素、攻擊",
+    "baseWeight": 1500,
+    "category": "neutral"
+  },
+  {
+    "id": "1775717400010",
+    "type": "prefix",
+    "name": "增加 #% 物品稀有度",
+    "tags": "丟置",
+    "baseWeight": 4000,
+    "category": "neutral"
+  },
+  {
+    "id": "1775717400011",
+    "type": "suffix",
+    "name": "# 力量",
+    "tags": "能力",
+    "baseWeight": 9000,
+    "category": "neutral"
+  },
+  {
+    "id": "1775717400012",
+    "type": "suffix",
+    "name": "# 敏捷",
+    "tags": "能力",
+    "baseWeight": 9000,
+    "category": "neutral"
+  },
+  {
+    "id": "1775717400013",
+    "type": "suffix",
+    "name": "# 智慧",
+    "tags": "能力",
+    "baseWeight": 9000,
+    "category": "neutral"
+  },
+  {
+    "id": "1775717400014",
+    "type": "suffix",
+    "name": "# 全能力",
+    "tags": "能力",
+    "baseWeight": 1600,
+    "category": "neutral"
+  },
+  {
+    "id": "1775717400015",
+    "type": "suffix",
+    "name": "(0.2—0.4)% 的物理攻擊傷害偷取生命",
+    "tags": "生命、物理、攻擊",
+    "baseWeight": 1000,
+    "category": "neutral"
+  },
+  {
+    "id": "1775717400016",
+    "type": "suffix",
+    "name": "(0.2—0.4)% 物理攻擊傷害偷取魔力",
+    "tags": "魔力、物理、攻擊",
+    "baseWeight": 1000,
+    "category": "neutral"
+  },
+  {
+    "id": "1775717400017",
+    "type": "suffix",
+    "name": "增加 #% 物品稀有度",
+    "tags": "丟置",
+    "baseWeight": 4000,
+    "category": "neutral"
+  },
+  {
+    "id": "1775717400018",
+    "type": "suffix",
+    "name": "增加 #% 施放速度",
+    "tags": "法術、速度",
+    "baseWeight": 2400,
+    "category": "neutral"
+  },
+  {
+    "id": "1775717400019",
+    "type": "suffix",
+    "name": "增加 #% 攻擊速度",
+    "tags": "攻擊、速度",
+    "baseWeight": 500,
+    "category": "neutral"
+  },
+  {
+    "id": "1775717400020",
+    "type": "suffix",
+    "name": "# 命中值",
+    "tags": "攻擊",
+    "baseWeight": 4600,
+    "category": "neutral"
+  },
+  {
+    "id": "1775717400021",
+    "type": "suffix",
+    "name": "# 每秒生命回復",
+    "tags": "生命",
+    "baseWeight": 7000,
+    "category": "neutral"
+  },
+  {
+    "id": "1775717400022",
+    "type": "suffix",
+    "name": "增加 #% 魔力回復率",
+    "tags": "魔力",
+    "baseWeight": 6000,
+    "category": "neutral"
+  },
+  {
+    "id": "1775717400023",
+    "type": "suffix",
+    "name": "#% 火焰抗性",
+    "tags": "元素、火焰、抗性",
+    "baseWeight": 8000,
+    "category": "neutral"
+  },
+  {
+    "id": "1775717400024",
+    "type": "suffix",
+    "name": "#% 冰冷抗性",
+    "tags": "元素、冰冷、抗性",
+    "baseWeight": 8000,
+    "category": "neutral"
+  },
+  {
+    "id": "1775717400025",
+    "type": "suffix",
+    "name": "#% 閃電抗性",
+    "tags": "元素、閃電、抗性",
+    "baseWeight": 8000,
+    "category": "neutral"
+  },
+  {
+    "id": "1775717400026",
+    "type": "suffix",
+    "name": "#% 混沌抗性",
+    "tags": "混沌、抗性",
+    "baseWeight": 1500,
+    "category": "neutral"
+  },
+  {
+    "id": "1775717400027",
+    "type": "suffix",
+    "name": "#% 全部元素抗性",
+    "tags": "元素、抗性",
+    "baseWeight": 5000,
+    "category": "neutral"
+  },
+  {
+    "id": "1775717400028",
+    "type": "suffix",
+    "name": "每用攻擊擊中一個敵人，獲得 2 生命",
+    "tags": "生命、攻擊",
+    "baseWeight": 1000,
+    "category": "neutral"
+  },
+  {
+    "id": "1775717400029",
+    "type": "suffix",
+    "name": "增加 #% 火焰傷害",
+    "tags": "元素、火焰",
+    "baseWeight": 2000,
+    "category": "neutral"
+  },
+  {
+    "id": "1775717400030",
+    "type": "suffix",
+    "name": "增加 #% 冰冷傷害",
+    "tags": "元素、冰冷",
+    "baseWeight": 2000,
+    "category": "neutral"
+  },
+  {
+    "id": "1775717400031",
+    "type": "suffix",
+    "name": "增加 #% 閃電傷害",
+    "tags": "元素、閃電",
+    "baseWeight": 2000,
+    "category": "neutral"
+  },
+  {
+    "id": "1775717400032",
+    "type": "suffix",
+    "name": "每個被擊殺的敵人，獲得 # 生命",
+    "tags": "生命",
+    "baseWeight": 3000,
+    "category": "neutral"
+  },
+  {
+    "id": "1775717400033",
+    "type": "suffix",
+    "name": "每個被擊殺的敵人，獲得 # 魔力",
+    "tags": "魔力",
+    "baseWeight": 3000,
+    "category": "neutral"
+  },
+  {
+    "id": "1775717400034",
+    "type": "suffix",
+    "name": "增加 #% 全域命中值增加 #% 照亮範圍",
+    "tags": "攻擊",
+    "baseWeight": 3000,
+    "category": "neutral"
+  },
+  {
+    "id": "1775717400035",
+    "type": "suffix",
+    "name": "承受 #% 傷害補償為生命",
+    "tags": "生命",
+    "baseWeight": 2000,
+    "category": "neutral"
+  }
+]

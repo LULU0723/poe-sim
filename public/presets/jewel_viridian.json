@@ -1,0 +1,1811 @@
+[
+  {
+    "id": "1775717700001",
+    "type": "prefix",
+    "name": "增加 #% 斧的傷害",
+    "tags": "傷害、攻擊",
+    "baseWeight": 500,
+    "category": "neutral"
+  },
+  {
+    "id": "1775717700002",
+    "type": "prefix",
+    "name": "增加 #% 劍的傷害",
+    "tags": "傷害、攻擊",
+    "baseWeight": 500,
+    "category": "neutral"
+  },
+  {
+    "id": "1775717700003",
+    "type": "prefix",
+    "name": "持弓類武器時增加 #% 傷害",
+    "tags": "傷害、攻擊",
+    "baseWeight": 500,
+    "category": "neutral"
+  },
+  {
+    "id": "1775717700004",
+    "type": "prefix",
+    "name": "增加 #% 爪的傷害",
+    "tags": "傷害、攻擊",
+    "baseWeight": 500,
+    "category": "neutral"
+  },
+  {
+    "id": "1775717700005",
+    "type": "prefix",
+    "name": "增加 #% 匕首的傷害",
+    "tags": "傷害、攻擊",
+    "baseWeight": 500,
+    "category": "neutral"
+  },
+  {
+    "id": "1775717700006",
+    "type": "prefix",
+    "name": "持單手武器時增加 #% 傷害",
+    "tags": "傷害、攻擊",
+    "baseWeight": 500,
+    "category": "neutral"
+  },
+  {
+    "id": "1775717700007",
+    "type": "prefix",
+    "name": "持雙手武器時增加 #% 傷害",
+    "tags": "傷害、攻擊",
+    "baseWeight": 500,
+    "category": "neutral"
+  },
+  {
+    "id": "1775717700008",
+    "type": "prefix",
+    "name": "雙持時增加 #% 攻擊傷害",
+    "tags": "傷害、攻擊",
+    "baseWeight": 500,
+    "category": "neutral"
+  },
+  {
+    "id": "1775717700009",
+    "type": "prefix",
+    "name": "持盾時增加 #% 攻擊傷害",
+    "tags": "傷害、攻擊",
+    "baseWeight": 500,
+    "category": "neutral"
+  },
+  {
+    "id": "1775717700010",
+    "type": "prefix",
+    "name": "增加 #% 陷阱傷害",
+    "tags": "傷害",
+    "baseWeight": 500,
+    "category": "neutral"
+  },
+  {
+    "id": "1775717700011",
+    "type": "prefix",
+    "name": "增加 #% 地雷傷害",
+    "tags": "傷害",
+    "baseWeight": 500,
+    "category": "neutral"
+  },
+  {
+    "id": "1775717700012",
+    "type": "prefix",
+    "name": "增加 #% 火焰傷害",
+    "tags": "傷害、元素、火焰",
+    "baseWeight": 400,
+    "category": "neutral"
+  },
+  {
+    "id": "1775717700013",
+    "type": "prefix",
+    "name": "增加 #% 冰冷傷害",
+    "tags": "傷害、元素、冰冷",
+    "baseWeight": 500,
+    "category": "neutral"
+  },
+  {
+    "id": "1775717700014",
+    "type": "prefix",
+    "name": "增加 #% 閃電傷害",
+    "tags": "傷害、元素、閃電",
+    "baseWeight": 400,
+    "category": "neutral"
+  },
+  {
+    "id": "1775717700015",
+    "type": "prefix",
+    "name": "增加 #% 全域物理傷害",
+    "tags": "傷害、物理",
+    "baseWeight": 500,
+    "category": "neutral"
+  },
+  {
+    "id": "1775717700016",
+    "type": "prefix",
+    "name": "增加 #% 混沌傷害",
+    "tags": "傷害、混沌",
+    "baseWeight": 200,
+    "category": "neutral"
+  },
+  {
+    "id": "1775717700017",
+    "type": "prefix",
+    "name": "使用斧類武器時增加 #% 攻擊速度",
+    "tags": "攻擊速度",
+    "baseWeight": 500,
+    "category": "neutral"
+  },
+  {
+    "id": "1775717700018",
+    "type": "prefix",
+    "name": "使用劍類武器時增加 #% 攻擊速度",
+    "tags": "攻擊速度",
+    "baseWeight": 500,
+    "category": "neutral"
+  },
+  {
+    "id": "1775717700019",
+    "type": "prefix",
+    "name": "使用弓類武器時增加 #% 攻擊速度",
+    "tags": "攻擊速度",
+    "baseWeight": 500,
+    "category": "neutral"
+  },
+  {
+    "id": "1775717700020",
+    "type": "prefix",
+    "name": "使用爪類武器時增加 #% 攻擊速度",
+    "tags": "攻擊速度",
+    "baseWeight": 500,
+    "category": "neutral"
+  },
+  {
+    "id": "1775717700021",
+    "type": "prefix",
+    "name": "使用匕首類武器時增加 #% 攻擊速度",
+    "tags": "攻擊速度",
+    "baseWeight": 500,
+    "category": "neutral"
+  },
+  {
+    "id": "1775717700022",
+    "type": "prefix",
+    "name": "使用單手近戰武器時增加 #% 攻擊速度",
+    "tags": "攻擊速度",
+    "baseWeight": 500,
+    "category": "neutral"
+  },
+  {
+    "id": "1775717700023",
+    "type": "prefix",
+    "name": "使用雙手近戰武器時增加 #% 攻擊速度",
+    "tags": "攻擊速度",
+    "baseWeight": 500,
+    "category": "neutral"
+  },
+  {
+    "id": "1775717700024",
+    "type": "prefix",
+    "name": "雙持武器時增加 #% 攻擊速度",
+    "tags": "攻擊速度",
+    "baseWeight": 500,
+    "category": "neutral"
+  },
+  {
+    "id": "1775717700025",
+    "type": "prefix",
+    "name": "持盾時增加 #% 攻擊速度",
+    "tags": "攻擊速度",
+    "baseWeight": 500,
+    "category": "neutral"
+  },
+  {
+    "id": "1775717700026",
+    "type": "prefix",
+    "name": "增加 #% 陷阱投擲速度",
+    "tags": "速度",
+    "baseWeight": 250,
+    "category": "neutral"
+  },
+  {
+    "id": "1775717700027",
+    "type": "prefix",
+    "name": "增加 #% 地雷投擲速度",
+    "tags": "速度",
+    "baseWeight": 250,
+    "category": "neutral"
+  },
+  {
+    "id": "1775717700028",
+    "type": "prefix",
+    "name": "增加 #% 最大生命",
+    "tags": "生命",
+    "baseWeight": 350,
+    "category": "neutral"
+  },
+  {
+    "id": "1775717700029",
+    "type": "prefix",
+    "name": "增加 #% 最大魔力",
+    "tags": "魔力",
+    "baseWeight": 500,
+    "category": "neutral"
+  },
+  {
+    "id": "1775717700030",
+    "type": "prefix",
+    "name": "增加 #% 魔力回復率",
+    "tags": "魔力",
+    "baseWeight": 250,
+    "category": "neutral"
+  },
+  {
+    "id": "1775717700031",
+    "type": "prefix",
+    "name": "增加 #% 閃避值",
+    "tags": "防禦、閃避",
+    "baseWeight": 500,
+    "category": "neutral"
+  },
+  {
+    "id": "1775717700032",
+    "type": "prefix",
+    "name": "使用單手近戰武器時增加 #% 暴擊率",
+    "tags": "攻擊、暴擊",
+    "baseWeight": 250,
+    "category": "neutral"
+  },
+  {
+    "id": "1775717700033",
+    "type": "prefix",
+    "name": "使用雙手近戰武器時增加 #% 暴擊率",
+    "tags": "攻擊、暴擊",
+    "baseWeight": 250,
+    "category": "neutral"
+  },
+  {
+    "id": "1775717700034",
+    "type": "prefix",
+    "name": "雙持時增加 #% 攻擊暴擊率",
+    "tags": "攻擊、暴擊",
+    "baseWeight": 250,
+    "category": "neutral"
+  },
+  {
+    "id": "1775717700035",
+    "type": "prefix",
+    "name": "增加 #% 火焰技能暴擊率",
+    "tags": "元素、火焰、暴擊",
+    "baseWeight": 200,
+    "category": "neutral"
+  },
+  {
+    "id": "1775717700036",
+    "type": "prefix",
+    "name": "增加 #% 冰冷技能暴擊率",
+    "tags": "元素、冰冷、暴擊",
+    "baseWeight": 250,
+    "category": "neutral"
+  },
+  {
+    "id": "1775717700037",
+    "type": "prefix",
+    "name": "增加 #% 閃電技能暴擊率",
+    "tags": "元素、閃電、暴擊",
+    "baseWeight": 200,
+    "category": "neutral"
+  },
+  {
+    "id": "1775717700038",
+    "type": "prefix",
+    "name": "持單手近戰武器時 #% 暴擊加成",
+    "tags": "傷害、攻擊、暴擊",
+    "baseWeight": 250,
+    "category": "neutral"
+  },
+  {
+    "id": "1775717700039",
+    "type": "prefix",
+    "name": "使用雙手近戰武器時 #% 暴擊加成",
+    "tags": "傷害、攻擊、暴擊",
+    "baseWeight": 250,
+    "category": "neutral"
+  },
+  {
+    "id": "1775717700040",
+    "type": "prefix",
+    "name": "雙持時 #% 暴擊加成",
+    "tags": "傷害、攻擊、暴擊",
+    "baseWeight": 250,
+    "category": "neutral"
+  },
+  {
+    "id": "1775717700041",
+    "type": "prefix",
+    "name": "+#% 火焰技能暴擊加成",
+    "tags": "傷害、元素、火焰、暴擊",
+    "baseWeight": 200,
+    "category": "neutral"
+  },
+  {
+    "id": "1775717700042",
+    "type": "prefix",
+    "name": "+#% 冰冷技能暴擊加成",
+    "tags": "傷害、元素、冰冷、暴擊",
+    "baseWeight": 250,
+    "category": "neutral"
+  },
+  {
+    "id": "1775717700043",
+    "type": "prefix",
+    "name": "+#% 閃電技能暴擊加成",
+    "tags": "傷害、元素、閃電、暴擊",
+    "baseWeight": 200,
+    "category": "neutral"
+  },
+  {
+    "id": "1775717700044",
+    "type": "prefix",
+    "name": "傷害型異常狀態造成傷害加速 #%",
+    "tags": "異常狀態",
+    "baseWeight": 250,
+    "category": "neutral"
+  },
+  {
+    "id": "1775717700045",
+    "type": "prefix",
+    "name": "雙持時 #% 攻擊傷害格擋率",
+    "tags": "格擋",
+    "baseWeight": 350,
+    "category": "neutral"
+  },
+  {
+    "id": "1775717700046",
+    "type": "prefix",
+    "name": "持盾時 #% 攻擊傷害格擋率",
+    "tags": "格擋",
+    "baseWeight": 350,
+    "category": "neutral"
+  },
+  {
+    "id": "1775717700047",
+    "type": "prefix",
+    "name": "雙持時 #% 法術傷害格擋率",
+    "tags": "格擋",
+    "baseWeight": 350,
+    "category": "neutral"
+  },
+  {
+    "id": "1775717700048",
+    "type": "prefix",
+    "name": "持盾時 #% 法術傷害格擋率",
+    "tags": "格擋",
+    "baseWeight": 350,
+    "category": "neutral"
+  },
+  {
+    "id": "1775717700049",
+    "type": "prefix",
+    "name": "增加 #% 技能的魔力保留效用",
+    "tags": "魔力",
+    "baseWeight": 250,
+    "category": "neutral"
+  },
+  {
+    "id": "1775717700050",
+    "type": "prefix",
+    "name": "增加 #% 藥劑效果持續時間",
+    "tags": "",
+    "baseWeight": 250,
+    "category": "neutral"
+  },
+  {
+    "id": "1775717700051",
+    "type": "prefix",
+    "name": "增加 #% 圖騰傷害",
+    "tags": "傷害",
+    "baseWeight": 250,
+    "category": "neutral"
+  },
+  {
+    "id": "1775717700052",
+    "type": "prefix",
+    "name": "增加 #% 圖騰生命",
+    "tags": "生命",
+    "baseWeight": 250,
+    "category": "neutral"
+  },
+  {
+    "id": "1775717700053",
+    "type": "suffix",
+    "name": "增加 #% 近戰傷害",
+    "tags": "傷害、攻擊",
+    "baseWeight": 500,
+    "category": "neutral"
+  },
+  {
+    "id": "1775717700054",
+    "type": "suffix",
+    "name": "增加 #% 投射物傷害",
+    "tags": "傷害",
+    "baseWeight": 500,
+    "category": "neutral"
+  },
+  {
+    "id": "1775717700055",
+    "type": "suffix",
+    "name": "增加 #% 傷害",
+    "tags": "傷害",
+    "baseWeight": 350,
+    "category": "neutral"
+  },
+  {
+    "id": "1775717700056",
+    "type": "suffix",
+    "name": "增加 #% 持續傷害",
+    "tags": "傷害",
+    "baseWeight": 500,
+    "category": "neutral"
+  },
+  {
+    "id": "1775717700057",
+    "type": "suffix",
+    "name": "增加 #% 範圍傷害",
+    "tags": "傷害",
+    "baseWeight": 500,
+    "category": "neutral"
+  },
+  {
+    "id": "1775717700058",
+    "type": "suffix",
+    "name": "增加 #% 攻擊速度",
+    "tags": "攻擊速度",
+    "baseWeight": 500,
+    "category": "neutral"
+  },
+  {
+    "id": "1775717700059",
+    "type": "suffix",
+    "name": "增加 #% 投射物速度",
+    "tags": "速度",
+    "baseWeight": 500,
+    "category": "neutral"
+  },
+  {
+    "id": "1775717700060",
+    "type": "suffix",
+    "name": "增加 #% 攻擊與施放速度",
+    "tags": "攻擊、法術、速度",
+    "baseWeight": 350,
+    "category": "neutral"
+  },
+  {
+    "id": "1775717700061",
+    "type": "suffix",
+    "name": "+ # 力量",
+    "tags": "能力",
+    "baseWeight": 300,
+    "category": "neutral"
+  },
+  {
+    "id": "1775717700062",
+    "type": "suffix",
+    "name": "+ # 敏捷",
+    "tags": "能力",
+    "baseWeight": 500,
+    "category": "neutral"
+  },
+  {
+    "id": "1775717700063",
+    "type": "suffix",
+    "name": "+ # 智慧",
+    "tags": "能力",
+    "baseWeight": 300,
+    "category": "neutral"
+  },
+  {
+    "id": "1775717700064",
+    "type": "suffix",
+    "name": "+ # 力量和敏捷",
+    "tags": "能力",
+    "baseWeight": 450,
+    "category": "neutral"
+  },
+  {
+    "id": "1775717700065",
+    "type": "suffix",
+    "name": "+ # 力量和智慧",
+    "tags": "能力",
+    "baseWeight": 250,
+    "category": "neutral"
+  },
+  {
+    "id": "1775717700066",
+    "type": "suffix",
+    "name": "+ # 敏捷和智慧",
+    "tags": "能力",
+    "baseWeight": 450,
+    "category": "neutral"
+  },
+  {
+    "id": "1775717700067",
+    "type": "suffix",
+    "name": "+ # 全能力",
+    "tags": "能力",
+    "baseWeight": 300,
+    "category": "neutral"
+  },
+  {
+    "id": "1775717700068",
+    "type": "suffix",
+    "name": "(0.2—0.4)% 物理攻擊傷害偷取魔力",
+    "tags": "魔力、物理、攻擊",
+    "baseWeight": 500,
+    "category": "neutral"
+  },
+  {
+    "id": "1775717700069",
+    "type": "suffix",
+    "name": "每用攻擊擊中一個敵人，獲得 # 魔力",
+    "tags": "魔力、攻擊",
+    "baseWeight": 500,
+    "category": "neutral"
+  },
+  {
+    "id": "1775717700070",
+    "type": "suffix",
+    "name": "承受 #% 傷害補償為生命",
+    "tags": "生命",
+    "baseWeight": 250,
+    "category": "neutral"
+  },
+  {
+    "id": "1775717700071",
+    "type": "suffix",
+    "name": "增加 #% 全域命中值",
+    "tags": "攻擊",
+    "baseWeight": 500,
+    "category": "neutral"
+  },
+  {
+    "id": "1775717700072",
+    "type": "suffix",
+    "name": "增加 #% 全域命中值增加 #% 全域暴擊率",
+    "tags": "攻擊、暴擊",
+    "baseWeight": 150,
+    "category": "neutral"
+  },
+  {
+    "id": "1775717700073",
+    "type": "suffix",
+    "name": "增加 #% 全域暴擊率",
+    "tags": "暴擊",
+    "baseWeight": 250,
+    "category": "neutral"
+  },
+  {
+    "id": "1775717700074",
+    "type": "suffix",
+    "name": "+#% 全域暴擊加成",
+    "tags": "傷害、暴擊",
+    "baseWeight": 250,
+    "category": "neutral"
+  },
+  {
+    "id": "1775717700075",
+    "type": "suffix",
+    "name": "增加 #% 近戰暴擊率",
+    "tags": "攻擊、暴擊",
+    "baseWeight": 250,
+    "category": "neutral"
+  },
+  {
+    "id": "1775717700076",
+    "type": "suffix",
+    "name": "增加 #% 全元素技能暴擊率",
+    "tags": "元素、暴擊",
+    "baseWeight": 100,
+    "category": "neutral"
+  },
+  {
+    "id": "1775717700077",
+    "type": "suffix",
+    "name": "+#% 近戰暴擊加成",
+    "tags": "傷害、攻擊、暴擊",
+    "baseWeight": 250,
+    "category": "neutral"
+  },
+  {
+    "id": "1775717700078",
+    "type": "suffix",
+    "name": "+#% 元素技能暴擊加成",
+    "tags": "傷害、元素、暴擊",
+    "baseWeight": 100,
+    "category": "neutral"
+  },
+  {
+    "id": "1775717700079",
+    "type": "suffix",
+    "name": "+#% 火焰抗性",
+    "tags": "元素、火焰、抗性",
+    "baseWeight": 300,
+    "category": "neutral"
+  },
+  {
+    "id": "1775717700080",
+    "type": "suffix",
+    "name": "+#% 冰冷抗性",
+    "tags": "元素、冰冷、抗性",
+    "baseWeight": 500,
+    "category": "neutral"
+  },
+  {
+    "id": "1775717700081",
+    "type": "suffix",
+    "name": "+#% 閃電抗性",
+    "tags": "元素、閃電、抗性",
+    "baseWeight": 300,
+    "category": "neutral"
+  },
+  {
+    "id": "1775717700082",
+    "type": "suffix",
+    "name": "+#% 火焰與冰冷抗性",
+    "tags": "元素、火焰、冰冷、抗性",
+    "baseWeight": 450,
+    "category": "neutral"
+  },
+  {
+    "id": "1775717700083",
+    "type": "suffix",
+    "name": "+#% 火焰與閃電抗性",
+    "tags": "元素、火焰、閃電、抗性",
+    "baseWeight": 250,
+    "category": "neutral"
+  },
+  {
+    "id": "1775717700084",
+    "type": "suffix",
+    "name": "+#% 冰冷與閃電抗性",
+    "tags": "元素、冰冷、閃電、抗性",
+    "baseWeight": 450,
+    "category": "neutral"
+  },
+  {
+    "id": "1775717700085",
+    "type": "suffix",
+    "name": "+#% 全部元素抗性",
+    "tags": "元素、抗性",
+    "baseWeight": 300,
+    "category": "neutral"
+  },
+  {
+    "id": "1775717700086",
+    "type": "suffix",
+    "name": "+#% 混沌抗性",
+    "tags": "混沌、抗性",
+    "baseWeight": 100,
+    "category": "neutral"
+  },
+  {
+    "id": "1775717700087",
+    "type": "suffix",
+    "name": "+#% 最大火焰抗性",
+    "tags": "元素、火焰、抗性",
+    "baseWeight": 60,
+    "category": "neutral"
+  },
+  {
+    "id": "1775717700088",
+    "type": "suffix",
+    "name": "+#% 最大冰冷抗性",
+    "tags": "元素、冰冷、抗性",
+    "baseWeight": 100,
+    "category": "neutral"
+  },
+  {
+    "id": "1775717700089",
+    "type": "suffix",
+    "name": "+#% 最大閃電抗性",
+    "tags": "元素、閃電、抗性",
+    "baseWeight": 60,
+    "category": "neutral"
+  },
+  {
+    "id": "1775717700090",
+    "type": "suffix",
+    "name": "增加 #% 敵人暈眩時間",
+    "tags": "",
+    "baseWeight": 200,
+    "category": "neutral"
+  },
+  {
+    "id": "1775717700091",
+    "type": "suffix",
+    "name": "增加 #% 暈眩恢復和格擋恢復",
+    "tags": "",
+    "baseWeight": 200,
+    "category": "neutral"
+  },
+  {
+    "id": "1775717700092",
+    "type": "suffix",
+    "name": "擊中時有 #% 機率擊退敵人",
+    "tags": "擊退",
+    "baseWeight": 250,
+    "category": "neutral"
+  },
+  {
+    "id": "1775717700093",
+    "type": "suffix",
+    "name": "減少在你身上的詛咒效果 #%",
+    "tags": "詛咒",
+    "baseWeight": 250,
+    "category": "neutral"
+  },
+  {
+    "id": "1775717700094",
+    "type": "suffix",
+    "name": "減少 #% 你被點燃的持續時間",
+    "tags": "元素、火焰、異常狀態",
+    "baseWeight": 250,
+    "category": "neutral"
+  },
+  {
+    "id": "1775717700095",
+    "type": "suffix",
+    "name": "減少 #% 你所承受的冰緩效果",
+    "tags": "元素、冰冷、異常狀態",
+    "baseWeight": 250,
+    "category": "neutral"
+  },
+  {
+    "id": "1775717700096",
+    "type": "suffix",
+    "name": "減少 #% 你身上的感電效果",
+    "tags": "元素、閃電、異常狀態",
+    "baseWeight": 250,
+    "category": "neutral"
+  },
+  {
+    "id": "1775717700097",
+    "type": "suffix",
+    "name": "減少 #% 你身上中毒的持續時間",
+    "tags": "混沌、異常狀態",
+    "baseWeight": 250,
+    "category": "neutral"
+  },
+  {
+    "id": "1775717700098",
+    "type": "suffix",
+    "name": "減少 #% 你身上流血的持續時間",
+    "tags": "物理、異常狀態",
+    "baseWeight": 250,
+    "category": "neutral"
+  },
+  {
+    "id": "1775717700099",
+    "type": "suffix",
+    "name": "增加 #% 敵人冰凍持續時間#% 機率使用冰冷傷害擊中敵人造成冰凍效果",
+    "tags": "元素、冰冷、異常狀態",
+    "baseWeight": 350,
+    "category": "neutral"
+  },
+  {
+    "id": "1775717700100",
+    "type": "suffix",
+    "name": "增加 #% 敵人感電持續時間#% 機率使用閃電傷害擊中敵人造成感電效果",
+    "tags": "元素、閃電、異常狀態",
+    "baseWeight": 250,
+    "category": "neutral"
+  },
+  {
+    "id": "1775717700101",
+    "type": "suffix",
+    "name": "增加 #% 敵人點燃持續時間#% 機率使用火焰傷害擊中敵人造成點燃效果",
+    "tags": "元素、火焰、異常狀態",
+    "baseWeight": 250,
+    "category": "neutral"
+  },
+  {
+    "id": "1775717700102",
+    "type": "suffix",
+    "name": "增加 #% 中毒持續時間擊中時有 #% 機率使敵人中毒",
+    "tags": "混沌、異常狀態",
+    "baseWeight": 350,
+    "category": "neutral"
+  },
+  {
+    "id": "1775717700103",
+    "type": "suffix",
+    "name": "攻擊有 #% 機率造成流血增加 #% 流血持續時間",
+    "tags": "物理、攻擊、異常狀態",
+    "baseWeight": 250,
+    "category": "neutral"
+  },
+  {
+    "id": "1775717700104",
+    "type": "suffix",
+    "name": "攻擊擊中時有 #% 機率穿刺敵人",
+    "tags": "物理、攻擊",
+    "baseWeight": 250,
+    "category": "neutral"
+  },
+  {
+    "id": "1775717700105",
+    "type": "suffix",
+    "name": "增加 #% 中毒傷害",
+    "tags": "傷害、混沌、異常狀態",
+    "baseWeight": 500,
+    "category": "neutral"
+  },
+  {
+    "id": "1775717700106",
+    "type": "suffix",
+    "name": "增加 #% 流血傷害",
+    "tags": "傷害、物理、攻擊、異常狀態",
+    "baseWeight": 250,
+    "category": "neutral"
+  },
+  {
+    "id": "1775717700107",
+    "type": "suffix",
+    "name": "增加 #% 燃燒傷害",
+    "tags": "傷害、元素、火焰、異常狀態",
+    "baseWeight": 500,
+    "category": "neutral"
+  },
+  {
+    "id": "1775717700108",
+    "type": "suffix",
+    "name": "圖騰 +#% 全部元素抗性",
+    "tags": "元素、抗性",
+    "baseWeight": 250,
+    "category": "neutral"
+  },
+  {
+    "id": "1775717700109",
+    "type": "suffix",
+    "name": "#% 混沌持續傷害加成",
+    "tags": "傷害、混沌",
+    "baseWeight": 300,
+    "category": "neutral"
+  },
+  {
+    "id": "1775717700110",
+    "type": "suffix",
+    "name": "#% 冰冷持續傷害加成",
+    "tags": "傷害、元素、冰冷",
+    "baseWeight": 300,
+    "category": "neutral"
+  },
+  {
+    "id": "1775717700111",
+    "type": "suffix",
+    "name": "#% 火焰持續傷害加成",
+    "tags": "傷害、元素、火焰",
+    "baseWeight": 300,
+    "category": "neutral"
+  },
+  {
+    "id": "1775717700112",
+    "type": "suffix",
+    "name": "#% 物理持續傷害加成",
+    "tags": "傷害、物理",
+    "baseWeight": 300,
+    "category": "neutral"
+  },
+  {
+    "id": "1775717700113",
+    "type": "suffix",
+    "name": "+#% 持續傷害加成",
+    "tags": "傷害",
+    "baseWeight": 300,
+    "category": "neutral"
+  }
+][
+  {
+    "id": "1775717700001",
+    "type": "prefix",
+    "name": "增加 #% 斧的傷害",
+    "tags": "傷害、攻擊",
+    "baseWeight": 500,
+    "category": "neutral"
+  },
+  {
+    "id": "1775717700002",
+    "type": "prefix",
+    "name": "增加 #% 劍的傷害",
+    "tags": "傷害、攻擊",
+    "baseWeight": 500,
+    "category": "neutral"
+  },
+  {
+    "id": "1775717700003",
+    "type": "prefix",
+    "name": "持弓類武器時增加 #% 傷害",
+    "tags": "傷害、攻擊",
+    "baseWeight": 500,
+    "category": "neutral"
+  },
+  {
+    "id": "1775717700004",
+    "type": "prefix",
+    "name": "增加 #% 爪的傷害",
+    "tags": "傷害、攻擊",
+    "baseWeight": 500,
+    "category": "neutral"
+  },
+  {
+    "id": "1775717700005",
+    "type": "prefix",
+    "name": "增加 #% 匕首的傷害",
+    "tags": "傷害、攻擊",
+    "baseWeight": 500,
+    "category": "neutral"
+  },
+  {
+    "id": "1775717700006",
+    "type": "prefix",
+    "name": "持單手武器時增加 #% 傷害",
+    "tags": "傷害、攻擊",
+    "baseWeight": 500,
+    "category": "neutral"
+  },
+  {
+    "id": "1775717700007",
+    "type": "prefix",
+    "name": "持雙手武器時增加 #% 傷害",
+    "tags": "傷害、攻擊",
+    "baseWeight": 500,
+    "category": "neutral"
+  },
+  {
+    "id": "1775717700008",
+    "type": "prefix",
+    "name": "雙持時增加 #% 攻擊傷害",
+    "tags": "傷害、攻擊",
+    "baseWeight": 500,
+    "category": "neutral"
+  },
+  {
+    "id": "1775717700009",
+    "type": "prefix",
+    "name": "持盾時增加 #% 攻擊傷害",
+    "tags": "傷害、攻擊",
+    "baseWeight": 500,
+    "category": "neutral"
+  },
+  {
+    "id": "1775717700010",
+    "type": "prefix",
+    "name": "增加 #% 陷阱傷害",
+    "tags": "傷害",
+    "baseWeight": 500,
+    "category": "neutral"
+  },
+  {
+    "id": "1775717700011",
+    "type": "prefix",
+    "name": "增加 #% 地雷傷害",
+    "tags": "傷害",
+    "baseWeight": 500,
+    "category": "neutral"
+  },
+  {
+    "id": "1775717700012",
+    "type": "prefix",
+    "name": "增加 #% 火焰傷害",
+    "tags": "傷害、元素、火焰",
+    "baseWeight": 400,
+    "category": "neutral"
+  },
+  {
+    "id": "1775717700013",
+    "type": "prefix",
+    "name": "增加 #% 冰冷傷害",
+    "tags": "傷害、元素、冰冷",
+    "baseWeight": 500,
+    "category": "neutral"
+  },
+  {
+    "id": "1775717700014",
+    "type": "prefix",
+    "name": "增加 #% 閃電傷害",
+    "tags": "傷害、元素、閃電",
+    "baseWeight": 400,
+    "category": "neutral"
+  },
+  {
+    "id": "1775717700015",
+    "type": "prefix",
+    "name": "增加 #% 全域物理傷害",
+    "tags": "傷害、物理",
+    "baseWeight": 500,
+    "category": "neutral"
+  },
+  {
+    "id": "1775717700016",
+    "type": "prefix",
+    "name": "增加 #% 混沌傷害",
+    "tags": "傷害、混沌",
+    "baseWeight": 200,
+    "category": "neutral"
+  },
+  {
+    "id": "1775717700017",
+    "type": "prefix",
+    "name": "使用斧類武器時增加 #% 攻擊速度",
+    "tags": "攻擊速度",
+    "baseWeight": 500,
+    "category": "neutral"
+  },
+  {
+    "id": "1775717700018",
+    "type": "prefix",
+    "name": "使用劍類武器時增加 #% 攻擊速度",
+    "tags": "攻擊速度",
+    "baseWeight": 500,
+    "category": "neutral"
+  },
+  {
+    "id": "1775717700019",
+    "type": "prefix",
+    "name": "使用弓類武器時增加 #% 攻擊速度",
+    "tags": "攻擊速度",
+    "baseWeight": 500,
+    "category": "neutral"
+  },
+  {
+    "id": "1775717700020",
+    "type": "prefix",
+    "name": "使用爪類武器時增加 #% 攻擊速度",
+    "tags": "攻擊速度",
+    "baseWeight": 500,
+    "category": "neutral"
+  },
+  {
+    "id": "1775717700021",
+    "type": "prefix",
+    "name": "使用匕首類武器時增加 #% 攻擊速度",
+    "tags": "攻擊速度",
+    "baseWeight": 500,
+    "category": "neutral"
+  },
+  {
+    "id": "1775717700022",
+    "type": "prefix",
+    "name": "使用單手近戰武器時增加 #% 攻擊速度",
+    "tags": "攻擊速度",
+    "baseWeight": 500,
+    "category": "neutral"
+  },
+  {
+    "id": "1775717700023",
+    "type": "prefix",
+    "name": "使用雙手近戰武器時增加 #% 攻擊速度",
+    "tags": "攻擊速度",
+    "baseWeight": 500,
+    "category": "neutral"
+  },
+  {
+    "id": "1775717700024",
+    "type": "prefix",
+    "name": "雙持武器時增加 #% 攻擊速度",
+    "tags": "攻擊速度",
+    "baseWeight": 500,
+    "category": "neutral"
+  },
+  {
+    "id": "1775717700025",
+    "type": "prefix",
+    "name": "持盾時增加 #% 攻擊速度",
+    "tags": "攻擊速度",
+    "baseWeight": 500,
+    "category": "neutral"
+  },
+  {
+    "id": "1775717700026",
+    "type": "prefix",
+    "name": "增加 #% 陷阱投擲速度",
+    "tags": "速度",
+    "baseWeight": 250,
+    "category": "neutral"
+  },
+  {
+    "id": "1775717700027",
+    "type": "prefix",
+    "name": "增加 #% 地雷投擲速度",
+    "tags": "速度",
+    "baseWeight": 250,
+    "category": "neutral"
+  },
+  {
+    "id": "1775717700028",
+    "type": "prefix",
+    "name": "增加 #% 最大生命",
+    "tags": "生命",
+    "baseWeight": 350,
+    "category": "neutral"
+  },
+  {
+    "id": "1775717700029",
+    "type": "prefix",
+    "name": "增加 #% 最大魔力",
+    "tags": "魔力",
+    "baseWeight": 500,
+    "category": "neutral"
+  },
+  {
+    "id": "1775717700030",
+    "type": "prefix",
+    "name": "增加 #% 魔力回復率",
+    "tags": "魔力",
+    "baseWeight": 250,
+    "category": "neutral"
+  },
+  {
+    "id": "1775717700031",
+    "type": "prefix",
+    "name": "增加 #% 閃避值",
+    "tags": "防禦、閃避",
+    "baseWeight": 500,
+    "category": "neutral"
+  },
+  {
+    "id": "1775717700032",
+    "type": "prefix",
+    "name": "使用單手近戰武器時增加 #% 暴擊率",
+    "tags": "攻擊、暴擊",
+    "baseWeight": 250,
+    "category": "neutral"
+  },
+  {
+    "id": "1775717700033",
+    "type": "prefix",
+    "name": "使用雙手近戰武器時增加 #% 暴擊率",
+    "tags": "攻擊、暴擊",
+    "baseWeight": 250,
+    "category": "neutral"
+  },
+  {
+    "id": "1775717700034",
+    "type": "prefix",
+    "name": "雙持時增加 #% 攻擊暴擊率",
+    "tags": "攻擊、暴擊",
+    "baseWeight": 250,
+    "category": "neutral"
+  },
+  {
+    "id": "1775717700035",
+    "type": "prefix",
+    "name": "增加 #% 火焰技能暴擊率",
+    "tags": "元素、火焰、暴擊",
+    "baseWeight": 200,
+    "category": "neutral"
+  },
+  {
+    "id": "1775717700036",
+    "type": "prefix",
+    "name": "增加 #% 冰冷技能暴擊率",
+    "tags": "元素、冰冷、暴擊",
+    "baseWeight": 250,
+    "category": "neutral"
+  },
+  {
+    "id": "1775717700037",
+    "type": "prefix",
+    "name": "增加 #% 閃電技能暴擊率",
+    "tags": "元素、閃電、暴擊",
+    "baseWeight": 200,
+    "category": "neutral"
+  },
+  {
+    "id": "1775717700038",
+    "type": "prefix",
+    "name": "持單手近戰武器時 #% 暴擊加成",
+    "tags": "傷害、攻擊、暴擊",
+    "baseWeight": 250,
+    "category": "neutral"
+  },
+  {
+    "id": "1775717700039",
+    "type": "prefix",
+    "name": "使用雙手近戰武器時 #% 暴擊加成",
+    "tags": "傷害、攻擊、暴擊",
+    "baseWeight": 250,
+    "category": "neutral"
+  },
+  {
+    "id": "1775717700040",
+    "type": "prefix",
+    "name": "雙持時 #% 暴擊加成",
+    "tags": "傷害、攻擊、暴擊",
+    "baseWeight": 250,
+    "category": "neutral"
+  },
+  {
+    "id": "1775717700041",
+    "type": "prefix",
+    "name": "+#% 火焰技能暴擊加成",
+    "tags": "傷害、元素、火焰、暴擊",
+    "baseWeight": 200,
+    "category": "neutral"
+  },
+  {
+    "id": "1775717700042",
+    "type": "prefix",
+    "name": "+#% 冰冷技能暴擊加成",
+    "tags": "傷害、元素、冰冷、暴擊",
+    "baseWeight": 250,
+    "category": "neutral"
+  },
+  {
+    "id": "1775717700043",
+    "type": "prefix",
+    "name": "+#% 閃電技能暴擊加成",
+    "tags": "傷害、元素、閃電、暴擊",
+    "baseWeight": 200,
+    "category": "neutral"
+  },
+  {
+    "id": "1775717700044",
+    "type": "prefix",
+    "name": "傷害型異常狀態造成傷害加速 #%",
+    "tags": "異常狀態",
+    "baseWeight": 250,
+    "category": "neutral"
+  },
+  {
+    "id": "1775717700045",
+    "type": "prefix",
+    "name": "雙持時 #% 攻擊傷害格擋率",
+    "tags": "格擋",
+    "baseWeight": 350,
+    "category": "neutral"
+  },
+  {
+    "id": "1775717700046",
+    "type": "prefix",
+    "name": "持盾時 #% 攻擊傷害格擋率",
+    "tags": "格擋",
+    "baseWeight": 350,
+    "category": "neutral"
+  },
+  {
+    "id": "1775717700047",
+    "type": "prefix",
+    "name": "雙持時 #% 法術傷害格擋率",
+    "tags": "格擋",
+    "baseWeight": 350,
+    "category": "neutral"
+  },
+  {
+    "id": "1775717700048",
+    "type": "prefix",
+    "name": "持盾時 #% 法術傷害格擋率",
+    "tags": "格擋",
+    "baseWeight": 350,
+    "category": "neutral"
+  },
+  {
+    "id": "1775717700049",
+    "type": "prefix",
+    "name": "增加 #% 技能的魔力保留效用",
+    "tags": "魔力",
+    "baseWeight": 250,
+    "category": "neutral"
+  },
+  {
+    "id": "1775717700050",
+    "type": "prefix",
+    "name": "增加 #% 藥劑效果持續時間",
+    "tags": "",
+    "baseWeight": 250,
+    "category": "neutral"
+  },
+  {
+    "id": "1775717700051",
+    "type": "prefix",
+    "name": "增加 #% 圖騰傷害",
+    "tags": "傷害",
+    "baseWeight": 250,
+    "category": "neutral"
+  },
+  {
+    "id": "1775717700052",
+    "type": "prefix",
+    "name": "增加 #% 圖騰生命",
+    "tags": "生命",
+    "baseWeight": 250,
+    "category": "neutral"
+  },
+  {
+    "id": "1775717700053",
+    "type": "suffix",
+    "name": "增加 #% 近戰傷害",
+    "tags": "傷害、攻擊",
+    "baseWeight": 500,
+    "category": "neutral"
+  },
+  {
+    "id": "1775717700054",
+    "type": "suffix",
+    "name": "增加 #% 投射物傷害",
+    "tags": "傷害",
+    "baseWeight": 500,
+    "category": "neutral"
+  },
+  {
+    "id": "1775717700055",
+    "type": "suffix",
+    "name": "增加 #% 傷害",
+    "tags": "傷害",
+    "baseWeight": 350,
+    "category": "neutral"
+  },
+  {
+    "id": "1775717700056",
+    "type": "suffix",
+    "name": "增加 #% 持續傷害",
+    "tags": "傷害",
+    "baseWeight": 500,
+    "category": "neutral"
+  },
+  {
+    "id": "1775717700057",
+    "type": "suffix",
+    "name": "增加 #% 範圍傷害",
+    "tags": "傷害",
+    "baseWeight": 500,
+    "category": "neutral"
+  },
+  {
+    "id": "1775717700058",
+    "type": "suffix",
+    "name": "增加 #% 攻擊速度",
+    "tags": "攻擊速度",
+    "baseWeight": 500,
+    "category": "neutral"
+  },
+  {
+    "id": "1775717700059",
+    "type": "suffix",
+    "name": "增加 #% 投射物速度",
+    "tags": "速度",
+    "baseWeight": 500,
+    "category": "neutral"
+  },
+  {
+    "id": "1775717700060",
+    "type": "suffix",
+    "name": "增加 #% 攻擊與施放速度",
+    "tags": "攻擊、法術、速度",
+    "baseWeight": 350,
+    "category": "neutral"
+  },
+  {
+    "id": "1775717700061",
+    "type": "suffix",
+    "name": "+ # 力量",
+    "tags": "能力",
+    "baseWeight": 300,
+    "category": "neutral"
+  },
+  {
+    "id": "1775717700062",
+    "type": "suffix",
+    "name": "+ # 敏捷",
+    "tags": "能力",
+    "baseWeight": 500,
+    "category": "neutral"
+  },
+  {
+    "id": "1775717700063",
+    "type": "suffix",
+    "name": "+ # 智慧",
+    "tags": "能力",
+    "baseWeight": 300,
+    "category": "neutral"
+  },
+  {
+    "id": "1775717700064",
+    "type": "suffix",
+    "name": "+ # 力量和敏捷",
+    "tags": "能力",
+    "baseWeight": 450,
+    "category": "neutral"
+  },
+  {
+    "id": "1775717700065",
+    "type": "suffix",
+    "name": "+ # 力量和智慧",
+    "tags": "能力",
+    "baseWeight": 250,
+    "category": "neutral"
+  },
+  {
+    "id": "1775717700066",
+    "type": "suffix",
+    "name": "+ # 敏捷和智慧",
+    "tags": "能力",
+    "baseWeight": 450,
+    "category": "neutral"
+  },
+  {
+    "id": "1775717700067",
+    "type": "suffix",
+    "name": "+ # 全能力",
+    "tags": "能力",
+    "baseWeight": 300,
+    "category": "neutral"
+  },
+  {
+    "id": "1775717700068",
+    "type": "suffix",
+    "name": "(0.2—0.4)% 物理攻擊傷害偷取魔力",
+    "tags": "魔力、物理、攻擊",
+    "baseWeight": 500,
+    "category": "neutral"
+  },
+  {
+    "id": "1775717700069",
+    "type": "suffix",
+    "name": "每用攻擊擊中一個敵人，獲得 # 魔力",
+    "tags": "魔力、攻擊",
+    "baseWeight": 500,
+    "category": "neutral"
+  },
+  {
+    "id": "1775717700070",
+    "type": "suffix",
+    "name": "承受 #% 傷害補償為生命",
+    "tags": "生命",
+    "baseWeight": 250,
+    "category": "neutral"
+  },
+  {
+    "id": "1775717700071",
+    "type": "suffix",
+    "name": "增加 #% 全域命中值",
+    "tags": "攻擊",
+    "baseWeight": 500,
+    "category": "neutral"
+  },
+  {
+    "id": "1775717700072",
+    "type": "suffix",
+    "name": "增加 #% 全域命中值增加 #% 全域暴擊率",
+    "tags": "攻擊、暴擊",
+    "baseWeight": 150,
+    "category": "neutral"
+  },
+  {
+    "id": "1775717700073",
+    "type": "suffix",
+    "name": "增加 #% 全域暴擊率",
+    "tags": "暴擊",
+    "baseWeight": 250,
+    "category": "neutral"
+  },
+  {
+    "id": "1775717700074",
+    "type": "suffix",
+    "name": "+#% 全域暴擊加成",
+    "tags": "傷害、暴擊",
+    "baseWeight": 250,
+    "category": "neutral"
+  },
+  {
+    "id": "1775717700075",
+    "type": "suffix",
+    "name": "增加 #% 近戰暴擊率",
+    "tags": "攻擊、暴擊",
+    "baseWeight": 250,
+    "category": "neutral"
+  },
+  {
+    "id": "1775717700076",
+    "type": "suffix",
+    "name": "增加 #% 全元素技能暴擊率",
+    "tags": "元素、暴擊",
+    "baseWeight": 100,
+    "category": "neutral"
+  },
+  {
+    "id": "1775717700077",
+    "type": "suffix",
+    "name": "+#% 近戰暴擊加成",
+    "tags": "傷害、攻擊、暴擊",
+    "baseWeight": 250,
+    "category": "neutral"
+  },
+  {
+    "id": "1775717700078",
+    "type": "suffix",
+    "name": "+#% 元素技能暴擊加成",
+    "tags": "傷害、元素、暴擊",
+    "baseWeight": 100,
+    "category": "neutral"
+  },
+  {
+    "id": "1775717700079",
+    "type": "suffix",
+    "name": "+#% 火焰抗性",
+    "tags": "元素、火焰、抗性",
+    "baseWeight": 300,
+    "category": "neutral"
+  },
+  {
+    "id": "1775717700080",
+    "type": "suffix",
+    "name": "+#% 冰冷抗性",
+    "tags": "元素、冰冷、抗性",
+    "baseWeight": 500,
+    "category": "neutral"
+  },
+  {
+    "id": "1775717700081",
+    "type": "suffix",
+    "name": "+#% 閃電抗性",
+    "tags": "元素、閃電、抗性",
+    "baseWeight": 300,
+    "category": "neutral"
+  },
+  {
+    "id": "1775717700082",
+    "type": "suffix",
+    "name": "+#% 火焰與冰冷抗性",
+    "tags": "元素、火焰、冰冷、抗性",
+    "baseWeight": 450,
+    "category": "neutral"
+  },
+  {
+    "id": "1775717700083",
+    "type": "suffix",
+    "name": "+#% 火焰與閃電抗性",
+    "tags": "元素、火焰、閃電、抗性",
+    "baseWeight": 250,
+    "category": "neutral"
+  },
+  {
+    "id": "1775717700084",
+    "type": "suffix",
+    "name": "+#% 冰冷與閃電抗性",
+    "tags": "元素、冰冷、閃電、抗性",
+    "baseWeight": 450,
+    "category": "neutral"
+  },
+  {
+    "id": "1775717700085",
+    "type": "suffix",
+    "name": "+#% 全部元素抗性",
+    "tags": "元素、抗性",
+    "baseWeight": 300,
+    "category": "neutral"
+  },
+  {
+    "id": "1775717700086",
+    "type": "suffix",
+    "name": "+#% 混沌抗性",
+    "tags": "混沌、抗性",
+    "baseWeight": 100,
+    "category": "neutral"
+  },
+  {
+    "id": "1775717700087",
+    "type": "suffix",
+    "name": "+#% 最大火焰抗性",
+    "tags": "元素、火焰、抗性",
+    "baseWeight": 60,
+    "category": "neutral"
+  },
+  {
+    "id": "1775717700088",
+    "type": "suffix",
+    "name": "+#% 最大冰冷抗性",
+    "tags": "元素、冰冷、抗性",
+    "baseWeight": 100,
+    "category": "neutral"
+  },
+  {
+    "id": "1775717700089",
+    "type": "suffix",
+    "name": "+#% 最大閃電抗性",
+    "tags": "元素、閃電、抗性",
+    "baseWeight": 60,
+    "category": "neutral"
+  },
+  {
+    "id": "1775717700090",
+    "type": "suffix",
+    "name": "增加 #% 敵人暈眩時間",
+    "tags": "",
+    "baseWeight": 200,
+    "category": "neutral"
+  },
+  {
+    "id": "1775717700091",
+    "type": "suffix",
+    "name": "增加 #% 暈眩恢復和格擋恢復",
+    "tags": "",
+    "baseWeight": 200,
+    "category": "neutral"
+  },
+  {
+    "id": "1775717700092",
+    "type": "suffix",
+    "name": "擊中時有 #% 機率擊退敵人",
+    "tags": "擊退",
+    "baseWeight": 250,
+    "category": "neutral"
+  },
+  {
+    "id": "1775717700093",
+    "type": "suffix",
+    "name": "減少在你身上的詛咒效果 #%",
+    "tags": "詛咒",
+    "baseWeight": 250,
+    "category": "neutral"
+  },
+  {
+    "id": "1775717700094",
+    "type": "suffix",
+    "name": "減少 #% 你被點燃的持續時間",
+    "tags": "元素、火焰、異常狀態",
+    "baseWeight": 250,
+    "category": "neutral"
+  },
+  {
+    "id": "1775717700095",
+    "type": "suffix",
+    "name": "減少 #% 你所承受的冰緩效果",
+    "tags": "元素、冰冷、異常狀態",
+    "baseWeight": 250,
+    "category": "neutral"
+  },
+  {
+    "id": "1775717700096",
+    "type": "suffix",
+    "name": "減少 #% 你身上的感電效果",
+    "tags": "元素、閃電、異常狀態",
+    "baseWeight": 250,
+    "category": "neutral"
+  },
+  {
+    "id": "1775717700097",
+    "type": "suffix",
+    "name": "減少 #% 你身上中毒的持續時間",
+    "tags": "混沌、異常狀態",
+    "baseWeight": 250,
+    "category": "neutral"
+  },
+  {
+    "id": "1775717700098",
+    "type": "suffix",
+    "name": "減少 #% 你身上流血的持續時間",
+    "tags": "物理、異常狀態",
+    "baseWeight": 250,
+    "category": "neutral"
+  },
+  {
+    "id": "1775717700099",
+    "type": "suffix",
+    "name": "增加 #% 敵人冰凍持續時間#% 機率使用冰冷傷害擊中敵人造成冰凍效果",
+    "tags": "元素、冰冷、異常狀態",
+    "baseWeight": 350,
+    "category": "neutral"
+  },
+  {
+    "id": "1775717700100",
+    "type": "suffix",
+    "name": "增加 #% 敵人感電持續時間#% 機率使用閃電傷害擊中敵人造成感電效果",
+    "tags": "元素、閃電、異常狀態",
+    "baseWeight": 250,
+    "category": "neutral"
+  },
+  {
+    "id": "1775717700101",
+    "type": "suffix",
+    "name": "增加 #% 敵人點燃持續時間#% 機率使用火焰傷害擊中敵人造成點燃效果",
+    "tags": "元素、火焰、異常狀態",
+    "baseWeight": 250,
+    "category": "neutral"
+  },
+  {
+    "id": "1775717700102",
+    "type": "suffix",
+    "name": "增加 #% 中毒持續時間擊中時有 #% 機率使敵人中毒",
+    "tags": "混沌、異常狀態",
+    "baseWeight": 350,
+    "category": "neutral"
+  },
+  {
+    "id": "1775717700103",
+    "type": "suffix",
+    "name": "攻擊有 #% 機率造成流血增加 #% 流血持續時間",
+    "tags": "物理、攻擊、異常狀態",
+    "baseWeight": 250,
+    "category": "neutral"
+  },
+  {
+    "id": "1775717700104",
+    "type": "suffix",
+    "name": "攻擊擊中時有 #% 機率穿刺敵人",
+    "tags": "物理、攻擊",
+    "baseWeight": 250,
+    "category": "neutral"
+  },
+  {
+    "id": "1775717700105",
+    "type": "suffix",
+    "name": "增加 #% 中毒傷害",
+    "tags": "傷害、混沌、異常狀態",
+    "baseWeight": 500,
+    "category": "neutral"
+  },
+  {
+    "id": "1775717700106",
+    "type": "suffix",
+    "name": "增加 #% 流血傷害",
+    "tags": "傷害、物理、攻擊、異常狀態",
+    "baseWeight": 250,
+    "category": "neutral"
+  },
+  {
+    "id": "1775717700107",
+    "type": "suffix",
+    "name": "增加 #% 燃燒傷害",
+    "tags": "傷害、元素、火焰、異常狀態",
+    "baseWeight": 500,
+    "category": "neutral"
+  },
+  {
+    "id": "1775717700108",
+    "type": "suffix",
+    "name": "圖騰 +#% 全部元素抗性",
+    "tags": "元素、抗性",
+    "baseWeight": 250,
+    "category": "neutral"
+  },
+  {
+    "id": "1775717700109",
+    "type": "suffix",
+    "name": "#% 混沌持續傷害加成",
+    "tags": "傷害、混沌",
+    "baseWeight": 300,
+    "category": "neutral"
+  },
+  {
+    "id": "1775717700110",
+    "type": "suffix",
+    "name": "#% 冰冷持續傷害加成",
+    "tags": "傷害、元素、冰冷",
+    "baseWeight": 300,
+    "category": "neutral"
+  },
+  {
+    "id": "1775717700111",
+    "type": "suffix",
+    "name": "#% 火焰持續傷害加成",
+    "tags": "傷害、元素、火焰",
+    "baseWeight": 300,
+    "category": "neutral"
+  },
+  {
+    "id": "1775717700112",
+    "type": "suffix",
+    "name": "#% 物理持續傷害加成",
+    "tags": "傷害、物理",
+    "baseWeight": 300,
+    "category": "neutral"
+  },
+  {
+    "id": "1775717700113",
+    "type": "suffix",
+    "name": "+#% 持續傷害加成",
+    "tags": "傷害",
+    "baseWeight": 300,
+    "category": "neutral"
+  }
+]

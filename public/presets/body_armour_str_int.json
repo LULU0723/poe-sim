@@ -1,0 +1,162 @@
+[
+  {
+    "id": "1775717000001",
+    "type": "prefix",
+    "name": "# 最大生命",
+    "tags": "生命",
+    "baseWeight": 13000,
+    "category": "neutral"
+  },
+  {
+    "id": "1775717000002",
+    "type": "prefix",
+    "name": "# 最大魔力",
+    "tags": "魔力",
+    "baseWeight": 12000,
+    "category": "neutral"
+  },
+  {
+    "id": "1775717000003",
+    "type": "prefix",
+    "name": "增加 #% 護甲與能量護盾",
+    "tags": "防禦、護甲、能量護盾",
+    "baseWeight": 8000,
+    "category": "neutral"
+  },
+  {
+    "id": "1775717000004",
+    "type": "prefix",
+    "name": "增加 #% 護甲與能量護盾增加 #% 暈眩恢復和格擋恢復",
+    "tags": "防禦、護甲、能量護盾",
+    "baseWeight": 6000,
+    "category": "neutral"
+  },
+  {
+    "id": "1775717000005",
+    "type": "prefix",
+    "name": "# 點護甲# 最大能量護盾",
+    "tags": "防禦、護甲、能量護盾",
+    "baseWeight": 8000,
+    "category": "neutral"
+  },
+  {
+    "id": "1775717000006",
+    "type": "prefix",
+    "name": "# 點護甲# 最大生命",
+    "tags": "生命、防禦、護甲",
+    "baseWeight": 1750,
+    "category": "neutral"
+  },
+  {
+    "id": "1775717000007",
+    "type": "prefix",
+    "name": "# 最大能量護盾# 最大生命",
+    "tags": "生命、防禦、能量護盾",
+    "baseWeight": 1750,
+    "category": "neutral"
+  },
+  {
+    "id": "1775717000008",
+    "type": "prefix",
+    "name": "# 最大能量護盾# 最大魔力",
+    "tags": "魔力、防禦、能量護盾",
+    "baseWeight": 1750,
+    "category": "neutral"
+  },
+  {
+    "id": "1775717000009",
+    "type": "prefix",
+    "name": "反射 # 物理傷害給近戰攻擊者",
+    "tags": "物理",
+    "baseWeight": 4000,
+    "category": "neutral"
+  },
+  {
+    "id": "1775717000010",
+    "type": "suffix",
+    "name": "# 力量",
+    "tags": "能力",
+    "baseWeight": 4500,
+    "category": "neutral"
+  },
+  {
+    "id": "1775717000011",
+    "type": "suffix",
+    "name": "# 智慧",
+    "tags": "能力",
+    "baseWeight": 4500,
+    "category": "neutral"
+  },
+  {
+    "id": "1775717000012",
+    "type": "suffix",
+    "name": "# 每秒生命回復",
+    "tags": "生命",
+    "baseWeight": 11000,
+    "category": "neutral"
+  },
+  {
+    "id": "1775717000013",
+    "type": "suffix",
+    "name": "#% 火焰抗性",
+    "tags": "元素、火焰、抗性",
+    "baseWeight": 8000,
+    "category": "neutral"
+  },
+  {
+    "id": "1775717000014",
+    "type": "suffix",
+    "name": "#% 冰冷抗性",
+    "tags": "元素、冰冷、抗性",
+    "baseWeight": 8000,
+    "category": "neutral"
+  },
+  {
+    "id": "1775717000015",
+    "type": "suffix",
+    "name": "#% 閃電抗性",
+    "tags": "元素、閃電、抗性",
+    "baseWeight": 8000,
+    "category": "neutral"
+  },
+  {
+    "id": "1775717000016",
+    "type": "suffix",
+    "name": "#% 混沌抗性",
+    "tags": "混沌、抗性",
+    "baseWeight": 1500,
+    "category": "neutral"
+  },
+  {
+    "id": "1775717000017",
+    "type": "suffix",
+    "name": "增加 #% 暈眩恢復和格擋恢復",
+    "tags": "",
+    "baseWeight": 6000,
+    "category": "neutral"
+  },
+  {
+    "id": "1775717000018",
+    "type": "suffix",
+    "name": "減少 #% 能力值需求",
+    "tags": "",
+    "baseWeight": 1700,
+    "category": "neutral"
+  },
+  {
+    "id": "1775717000019",
+    "type": "suffix",
+    "name": "#% 額外物理傷害減免",
+    "tags": "物理",
+    "baseWeight": 2500,
+    "category": "neutral"
+  },
+  {
+    "id": "1775717000020",
+    "type": "suffix",
+    "name": "提前 #% 開始充能能量護盾",
+    "tags": "防禦、能量護盾",
+    "baseWeight": 2500,
+    "category": "neutral"
+  }
+]

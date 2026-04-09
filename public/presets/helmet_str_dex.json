@@ -1,0 +1,194 @@
+[
+  {
+    "id": "1775722800001",
+    "type": "prefix",
+    "name": "# 最大生命",
+    "tags": "生命",
+    "baseWeight": 10000,
+    "category": "neutral"
+  },
+  {
+    "id": "1775722800002",
+    "type": "prefix",
+    "name": "增加 #% 護甲與閃避",
+    "tags": "防禦、護甲、閃避",
+    "baseWeight": 7000,
+    "category": "neutral"
+  },
+  {
+    "id": "1775722800003",
+    "type": "prefix",
+    "name": "增加 #% 護甲與閃避增加 #% 暈眩恢復和格擋恢復",
+    "tags": "防禦、護甲、閃避",
+    "baseWeight": 6000,
+    "category": "neutral"
+  },
+  {
+    "id": "1775722800004",
+    "type": "prefix",
+    "name": "# 點護甲# 點閃避值",
+    "tags": "防禦、護甲、閃避",
+    "baseWeight": 5000,
+    "category": "neutral"
+  },
+  {
+    "id": "1775722800005",
+    "type": "prefix",
+    "name": "# 點護甲# 最大生命",
+    "tags": "生命、防禦、護甲",
+    "baseWeight": 1500,
+    "category": "neutral"
+  },
+  {
+    "id": "1775722800006",
+    "type": "prefix",
+    "name": "# 點閃避值# 最大生命",
+    "tags": "生命、防禦、閃避",
+    "baseWeight": 1500,
+    "category": "neutral"
+  },
+  {
+    "id": "1775722800007",
+    "type": "prefix",
+    "name": "增加 #% 物品稀有度",
+    "tags": "丟置",
+    "baseWeight": 3000,
+    "category": "neutral"
+  },
+  {
+    "id": "1775722800008",
+    "type": "prefix",
+    "name": "全部召喚物技能寶石 # 等級",
+    "tags": "召喚物、寶石",
+    "baseWeight": 275,
+    "category": "neutral"
+  },
+  {
+    "id": "1775722800009",
+    "type": "prefix",
+    "name": "反射 # 物理傷害給近戰攻擊者",
+    "tags": "物理",
+    "baseWeight": 2000,
+    "category": "neutral"
+  },
+  {
+    "id": "1775722800010",
+    "type": "suffix",
+    "name": "# 力量",
+    "tags": "能力",
+    "baseWeight": 4500,
+    "category": "neutral"
+  },
+  {
+    "id": "1775722800011",
+    "type": "suffix",
+    "name": "# 敏捷",
+    "tags": "能力",
+    "baseWeight": 4500,
+    "category": "neutral"
+  },
+  {
+    "id": "1775722800012",
+    "type": "suffix",
+    "name": "# 智慧",
+    "tags": "能力",
+    "baseWeight": 10000,
+    "category": "neutral"
+  },
+  {
+    "id": "1775722800013",
+    "type": "suffix",
+    "name": "增加 #% 物品稀有度",
+    "tags": "丟置",
+    "baseWeight": 4000,
+    "category": "neutral"
+  },
+  {
+    "id": "1775722800014",
+    "type": "suffix",
+    "name": "# 命中值",
+    "tags": "攻擊",
+    "baseWeight": 5600,
+    "category": "neutral"
+  },
+  {
+    "id": "1775722800015",
+    "type": "suffix",
+    "name": "# 每秒生命回復",
+    "tags": "生命",
+    "baseWeight": 9000,
+    "category": "neutral"
+  },
+  {
+    "id": "1775722800016",
+    "type": "suffix",
+    "name": "#% 火焰抗性",
+    "tags": "元素、火焰、抗性",
+    "baseWeight": 8000,
+    "category": "neutral"
+  },
+  {
+    "id": "1775722800017",
+    "type": "suffix",
+    "name": "#% 冰冷抗性",
+    "tags": "元素、冰冷、抗性",
+    "baseWeight": 8000,
+    "category": "neutral"
+  },
+  {
+    "id": "1775722800018",
+    "type": "suffix",
+    "name": "#% 閃電抗性",
+    "tags": "元素、閃電、抗性",
+    "baseWeight": 8000,
+    "category": "neutral"
+  },
+  {
+    "id": "1775722800019",
+    "type": "suffix",
+    "name": "#% 混沌抗性",
+    "tags": "混沌、抗性",
+    "baseWeight": 1500,
+    "category": "neutral"
+  },
+  {
+    "id": "1775722800020",
+    "type": "suffix",
+    "name": "增加 #% 暈眩恢復和格擋恢復",
+    "tags": "",
+    "baseWeight": 6000,
+    "category": "neutral"
+  },
+  {
+    "id": "1775722800021",
+    "type": "suffix",
+    "name": "減少 #% 能力值需求",
+    "tags": "",
+    "baseWeight": 1300,
+    "category": "neutral"
+  },
+  {
+    "id": "1775722800022",
+    "type": "suffix",
+    "name": "增加 #% 全域命中值增加 #% 照亮範圍",
+    "tags": "攻擊",
+    "baseWeight": 3000,
+    "category": "neutral"
+  },
+  {
+    "id": "1775722800023",
+    "type": "suffix",
+    "name": "增加 #% 生命回復率",
+    "tags": "生命",
+    "baseWeight": 2500,
+    "category": "neutral"
+  },
+  {
+    "id": "1775722800024",
+    "type": "suffix",
+    "name": "#% 壓抑法術傷害率",
+    "tags": "",
+    "baseWeight": 2500,
+    "category": "neutral"
+  }
+]
