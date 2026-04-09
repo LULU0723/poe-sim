@@ -1,5 +1,49 @@
 import React, { useState, useMemo, useRef, useEffect } from 'react';
-import { Plus, Trash2, ShieldAlert, GitMerge, Settings2, Info, Wand2, Upload, Download, Map as MapIcon, List, Target, FolderOpen, Unlock, Lock, RotateCcw, ZoomIn, ZoomOut } from 'lucide-react';
+import { Plus, Trash2, ShieldAlert, GitMerge, Settings2, Info, Wand2, Upload, Download, Map as MapIcon, List, Target, FolderOpen, Unlock, Lock, RotateCcw, ZoomIn, ZoomOut, Database, CheckSquare } from 'lucide-react';
+
+// ==========================================
+// 內建詞綴資料庫目錄 (Index Menu)
+// 這裡只負責「選單結構」與「檔案路徑」，不放龐大的詞綴陣列
+// ==========================================
+const BUILT_IN_PRESETS = {
+    'Boots': {
+        name: '🥾 鞋子 (Boots)',
+        treeBase: 'G5', // 點擊時自動將天賦樹基底切換到 G5
+        attributes: {
+            'str': { name: '💪 純力 (護甲)', file: '/presets/boots_str.json' },
+            'dex': { name: '🦅 純敏 (閃避)', file: '/presets/boots_dex.json' },
+            'int': { name: '🧠 純智 (能量護盾)', file: '/presets/boots_int.json' },
+            'str_dex': { name: '⚔️ 力敏 (護甲/閃避)', file: '/presets/boots_str_dex.json' },
+            'str_int': { name: '🛡️ 力智 (護甲/能盾)', file: '/presets/boots_str_int.json' },
+            'dex_int': { name: '🌀 敏智 (閃避/能盾)', file: '/presets/boots_dex_int.json' }
+        }
+    },
+    'Gloves': {
+        name: '🧤 手套 (Gloves)',
+        treeBase: 'G4',
+        attributes: {
+            'str': { name: '💪 純力 (護甲)', file: '/presets/gloves_str.json' },
+            'dex': { name: '🦅 純敏 (閃避)', file: '/presets/gloves_dex.json' },
+            'int': { name: '🧠 純智 (能量護盾)', file: '/presets/gloves_int.json' }
+        }
+    },
+    'Ring': {
+        name: '💍 戒指 (Ring)',
+        treeBase: 'H2',
+        attributes: {
+            'none': { name: '通用屬性 (無需求)', file: '/presets/ring_general.json' }
+        }
+    },
+    'Jewel': {
+        name: '💎 珠寶 (Jewel)',
+        treeBase: 'i',
+        attributes: {
+            'crimson': { name: '🔴 赤紅 (偏力量/近戰)', file: '/presets/jewel_crimson.json' },
+            'cobalt': { name: '🔵 鈷藍 (偏智力/法術)', file: '/presets/jewel_cobalt.json' },
+            'viridian': { name: '🟢 翠綠 (偏敏捷/弓箭)', file: '/presets/jewel_viridian.json' }
+        }
+    }
+};
 
 // --- 天賦樹靜態數據 ---
 const TREE_DATA = {
@@ -73,26 +117,8 @@ const TREE_DATA = {
     'N5': { name: 'N5 (+500%抗性)', cost: 1, req: 'N', mutex: 'N', mods: { '抗性': 5.0 }, x: 26.7, y: 82.6 }
 };
 
-// 提取初始座標
 const INITIAL_COORDS = {};
-Object.keys(TREE_DATA).forEach(k => {
-    INITIAL_COORDS[k] = { x: TREE_DATA[k].x, y: TREE_DATA[k].y };
-});
-
-const DEFAULT_AFFIXES = [
-    { id: '1', type: 'prefix', name: '最大生命', tags: '生命', baseWeight: 9000, category: 'target' },
-    { id: '2', type: 'prefix', name: '最大魔力', tags: '魔力', baseWeight: 12000, category: 'unwanted' },
-    { id: '3', type: 'prefix', name: '移動速度', tags: '速度', baseWeight: 6000, category: 'target' },
-    { id: '4', type: 'prefix', name: '閃避與能量護盾', tags: '防禦', baseWeight: 7000, category: 'neutral' },
-    { id: '5', type: 'suffix', name: '敏捷', tags: '屬性', baseWeight: 4500, category: 'unwanted' },
-    { id: '6', type: 'suffix', name: '智慧', tags: '屬性', baseWeight: 4500, category: 'unwanted' },
-    { id: '7', type: 'suffix', name: '火焰抗性', tags: '元素, 抗性, 火焰', baseWeight: 8000, category: 'neutral' },
-    { id: '8', type: 'suffix', name: '冰冷抗性', tags: '元素, 抗性, 冰冷', baseWeight: 8000, category: 'neutral' },
-    { id: '9', type: 'suffix', name: '閃電抗性', tags: '元素, 抗性, 閃電', baseWeight: 8000, category: 'neutral' },
-    { id: '10', type: 'suffix', name: '混沌抗性', tags: '混沌, 抗性', baseWeight: 1500, category: 'target' },
-    { id: '11', type: 'suffix', name: '壓抑法術傷害率', tags: '', baseWeight: 2500, category: 'target' },
-    { id: '12', type: 'suffix', name: '暈眩恢復', tags: '', baseWeight: 6000, category: 'neutral' }
-];
+Object.keys(TREE_DATA).forEach(k => { INITIAL_COORDS[k] = { x: TREE_DATA[k].x, y: TREE_DATA[k].y }; });
 
 const AffixRow = ({ affix, updateAffix, removeAffix }) => (
     <div className={`flex items-center gap-2 mb-2 p-2 rounded-lg border shadow-sm text-sm transition-colors ${
@@ -173,9 +199,7 @@ const TreeNode = ({ nodeId, depth = 0, activeNodes, toggleNode }) => {
             >
                 <span className="text-sm text-slate-100">{node.name}</span>
                 {node.mods && isActive && (
-                    <span className="ml-2 px-1.5 py-0.5 rounded text-[10px] bg-slate-900 text-purple-300 font-bold border border-purple-800">
-                       生效中
-                    </span>
+                    <span className="ml-2 px-1.5 py-0.5 rounded text-[10px] bg-slate-900 text-purple-300 font-bold border border-purple-800">生效中</span>
                 )}
             </div>
             {node.children && (
@@ -190,17 +214,18 @@ const TreeNode = ({ nodeId, depth = 0, activeNodes, toggleNode }) => {
 };
 
 export default function App() {
-    const [activeNodes, setActiveNodes] = useState(new Set(['start', 'a', 'G', 'G5'])); // 預設點亮鞋子
-    const [affixes, setAffixes] = useState(DEFAULT_AFFIXES);
+    const [activeNodes, setActiveNodes] = useState(new Set(['start'])); 
+    const [affixes, setAffixes] = useState([]); // 預設留空，讓玩家自己載入
     const [toast, setToast] = useState('');
     const [isOptimizing, setIsOptimizing] = useState(false);
     const [viewMode, setViewMode] = useState('map'); 
     const [savedPresets, setSavedPresets] = useState({});
     
-    // --- 新增：地圖縮放系統 ---
-    const [zoom, setZoom] = useState(1);
+    // 內建資料庫狀態
+    const [builtInCat, setBuiltInCat] = useState('Boots');
+    const [builtInAttr, setBuiltInAttr] = useState('str');
 
-    // --- 新增：座標編輯與校準系統 ---
+    const [zoom, setZoom] = useState(1);
     const [coords, setCoords] = useState(INITIAL_COORDS);
     const [isEditMode, setIsEditMode] = useState(false);
     const [draggingNode, setDraggingNode] = useState(null);
@@ -209,37 +234,27 @@ export default function App() {
     const fileInputRef = useRef(null);
     const bulkInputRef = useRef(null);
 
-    // 初始化：載入本地預設庫與自訂座標
     useEffect(() => {
         const loadedPresets = localStorage.getItem('poe_genesis_presets');
-        if (loadedPresets) {
-            try { setSavedPresets(JSON.parse(loadedPresets)); } catch (e) { }
-        }
+        if (loadedPresets) { try { setSavedPresets(JSON.parse(loadedPresets)); } catch (e) { } }
         const loadedCoords = localStorage.getItem('poe_genesis_coords');
-        if (loadedCoords) {
-            try { setCoords({ ...INITIAL_COORDS, ...JSON.parse(loadedCoords) }); } catch (e) { }
-        }
+        if (loadedCoords) { try { setCoords({ ...INITIAL_COORDS, ...JSON.parse(loadedCoords) }); } catch (e) { } }
 
-        // 綁定全域放開滑鼠事件，防止拖曳時滑鼠離開畫面卡住
         const handleGlobalPointerUp = () => setDraggingNode(null);
         window.addEventListener('pointerup', handleGlobalPointerUp);
         return () => window.removeEventListener('pointerup', handleGlobalPointerUp);
     }, []);
 
-    // 處理拖曳節點座標邏輯 (不受縮放比例影響)
     const handleMapPointerMove = (e) => {
         if (!isEditMode || !draggingNode || !mapRef.current) return;
         const rect = mapRef.current.getBoundingClientRect();
         let x = ((e.clientX - rect.left) / rect.width) * 100;
         let y = ((e.clientY - rect.top) / rect.height) * 100;
-        // 限制在 0~100 範圍內
         x = Math.max(0, Math.min(100, x));
         y = Math.max(0, Math.min(100, y));
-        
         setCoords(prev => ({ ...prev, [draggingNode]: { x, y } }));
     };
 
-    // 切換編輯模式並自動存檔
     const toggleEditMode = () => {
         if (isEditMode) {
             localStorage.setItem('poe_genesis_coords', JSON.stringify(coords));
@@ -250,12 +265,45 @@ export default function App() {
         setIsEditMode(!isEditMode);
     };
 
-    // 重置所有自訂座標
     const resetCoords = () => {
         if(window.confirm("確定要重置所有座標回預設值嗎？")) {
             setCoords(INITIAL_COORDS);
             localStorage.removeItem('poe_genesis_coords');
             showToast("🔄 座標已還原回預設值");
+        }
+    };
+
+    // --- 修改：非同步載入外部 JSON 預設檔 ---
+    const handleLoadBuiltIn = async () => {
+        const presetData = BUILT_IN_PRESETS[builtInCat]?.attributes[builtInAttr];
+        
+        if (presetData && presetData.file) {
+            try {
+                showToast("⏳ 正在讀取資料庫...");
+                
+                // 去 public 資料夾動態抓取對應的 JSON 檔案
+                const response = await fetch(presetData.file);
+                if (!response.ok) throw new Error('File not found');
+                
+                const data = await response.json();
+                
+                // 支援單純的陣列格式，也相容你從模擬器按「匯出」下載下來的格式
+                if (Array.isArray(data)) {
+                    setAffixes(data);
+                } else if (data.affixes) {
+                    setAffixes(data.affixes);
+                }
+
+                // 自動切換天賦樹目標基底
+                const targetBase = BUILT_IN_PRESETS[builtInCat].treeBase;
+                if (targetBase) handleBaseChange(targetBase);
+                
+                showToast(`📥 成功載入：${BUILT_IN_PRESETS[builtInCat].name} - ${presetData.name}`);
+            } catch (error) {
+                showToast(`⚠️ 找不到檔案！請確認你有將檔案放在 ${presetData.file}`);
+            }
+        } else {
+            showToast("⚠️ 此基底屬性尚未設定檔案路徑 (file)！");
         }
     };
 
@@ -478,12 +526,8 @@ export default function App() {
     };
 
     const handleExport = () => {
-        const dataToExport = {
-            base: currentBase,
-            affixes: affixes
-        };
-        const dataStr = JSON.stringify(dataToExport, null, 2);
-        const blob = new Blob([dataStr], { type: "application/json" });
+        const dataToExport = { base: currentBase, affixes: affixes };
+        const blob = new Blob([JSON.stringify(dataToExport, null, 2)], { type: "application/json" });
         const url = URL.createObjectURL(blob);
         const link = document.createElement('a');
         link.href = url;
@@ -504,14 +548,11 @@ export default function App() {
                 const importedData = JSON.parse(e.target.result);
                 if (Array.isArray(importedData)) {
                     setAffixes(importedData);
-                    showToast("✅ 成功匯入詞綴資料！");
                 } else if (importedData.affixes && Array.isArray(importedData.affixes)) {
                     setAffixes(importedData.affixes);
                     if (importedData.base) handleBaseChange(importedData.base);
-                    showToast(`✅ 成功匯入設定，已自動切換基底！`);
-                } else {
-                    throw new Error("Invalid format");
                 }
+                showToast("✅ 成功匯入詞綴資料！");
             } catch (err) {
                 showToast("❌ 檔案格式錯誤。");
             }
@@ -527,37 +568,32 @@ export default function App() {
         let count = 0;
         for (let i = 0; i < files.length; i++) {
             const file = files[i];
-            const text = await file.text();
             try {
-                const data = JSON.parse(text);
-                const presetName = file.name.replace('.json', '');
-                newPresets[presetName] = data;
+                const data = JSON.parse(await file.text());
+                newPresets[file.name.replace('.json', '')] = data;
                 count++;
-            } catch(e) {
-                console.error("無法解析檔案: ", file.name);
-            }
+            } catch(e) {}
         }
         setSavedPresets(newPresets);
         localStorage.setItem('poe_genesis_presets', JSON.stringify(newPresets));
-        showToast(`📂 成功將 ${count} 個檔案加入預設庫！`);
+        showToast(`📂 成功將 ${count} 個檔案加入個人預設庫！`);
         event.target.value = null;
     };
 
     const handleLoadPreset = (presetName) => {
-        if (!presetName || !savedPresets[presetName]) return;
         const data = savedPresets[presetName];
-        if (Array.isArray(data)) {
-            setAffixes(data);
-        } else if (data.affixes) {
-            setAffixes(data.affixes);
-            if (data.base) handleBaseChange(data.base);
+        if (data) {
+            if (Array.isArray(data)) setAffixes(data);
+            else if (data.affixes) {
+                setAffixes(data.affixes);
+                if (data.base) handleBaseChange(data.base);
+            }
+            showToast(`✨ 已載入個人預設：${presetName}`);
         }
-        showToast(`✨ 已載入預設：${presetName}`);
     };
 
     const addAffix = (type) => {
-        const newId = Date.now().toString();
-        setAffixes([...affixes, { id: newId, type, name: '新詞綴', tags: '', baseWeight: 1000, category: 'neutral' }]);
+        setAffixes([...affixes, { id: Date.now().toString(), type, name: '新詞綴', tags: '', baseWeight: 1000, category: 'neutral' }]);
     };
     const updateAffix = (id, field, value) => {
         setAffixes(affixes.map(a => a.id === id ? { ...a, [field]: value } : a));
@@ -662,30 +698,14 @@ export default function App() {
                         <span>天賦樹 {viewMode === 'map' ? '(視覺地圖)' : '(結構清單)'}</span>
                         {viewMode === 'map' && (
                             <div className="flex flex-wrap items-center gap-2">
-                                {/* --- 新增：放大鏡縮放控制器 --- */}
                                 <div className="flex items-center bg-slate-950 rounded border border-slate-700 shadow-sm">
-                                    <button onClick={() => setZoom(z => Math.max(0.5, z - 0.2))} className="p-1 hover:bg-slate-800 text-slate-400 hover:text-white rounded-l transition-colors" title="縮小">
-                                        <ZoomOut size={16} />
-                                    </button>
-                                    <span className="text-[11px] font-mono w-10 text-center text-slate-300 font-bold select-none">
-                                        {Math.round(zoom * 100)}%
-                                    </span>
-                                    <button onClick={() => setZoom(z => Math.min(3, z + 0.2))} className="p-1 hover:bg-slate-800 text-slate-400 hover:text-white rounded-r transition-colors" title="放大">
-                                        <ZoomIn size={16} />
-                                    </button>
+                                    <button onClick={() => setZoom(z => Math.max(0.5, z - 0.2))} className="p-1 hover:bg-slate-800 text-slate-400 hover:text-white rounded-l transition-colors" title="縮小"><ZoomOut size={16} /></button>
+                                    <span className="text-[11px] font-mono w-10 text-center text-slate-300 font-bold select-none">{Math.round(zoom * 100)}%</span>
+                                    <button onClick={() => setZoom(z => Math.min(3, z + 0.2))} className="p-1 hover:bg-slate-800 text-slate-400 hover:text-white rounded-r transition-colors" title="放大"><ZoomIn size={16} /></button>
                                 </div>
                                 <div className="w-px h-4 bg-slate-700 mx-1"></div>
-
-                                {/* 校準模式按鈕 */}
-                                {isEditMode && (
-                                    <button onClick={resetCoords} className="flex items-center gap-1 text-[11px] bg-red-900/50 hover:bg-red-800 text-red-200 px-2 py-1 rounded border border-red-700 transition-colors">
-                                        <RotateCcw size={12}/> 重置座標
-                                    </button>
-                                )}
-                                <button 
-                                    onClick={toggleEditMode} 
-                                    className={`flex items-center gap-1 text-[11px] px-2 py-1.5 rounded border shadow-sm transition-colors ${isEditMode ? 'bg-yellow-600/30 text-yellow-300 border-yellow-500' : 'bg-slate-800 text-slate-400 border-slate-600 hover:bg-slate-700'}`}
-                                >
+                                {isEditMode && <button onClick={resetCoords} className="flex items-center gap-1 text-[11px] bg-red-900/50 hover:bg-red-800 text-red-200 px-2 py-1 rounded border border-red-700 transition-colors"><RotateCcw size={12}/> 重置座標</button>}
+                                <button onClick={toggleEditMode} className={`flex items-center gap-1 text-[11px] px-2 py-1.5 rounded border shadow-sm transition-colors ${isEditMode ? 'bg-yellow-600/30 text-yellow-300 border-yellow-500' : 'bg-slate-800 text-slate-400 border-slate-600 hover:bg-slate-700'}`}>
                                     {isEditMode ? <Unlock size={12}/> : <Lock size={12}/>}
                                     {isEditMode ? '完成校準 (自動儲存)' : '解鎖節點以手動校準'}
                                 </button>
@@ -695,19 +715,13 @@ export default function App() {
                     
                     {viewMode === 'map' ? (
                         <div className="flex-1 relative overflow-auto custom-scrollbar bg-slate-950 rounded-lg border border-slate-800 shadow-inner">
-                            {/* --- 修改：包裝層支援完美縮放與滾動 --- */}
                             <div className="min-w-full min-h-full flex p-2">
                                 <div 
                                     ref={mapRef}
                                     className={`relative m-auto aspect-[1083/951] touch-none transition-all duration-200 ease-out ${isEditMode ? 'outline outline-2 outline-yellow-500/50 shadow-[0_0_20px_rgba(234,179,8,0.2)]' : ''}`}
-                                    style={{ 
-                                        width: `${zoom * 100}%`, 
-                                        maxWidth: `${zoom * 800}px`,
-                                        minWidth: `${zoom * 300}px` 
-                                    }}
+                                    style={{ width: `${zoom * 100}%`, maxWidth: `${zoom * 800}px`, minWidth: `${zoom * 300}px` }}
                                     onPointerMove={handleMapPointerMove}
                                 >
-                                    {/* SVG 連線繪製層 */}
                                     <svg className="absolute inset-0 w-full h-full pointer-events-none" viewBox="0 0 100 100" preserveAspectRatio="none">
                                         <image href="/tree.jpg" x="0" y="0" width="100" height="100" preserveAspectRatio="none" opacity="0.4" style={{ mixBlendMode: 'screen' }} onError={(e) => e.target.style.display = 'none'} />
                                         {Object.entries(TREE_DATA).map(([id, node]) => {
@@ -720,60 +734,29 @@ export default function App() {
                                                 const canActivateChild = isParentActive; 
                                                 let strokeClass = "stroke-slate-800";
                                                 let strokeWidth = 0.2;
-                                                if (isParentActive && isChildActive) {
-                                                    strokeClass = "stroke-purple-500 drop-shadow-[0_0_2px_rgba(168,85,247,0.8)]";
-                                                    strokeWidth = 0.4;
-                                                } else if (canActivateChild) {
-                                                    strokeClass = "stroke-slate-600";
-                                                    strokeWidth = 0.3;
-                                                }
-                                                return <line 
-                                                    key={`${id}-${childId}`} 
-                                                    x1={coords[id]?.x ?? node.x} 
-                                                    y1={coords[id]?.y ?? node.y} 
-                                                    x2={coords[childId]?.x ?? childNode.x} 
-                                                    y2={coords[childId]?.y ?? childNode.y} 
-                                                    className={`transition-all duration-300 ${strokeClass}`} 
-                                                    strokeWidth={strokeWidth} 
-                                                    vectorEffect="non-scaling-stroke" 
-                                                />;
+                                                if (isParentActive && isChildActive) { strokeClass = "stroke-purple-500 drop-shadow-[0_0_2px_rgba(168,85,247,0.8)]"; strokeWidth = 0.4; } 
+                                                else if (canActivateChild) { strokeClass = "stroke-slate-600"; strokeWidth = 0.3; }
+                                                return <line key={`${id}-${childId}`} x1={coords[id]?.x ?? node.x} y1={coords[id]?.y ?? node.y} x2={coords[childId]?.x ?? childNode.x} y2={coords[childId]?.y ?? childNode.y} className={`transition-all duration-300 ${strokeClass}`} strokeWidth={strokeWidth} vectorEffect="non-scaling-stroke" />;
                                             });
                                         })}
                                     </svg>
-                                    {/* 互動節點層 */}
                                     {Object.entries(TREE_DATA).map(([id, node]) => {
                                         if (!node) return null;
                                         const isActive = activeNodes.has(id);
                                         const canActivate = id === 'start' || activeNodes.has(node.req);
                                         let nodeClass = `absolute w-6 h-6 -ml-3 -mt-3 rounded-full flex items-center justify-center border-2 shadow-lg transition-all group ${isEditMode ? 'hover:scale-125' : ''} `;
-                                        
                                         if (isActive) nodeClass += "bg-purple-700 border-purple-300 shadow-[0_0_12px_rgba(168,85,247,0.8)] z-20 scale-110";
                                         else if (canActivate || isEditMode) nodeClass += "bg-slate-700 border-slate-400 hover:bg-blue-600 hover:border-blue-300 z-10";
                                         else nodeClass += "bg-slate-900 border-slate-800 opacity-50 z-0";
-                                        
                                         if (id === 'start') nodeClass += isActive ? " !bg-blue-600 !border-blue-300 w-10 h-10 -ml-5 -mt-5" : " w-10 h-10 -ml-5 -mt-5";
                                         
                                         return (
                                             <div 
-                                                key={id} 
-                                                className={nodeClass} 
-                                                style={{ 
-                                                    left: `${coords[id]?.x ?? node.x}%`, 
-                                                    top: `${coords[id]?.y ?? node.y}%`,
-                                                    cursor: isEditMode ? (draggingNode === id ? 'grabbing' : 'grab') : (canActivate ? 'pointer' : 'not-allowed')
-                                                }} 
-                                                onPointerDown={(e) => {
-                                                    if (isEditMode) {
-                                                        e.stopPropagation();
-                                                        setDraggingNode(id);
-                                                    } else if (canActivate) {
-                                                        toggleNode(id);
-                                                    }
-                                                }}
+                                                key={id} className={nodeClass} 
+                                                style={{ left: `${coords[id]?.x ?? node.x}%`, top: `${coords[id]?.y ?? node.y}%`, cursor: isEditMode ? (draggingNode === id ? 'grabbing' : 'grab') : (canActivate ? 'pointer' : 'not-allowed') }} 
+                                                onPointerDown={(e) => { if (isEditMode) { e.stopPropagation(); setDraggingNode(id); } else if (canActivate) { toggleNode(id); } }}
                                             >
-                                                <span className={`font-bold select-none ${id === 'start' ? 'text-xs' : 'text-[9px]'} ${isActive ? 'text-white' : 'text-slate-300'}`}>
-                                                    {id === 'start' ? '起' : id}
-                                                </span>
+                                                <span className={`font-bold select-none ${id === 'start' ? 'text-xs' : 'text-[9px]'} ${isActive ? 'text-white' : 'text-slate-300'}`}>{id === 'start' ? '起' : id}</span>
                                                 <div className="absolute bottom-full mb-2 hidden group-hover:block whitespace-nowrap bg-slate-900 text-slate-200 text-xs px-2 py-1 rounded border border-slate-700 pointer-events-none z-50">
                                                     <span className="font-bold text-purple-400">{id}</span>: {node.name}
                                                     {isEditMode && <div className="text-[10px] text-yellow-400 mt-1">拖曳以移動位置</div>}
@@ -793,40 +776,67 @@ export default function App() {
                 </div>
 
                 <div className="lg:col-span-6 xl:col-span-6 flex flex-col gap-4 overflow-y-auto max-h-[80vh] custom-scrollbar pr-2">
-                    <div className="bg-slate-900/50 rounded-xl border border-slate-800 p-3 flex flex-col sm:flex-row items-center justify-between gap-3 shadow-sm">
+                    
+                    {/* ========================================== */}
+                    {/* --- 新增：內建詞綴資料庫面板 --- */}
+                    {/* ========================================== */}
+                    <div className="bg-slate-900/80 rounded-xl border-2 border-blue-900/50 p-3 flex flex-col sm:flex-row items-center justify-between gap-3 shadow-lg shadow-blue-900/10">
                         <div className="flex items-center gap-2 w-full sm:w-auto">
-                            <FolderOpen size={18} className="text-yellow-500 shrink-0" />
-                            <span className="font-semibold text-slate-300 text-sm whitespace-nowrap">預設庫:</span>
+                            <Database size={18} className="text-blue-400 shrink-0" />
+                            <span className="font-semibold text-blue-200 text-sm whitespace-nowrap">內建庫:</span>
+                            
+                            {/* 第一層選單：選基底大類別 */}
                             <select 
+                                value={builtInCat}
                                 onChange={(e) => {
-                                    if(e.target.value) handleLoadPreset(e.target.value);
-                                    e.target.value = ""; 
+                                    setBuiltInCat(e.target.value);
+                                    // 切換大類別時，自動選擇該類別的第一個子屬性
+                                    const firstAttr = Object.keys(BUILT_IN_PRESETS[e.target.value].attributes)[0];
+                                    setBuiltInAttr(firstAttr);
                                 }} 
-                                defaultValue=""
-                                className="bg-slate-950 text-slate-200 border border-slate-700 rounded px-2 py-1.5 text-sm outline-none cursor-pointer flex-1 w-full max-w-[200px]"
+                                className="bg-slate-950 text-slate-200 border border-blue-800/50 rounded px-2 py-1.5 text-sm outline-none cursor-pointer"
                             >
-                                <option value="" disabled>選擇預設檔...</option>
-                                {Object.keys(savedPresets).map(presetName => (
-                                    <option key={presetName} value={presetName}>{presetName}</option>
+                                {Object.entries(BUILT_IN_PRESETS).map(([catKey, catData]) => (
+                                    <option key={catKey} value={catKey}>{catData.name}</option>
+                                ))}
+                            </select>
+
+                            {/* 第二層選單：選屬性/類型 (如果是通用戒指就隱藏或鎖定) */}
+                            <select 
+                                value={builtInAttr}
+                                onChange={(e) => setBuiltInAttr(e.target.value)} 
+                                className="bg-slate-950 text-slate-200 border border-blue-800/50 rounded px-2 py-1.5 text-sm outline-none cursor-pointer flex-1 min-w-[120px]"
+                            >
+                                {Object.entries(BUILT_IN_PRESETS[builtInCat].attributes).map(([attrKey, attrData]) => (
+                                    <option key={attrKey} value={attrKey}>{attrData.name}</option>
                                 ))}
                             </select>
                         </div>
                         
                         <div className="flex gap-2 w-full sm:w-auto">
-                            <button onClick={() => bulkInputRef.current.click()} className="flex-1 sm:flex-none text-xs bg-slate-800 hover:bg-slate-700 px-3 py-1.5 rounded border border-slate-600 text-slate-300 transition-colors whitespace-nowrap">
-                                ➕ 批次匯入
-                            </button>
-                            <input type="file" multiple accept=".json" ref={bulkInputRef} onChange={handleBulkImport} className="hidden" />
-                            
-                            <button onClick={() => {
-                                    setSavedPresets({});
-                                    localStorage.removeItem('poe_genesis_presets');
-                                    showToast("🧹 已清空所有預設檔");
-                                }}
-                                className="text-xs bg-slate-800 hover:bg-red-900 px-2 py-1.5 rounded border border-slate-600 text-slate-400 hover:text-slate-200 transition-colors" title="清空預設庫"
+                            <button 
+                                onClick={handleLoadBuiltIn} 
+                                className="flex-1 sm:flex-none flex items-center justify-center gap-1 text-xs bg-blue-600 hover:bg-blue-500 text-white font-bold px-4 py-1.5 rounded shadow-lg transition-colors whitespace-nowrap"
                             >
-                                <Trash2 size={14}/>
+                                <CheckSquare size={14}/> 載入內建
                             </button>
+                        </div>
+                    </div>
+
+                    {/* --- 原有的：本地個人預設庫 --- */}
+                    <div className="bg-slate-900/50 rounded-xl border border-slate-800 p-3 flex flex-col sm:flex-row items-center justify-between gap-3 shadow-sm">
+                        <div className="flex items-center gap-2 w-full sm:w-auto">
+                            <FolderOpen size={18} className="text-yellow-500 shrink-0" />
+                            <span className="font-semibold text-slate-300 text-sm whitespace-nowrap">個人預設庫:</span>
+                            <select onChange={(e) => { if(e.target.value) handleLoadPreset(e.target.value); e.target.value = ""; }} defaultValue="" className="bg-slate-950 text-slate-200 border border-slate-700 rounded px-2 py-1.5 text-sm outline-none cursor-pointer flex-1 w-full max-w-[200px]">
+                                <option value="" disabled>選擇預設檔...</option>
+                                {Object.keys(savedPresets).map(presetName => <option key={presetName} value={presetName}>{presetName}</option>)}
+                            </select>
+                        </div>
+                        <div className="flex gap-2 w-full sm:w-auto">
+                            <button onClick={() => bulkInputRef.current.click()} className="flex-1 sm:flex-none text-xs bg-slate-800 hover:bg-slate-700 px-3 py-1.5 rounded border border-slate-600 text-slate-300 transition-colors whitespace-nowrap">➕ 批次匯入</button>
+                            <input type="file" multiple accept=".json" ref={bulkInputRef} onChange={handleBulkImport} className="hidden" />
+                            <button onClick={() => { setSavedPresets({}); localStorage.removeItem('poe_genesis_presets'); showToast("🧹 已清空所有個人預設檔"); }} className="text-xs bg-slate-800 hover:bg-red-900 px-2 py-1.5 rounded border border-slate-600 text-slate-400 hover:text-slate-200 transition-colors" title="清空預設庫"><Trash2 size={14}/></button>
                         </div>
                     </div>
 
