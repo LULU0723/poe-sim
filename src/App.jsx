@@ -698,7 +698,7 @@ export default function App() {
                     {/* ========================================== */}
                     {/* 🛠️ 智慧做裝顧問面板 */}
                     {/* ========================================== */}
-                    <div className="bg-slate-900/80 rounded-xl border-2 border-blue-900/50 flex flex-col shadow-lg shadow-blue-900/10 overflow-hidden transition-all">
+                    <div className="bg-slate-900/80 rounded-xl border-2 border-blue-900/50 flex flex-col shadow-lg shadow-blue-900/10">
                         <div className="p-3 flex flex-col sm:flex-row items-center justify-between gap-3 bg-slate-900">
                             <div className="flex items-center gap-2 w-full sm:w-auto">
                                 <TargetIcon size={18} className="text-blue-400 shrink-0" />
@@ -735,7 +735,7 @@ export default function App() {
                         </div>
 
                         {showAdvisor && BUILT_IN_PRESETS[builtInCat].isArmour && BASE_STRATEGIES[builtInAttr] && (
-                            <div className="border-t border-blue-900/50 bg-blue-950/20 p-4 animate-in fade-in slide-in-from-top-4 duration-300">
+                            <div className="border-t border-blue-900/50 bg-blue-950/20 p-4">
                                 <h3 className="text-sm font-bold text-yellow-400 mb-1 flex items-center gap-1">
                                     <Zap size={16}/> 基底機率策略顧問
                                 </h3>
