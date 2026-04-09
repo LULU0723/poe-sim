@@ -107,7 +107,7 @@ const BASE_STRATEGIES = {
     }
 };
 
-// --- 天賦樹靜態數據 ---
+// --- 天賦樹靜態數據 (已修復 g1~g6 的數學 mods) ---
 const TREE_DATA = {
     'start': { name: '起點', cost: 0, children: ['a', 'g'], x: 80.8, y: 81.5 },
     'a': { name: 'a (連線+10)', cost: 1, req: 'start', children: ['b', 'G'], x: 82.2, y: 61.5 },
@@ -143,12 +143,12 @@ const TREE_DATA = {
     'C4': { name: 'C4 (-60%物理)', cost: 1, req: 'C', mutex: 'C', mods: { '物理': -0.6 }, x: 75.7, y: 14.2 },
     'C5': { name: 'C5 (-60%混沌)', cost: 1, req: 'C', mutex: 'C', mods: { '混沌': -0.6 }, x: 72.6, y: 20.8 },
     'g': { name: 'g (額外裝備)', cost: 1, req: 'start', children: ['j', 'g1', 'g2', 'g3', 'g4', 'g5', 'g6', 'h'], x: 63.8, y: 71.7 },
-    'g1': { name: 'g1 (-85%智)', cost: 1, req: 'g', x: 58.5, y: 65.2 },
-    'g2': { name: 'g2 (+300%智)', cost: 1, req: 'g', x: 68.6, y: 62.9 },
-    'g3': { name: 'g3 (+300%敏)', cost: 1, req: 'g', x: 72.5, y: 71.4 },
-    'g4': { name: 'g4 (-85%敏)', cost: 1, req: 'g', x: 69.1, y: 79.7 },
-    'g5': { name: 'g5 (-85%力)', cost: 1, req: 'g', x: 60.6, y: 79.5 },
-    'g6': { name: 'g6 (+300%力)', cost: 1, req: 'g', x: 56.3, y: 72.3 },
+    'g1': { name: 'g1 (-85%智)', cost: 1, req: 'g', mods: { '智力': -0.85 }, x: 58.5, y: 65.2 },
+    'g2': { name: 'g2 (+300%智)', cost: 1, req: 'g', mods: { '智力': 3.0 }, x: 68.6, y: 62.9 },
+    'g3': { name: 'g3 (+300%敏)', cost: 1, req: 'g', mods: { '敏捷': 3.0 }, x: 72.5, y: 71.4 },
+    'g4': { name: 'g4 (-85%敏)', cost: 1, req: 'g', mods: { '敏捷': -0.85 }, x: 69.1, y: 79.7 },
+    'g5': { name: 'g5 (-85%力)', cost: 1, req: 'g', mods: { '力量': -0.85 }, x: 60.6, y: 79.5 },
+    'g6': { name: 'g6 (+300%力)', cost: 1, req: 'g', mods: { '力量': 3.0 }, x: 56.3, y: 72.3 },
     'h': { name: 'h (額外裝備)', cost: 1, req: 'g', children: ['H', 'i'], x: 50.7, y: 79.3 },
     'i': { name: 'i (珠寶)', cost: 1, req: 'h', x: 39.1, y: 74.9 },
     'H': { name: 'H (飾品)', cost: 1, req: 'h', children: ['H1', 'H2', 'H3'], x: 43.7, y: 87.5 },
@@ -285,37 +285,40 @@ export default function App() {
         setIsEditMode(!isEditMode);
     };
 
-    // --- 一鍵套用基底策略 ---
+    // --- 安全升級版：一鍵套用基底策略 ---
     const applyAdvisorStrategy = (strategyType) => {
-        const targetBase = BUILT_IN_PRESETS[builtInCat].treeBase;
-        const strategyNodes = BASE_STRATEGIES[builtInAttr]?.[strategyType]?.nodes || [];
-        
-        setActiveNodes(prev => {
-            const next = new Set(['start']); // 重置並加上起點
+        try {
+            const targetBase = BUILT_IN_PRESETS[builtInCat].treeBase;
+            const strategyNodes = BASE_STRATEGIES[builtInAttr]?.[strategyType]?.nodes || [];
             
-            // 1. 點亮目標基底與其前置
-            if (targetBase && TREE_DATA[targetBase]) {
-                next.add(targetBase);
-                let curr = TREE_DATA[targetBase];
-                while(curr && curr.req && TREE_DATA[curr.req]) {
-                    next.add(curr.req);
-                    curr = TREE_DATA[curr.req];
+            setActiveNodes(prev => {
+                const next = new Set(['start']); 
+                
+                if (targetBase && TREE_DATA[targetBase]) {
+                    next.add(targetBase);
+                    let curr = TREE_DATA[targetBase];
+                    while(curr && curr.req && TREE_DATA[curr.req]) {
+                        next.add(curr.req);
+                        curr = TREE_DATA[curr.req];
+                    }
                 }
-            }
 
-            // 2. 點亮策略推薦的 g 系列節點與其前置
-            strategyNodes.forEach(nodeId => {
-                next.add(nodeId);
-                let curr = TREE_DATA[nodeId];
-                while(curr && curr.req && TREE_DATA[curr.req]) {
-                    next.add(curr.req);
-                    curr = TREE_DATA[curr.req];
-                }
+                strategyNodes.forEach(nodeId => {
+                    if (!TREE_DATA[nodeId]) return;
+                    next.add(nodeId);
+                    let curr = TREE_DATA[nodeId];
+                    while(curr && curr.req && TREE_DATA[curr.req]) {
+                        next.add(curr.req);
+                        curr = TREE_DATA[curr.req];
+                    }
+                });
+
+                return next;
             });
-
-            return next;
-        });
-        showToast("✨ 策略已成功套用至天賦樹！");
+            showToast("✨ 策略已成功套用至天賦樹！");
+        } catch (e) {
+            showToast("⚠️ 策略套用失敗：" + e.message);
+        }
     };
 
     const handleLoadBuiltIn = async () => {
@@ -328,7 +331,6 @@ export default function App() {
                 if (Array.isArray(data)) setAffixes(data);
                 else if (data.affixes) setAffixes(data.affixes);
                 
-                // 自動切換天賦樹目標基底 (僅連線基底，不包含策略)
                 const targetBase = BUILT_IN_PRESETS[builtInCat].treeBase;
                 if (targetBase) {
                     setActiveNodes(prev => {
@@ -343,8 +345,6 @@ export default function App() {
                 }
                 
                 showToast(`📥 成功載入：${BUILT_IN_PRESETS[builtInCat].name} - ${presetData.name}`);
-                
-                // 如果是防具類，就展開策略顧問面板
                 if (BUILT_IN_PRESETS[builtInCat].isArmour) setShowAdvisor(true);
                 else setShowAdvisor(false);
 
@@ -415,27 +415,34 @@ export default function App() {
     };
     const currentModifiers = useMemo(() => getModifiers(activeNodes), [activeNodes]);
 
+    // --- 安全升級版：計算機率防呆機制 ---
     const calculateAffixesChances = (affixList, mods) => {
-        let preTotal = 0; let sufTotal = 0;
-        const results = affixList.map(affix => {
-            let multiplier = 1.0;
-            const affixTags = affix.tags.split(/[,，、]+/).map(t => t.trim()).filter(t => t);
-            affixTags.forEach(tag => { if (mods[tag]) multiplier += mods[tag]; });
-            multiplier = Math.max(0, multiplier);
-            const currentWeight = Math.floor(affix.baseWeight * multiplier);
-            if (affix.type === 'prefix') preTotal += currentWeight;
-            if (affix.type === 'suffix') sufTotal += currentWeight;
-            return { ...affix, currentWeight, multiplier };
-        });
-        return results.map(affix => {
-            const total = affix.type === 'prefix' ? preTotal : sufTotal;
-            const chance = total === 0 ? 0 : (affix.currentWeight / total) * 100;
-            return { ...affix, chance };
-        });
+        try {
+            if (!Array.isArray(affixList)) return [];
+            let preTotal = 0; let sufTotal = 0;
+            const results = affixList.map(affix => {
+                let multiplier = 1.0;
+                // 防止 JSON 沒有 tags 時引發崩潰，強制轉字串
+                const affixTags = String(affix.tags || '').split(/[,，、]+/).map(t => t.trim()).filter(t => t);
+                affixTags.forEach(tag => { if (mods[tag]) multiplier += mods[tag]; });
+                multiplier = Math.max(0, multiplier);
+                const currentWeight = Math.floor((Number(affix.baseWeight) || 0) * multiplier);
+                if (affix.type === 'prefix') preTotal += currentWeight;
+                if (affix.type === 'suffix') sufTotal += currentWeight;
+                return { ...affix, currentWeight, multiplier };
+            });
+            return results.map(affix => {
+                const total = affix.type === 'prefix' ? preTotal : sufTotal;
+                const chance = total === 0 ? 0 : (affix.currentWeight / total) * 100;
+                return { ...affix, chance };
+            });
+        } catch (e) {
+            console.error(e);
+            return [];
+        }
     };
     const calculatedAffixes = useMemo(() => calculateAffixesChances(affixes, currentModifiers), [affixes, currentModifiers]);
 
-    // 展開還原原本被壓縮的函數
     const evaluateSetScore = (testSet, affixList) => {
         const mods = getModifiers(testSet);
         const evaluated = calculateAffixesChances(affixList, mods);
@@ -510,7 +517,8 @@ export default function App() {
     };
 
     const handleExport = () => {
-        const dataToExport = { base: currentBase, affixes: affixes };
+        // ... (這部分維持與先前一樣)
+        const dataToExport = { affixes: affixes };
         const blob = new Blob([JSON.stringify(dataToExport, null, 2)], { type: "application/json" });
         const url = URL.createObjectURL(blob);
         const link = document.createElement('a');
@@ -530,15 +538,10 @@ export default function App() {
         reader.onload = (e) => {
             try {
                 const importedData = JSON.parse(e.target.result);
-                if (Array.isArray(importedData)) {
-                    setAffixes(importedData);
-                } else if (importedData.affixes && Array.isArray(importedData.affixes)) {
-                    setAffixes(importedData.affixes);
-                }
+                if (Array.isArray(importedData)) setAffixes(importedData);
+                else if (importedData.affixes && Array.isArray(importedData.affixes)) setAffixes(importedData.affixes);
                 showToast("✅ 成功匯入詞綴資料！");
-            } catch (err) {
-                showToast("❌ 檔案格式錯誤。");
-            }
+            } catch (err) { showToast("❌ 檔案格式錯誤。"); }
             event.target.value = null;
         };
         reader.readAsText(file);
@@ -567,9 +570,7 @@ export default function App() {
         const data = savedPresets[presetName];
         if (data) {
             if (Array.isArray(data)) setAffixes(data);
-            else if (data.affixes) {
-                setAffixes(data.affixes);
-            }
+            else if (data.affixes) setAffixes(data.affixes);
             showToast(`✨ 已載入個人預設：${presetName}`);
         }
     };
@@ -667,7 +668,6 @@ export default function App() {
                                         return (
                                             <div key={id} className={nodeClass} style={{ left: `${coords[id]?.x ?? node.x}%`, top: `${coords[id]?.y ?? node.y}%`, cursor: isEditMode ? (draggingNode === id ? 'grabbing' : 'grab') : (canActivate ? 'pointer' : 'not-allowed') }} onPointerDown={(e) => { if (isEditMode) { e.stopPropagation(); setDraggingNode(id); } else if (canActivate) { toggleNode(id); } }}>
                                                 <span className={`font-bold select-none ${id === 'start' ? 'text-xs' : 'text-[9px]'} ${isActive ? 'text-white' : 'text-slate-300'}`}>{id === 'start' ? '起' : id}</span>
-                                                {/* --- 恢復這段被刪除的提示工具 (Tooltip) 程式碼 --- */}
                                                 <div className="absolute bottom-full mb-2 hidden group-hover:block whitespace-nowrap bg-slate-900 text-slate-200 text-xs px-2 py-1 rounded border border-slate-700 pointer-events-none z-50">
                                                     <span className="font-bold text-purple-400">{id}</span>: {node.name}
                                                     {isEditMode && <div className="text-[10px] text-yellow-400 mt-1">拖曳以移動位置</div>}
@@ -687,10 +687,9 @@ export default function App() {
                 <div className="lg:col-span-6 xl:col-span-6 flex flex-col gap-4 overflow-y-auto max-h-[80vh] custom-scrollbar pr-2">
                     
                     {/* ========================================== */}
-                    {/* 🛠️ 新版：目標基底與詞綴庫 (結合基底策略) */}
+                    {/* 🛠️ 智慧做裝顧問面板 */}
                     {/* ========================================== */}
                     <div className="bg-slate-900/80 rounded-xl border-2 border-blue-900/50 flex flex-col shadow-lg shadow-blue-900/10 overflow-hidden transition-all">
-                        {/* 上半部：選擇區 */}
                         <div className="p-3 flex flex-col sm:flex-row items-center justify-between gap-3 bg-slate-900">
                             <div className="flex items-center gap-2 w-full sm:w-auto">
                                 <TargetIcon size={18} className="text-blue-400 shrink-0" />
@@ -700,7 +699,7 @@ export default function App() {
                                     onChange={(e) => {
                                         setBuiltInCat(e.target.value);
                                         setBuiltInAttr(Object.keys(BUILT_IN_PRESETS[e.target.value].attributes)[0]);
-                                        setShowAdvisor(false); // 更換時先隱藏策略面板，直到按下讀取
+                                        setShowAdvisor(false);
                                     }} 
                                     className="bg-slate-950 text-slate-200 border border-blue-800/50 rounded px-2 py-1.5 text-sm outline-none cursor-pointer"
                                 >
@@ -721,12 +720,11 @@ export default function App() {
                                     ))}
                                 </select>
                             </div>
-                            <button onClick={handleLoadBuiltIn} className="flex-1 sm:flex-none flex items-center justify-center gap-1 text-xs bg-blue-600 hover:bg-blue-500 text-white font-bold px-4 py-1.5 rounded shadow-lg transition-colors whitespace-nowrap">
+                            <button type="button" onClick={handleLoadBuiltIn} className="flex-1 sm:flex-none flex items-center justify-center gap-1 text-xs bg-blue-600 hover:bg-blue-500 text-white font-bold px-4 py-1.5 rounded shadow-lg transition-colors whitespace-nowrap">
                                 <CheckSquare size={14}/> 讀取詞綴與策略
                             </button>
                         </div>
 
-                        {/* 下半部：智慧做裝顧問 (只有在載入防具時展開) */}
                         {showAdvisor && BUILT_IN_PRESETS[builtInCat].isArmour && BASE_STRATEGIES[builtInAttr] && (
                             <div className="border-t border-blue-900/50 bg-blue-950/20 p-4 animate-in fade-in slide-in-from-top-4 duration-300">
                                 <h3 className="text-sm font-bold text-yellow-400 mb-1 flex items-center gap-1">
@@ -736,37 +734,26 @@ export default function App() {
                                     {BASE_STRATEGIES[builtInAttr].desc}
                                 </p>
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                                    {/* CP 值策略按鈕 */}
-                                    <button 
-                                        onClick={() => applyAdvisorStrategy('cp')}
-                                        className="flex flex-col items-start bg-slate-900 hover:bg-slate-800 border border-slate-700 hover:border-yellow-600/50 p-2.5 rounded transition-all group"
-                                    >
+                                    <button type="button" onClick={() => applyAdvisorStrategy('cp')} className="flex flex-col items-start bg-slate-900 hover:bg-slate-800 border border-slate-700 hover:border-yellow-600/50 p-2.5 rounded transition-all group">
                                         <span className="text-xs font-bold text-slate-300 group-hover:text-yellow-400 mb-1 flex items-center gap-1">
                                             <span>💰 推薦策略：防污染法</span>
                                             <span className="bg-slate-800 text-slate-400 px-1.5 py-0.5 rounded text-[10px]">消耗 {BASE_STRATEGIES[builtInAttr].cp.cost} 點</span>
                                         </span>
                                         <span className="text-sm text-yellow-100 font-mono">{BASE_STRATEGIES[builtInAttr].cp.label}</span>
-                                        <span className="text-[10px] text-slate-500 mt-1">CP值最高，徹底斬斷競爭基底。</span>
                                     </button>
-
-                                    {/* 最大機率策略按鈕 */}
-                                    <button 
-                                        onClick={() => applyAdvisorStrategy('max')}
-                                        className="flex flex-col items-start bg-slate-900 hover:bg-slate-800 border border-slate-700 hover:border-red-500/50 p-2.5 rounded transition-all group"
-                                    >
+                                    <button type="button" onClick={() => applyAdvisorStrategy('max')} className="flex flex-col items-start bg-slate-900 hover:bg-slate-800 border border-slate-700 hover:border-red-500/50 p-2.5 rounded transition-all group">
                                         <span className="text-xs font-bold text-slate-300 group-hover:text-red-400 mb-1 flex items-center gap-1">
                                             <span>🔥 暴力策略：極限機率</span>
                                             <span className="bg-slate-800 text-slate-400 px-1.5 py-0.5 rounded text-[10px]">消耗 {BASE_STRATEGIES[builtInAttr].max.cost} 點</span>
                                         </span>
                                         <span className="text-sm text-red-100 font-mono">{BASE_STRATEGIES[builtInAttr].max.label}</span>
-                                        <span className="text-[10px] text-slate-500 mt-1">機率最大化，適合拼極端鎖定。</span>
                                     </button>
                                 </div>
                             </div>
                         )}
                     </div>
 
-                    {/* 個人預設庫 (保持不變) */}
+                    {/* 個人預設庫 */}
                     <div className="bg-slate-900/50 rounded-xl border border-slate-800 p-3 flex flex-col sm:flex-row items-center justify-between gap-3 shadow-sm">
                         <div className="flex items-center gap-2 w-full sm:w-auto">
                             <FolderOpen size={18} className="text-yellow-500 shrink-0" />
@@ -777,9 +764,9 @@ export default function App() {
                             </select>
                         </div>
                         <div className="flex gap-2 w-full sm:w-auto">
-                            <button onClick={() => bulkInputRef.current.click()} className="flex-1 sm:flex-none text-xs bg-slate-800 hover:bg-slate-700 px-3 py-1.5 rounded border border-slate-600 text-slate-300 transition-colors whitespace-nowrap">➕ 批次匯入</button>
+                            <button type="button" onClick={() => bulkInputRef.current.click()} className="flex-1 sm:flex-none text-xs bg-slate-800 hover:bg-slate-700 px-3 py-1.5 rounded border border-slate-600 text-slate-300 transition-colors whitespace-nowrap">➕ 批次匯入</button>
                             <input type="file" multiple accept=".json" ref={bulkInputRef} onChange={handleBulkImport} className="hidden" />
-                            <button onClick={() => { setSavedPresets({}); localStorage.removeItem('poe_genesis_presets'); showToast("🧹 已清空所有個人預設檔"); }} className="text-xs bg-slate-800 hover:bg-red-900 px-2 py-1.5 rounded border border-slate-600 text-slate-400 hover:text-slate-200 transition-colors" title="清空預設庫"><Trash2 size={14}/></button>
+                            <button type="button" onClick={() => { setSavedPresets({}); localStorage.removeItem('poe_genesis_presets'); showToast("🧹 已清空所有個人預設檔"); }} className="text-xs bg-slate-800 hover:bg-red-900 px-2 py-1.5 rounded border border-slate-600 text-slate-400 hover:text-slate-200 transition-colors" title="清空預設庫"><Trash2 size={14}/></button>
                         </div>
                     </div>
 
@@ -787,7 +774,7 @@ export default function App() {
                     <div className="bg-slate-900/50 rounded-xl border border-slate-800 p-4">
                         <div className="flex justify-between items-center mb-3 border-b border-slate-800 pb-2">
                             <h2 className="text-base font-semibold text-blue-300 flex items-center gap-2"><ShieldAlert size={16}/> 前綴 (Prefixes)</h2>
-                            <button onClick={() => addAffix('prefix')} className="text-xs bg-blue-600/20 text-blue-400 border border-blue-500/30 hover:bg-blue-600/40 px-2 py-1 rounded flex items-center gap-1 transition-colors"><Plus size={14}/> 新增前綴</button>
+                            <button type="button" onClick={() => addAffix('prefix')} className="text-xs bg-blue-600/20 text-blue-400 border border-blue-500/30 hover:bg-blue-600/40 px-2 py-1 rounded flex items-center gap-1 transition-colors"><Plus size={14}/> 新增前綴</button>
                         </div>
                         <div className="space-y-2">{calculatedAffixes.filter(a => a.type === 'prefix').map(affix => (<AffixRow key={affix.id} affix={affix} updateAffix={updateAffix} removeAffix={removeAffix} />))}</div>
                     </div>
@@ -796,7 +783,7 @@ export default function App() {
                     <div className="bg-slate-900/50 rounded-xl border border-slate-800 p-4">
                         <div className="flex justify-between items-center mb-3 border-b border-slate-800 pb-2">
                             <h2 className="text-base font-semibold text-red-300 flex items-center gap-2"><ShieldAlert size={16}/> 後綴 (Suffixes)</h2>
-                            <button onClick={() => addAffix('suffix')} className="text-xs bg-red-600/20 text-red-400 border border-red-500/30 hover:bg-red-600/40 px-2 py-1 rounded flex items-center gap-1 transition-colors"><Plus size={14}/> 新增後綴</button>
+                            <button type="button" onClick={() => addAffix('suffix')} className="text-xs bg-red-600/20 text-red-400 border border-red-500/30 hover:bg-red-600/40 px-2 py-1 rounded flex items-center gap-1 transition-colors"><Plus size={14}/> 新增後綴</button>
                         </div>
                         <div className="space-y-2">{calculatedAffixes.filter(a => a.type === 'suffix').map(affix => (<AffixRow key={affix.id} affix={affix} updateAffix={updateAffix} removeAffix={removeAffix} />))}</div>
                     </div>
