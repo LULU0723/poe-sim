@@ -286,9 +286,9 @@ export default function App() {
 
     useEffect(() => {
         const loadedPresets = localStorage.getItem('poe_genesis_presets');
-        if (loadedPresets) { try { setSavedPresets(JSON.parse(loadedPresets)); } catch (e) { } }
+        if (loadedPresets) { try { setSavedPresets(JSON.parse(loadedPresets)); } catch (e) { console.warn('Failed to parse saved presets from localStorage:', e); } }
         const loadedCoords = localStorage.getItem('poe_genesis_coords');
-        if (loadedCoords) { try { setCoords({ ...INITIAL_COORDS, ...JSON.parse(loadedCoords) }); } catch (e) { } }
+        if (loadedCoords) { try { setCoords({ ...INITIAL_COORDS, ...JSON.parse(loadedCoords) }); } catch (e) { console.warn('Failed to parse saved coords from localStorage:', e); } }
 
         const handleGlobalPointerUp = () => setDraggingNode(null);
         window.addEventListener('pointerup', handleGlobalPointerUp);
@@ -302,22 +302,15 @@ export default function App() {
         let y = ((e.clientY - rect.top) / rect.height) * 100;
         setCoords(prev => ({ ...prev, [draggingNode]: { x: Math.max(0, Math.min(100, x)), y: Math.max(0, Math.min(100, y)) } }));
     };
-const resetCoords = () => {
-    setCoords(INITIAL_COORDS);
-    showToast("🔄 座標已重置為預設值！");
-};
-
     const toggleEditMode = () => {
         if (isEditMode) { localStorage.setItem('poe_genesis_coords', JSON.stringify(coords)); showToast("💾 座標校準已自動儲存於本地！"); }
         else { showToast("🛠️ 已開啟座標校準模式，請拖曳節點！"); }
         setIsEditMode(!isEditMode);
     };
 
-    // ==========================================
-    // 💡 修復 Bug 1: 加上未定義的 resetCoords
-    // ==========================================
     const resetCoords = () => {
         setCoords(INITIAL_COORDS);
+        localStorage.removeItem('poe_genesis_coords');
         showToast("🔄 座標已重置為預設值！");
     };
 
@@ -647,9 +640,11 @@ const resetCoords = () => {
         reader.onload = (e) => {
             try {
                 const importedData = JSON.parse(e.target.result);
-                if (Array.isArray(importedData)) setAffixes(importedData);
-                else if (importedData.affixes && Array.isArray(importedData.affixes)) setAffixes(importedData.affixes);
-                showToast("✅ 成功匯入詞綴資料！");
+                let imported = false;
+                if (Array.isArray(importedData)) { setAffixes(importedData); imported = true; }
+                else if (importedData.affixes && Array.isArray(importedData.affixes)) { setAffixes(importedData.affixes); imported = true; }
+                if (imported) showToast("✅ 成功匯入詞綴資料！");
+                else showToast("⚠️ 檔案格式無效，未找到詞綴資料。");
             } catch (err) { showToast("❌ 檔案格式錯誤。"); }
             event.target.value = null;
         };
@@ -663,20 +658,18 @@ const resetCoords = () => {
         const files = Array.from(event.target.files);
         if (!files.length) return;
         
-        let count = 0;
         const newPresetsData = {};
 
-        // 一次發起所有讀取請求，並等待所有人完成
         await Promise.all(files.map(async (file) => {
             try {
                 const data = JSON.parse(await file.text());
                 newPresetsData[file.name.replace('.json', '')] = data;
-                count++;
             } catch(e) {
                 console.error(`無法解析檔案: ${file.name}`);
             }
         }));
 
+        const count = Object.keys(newPresetsData).length;
         if (count > 0) {
             const finalPresets = { ...savedPresets, ...newPresetsData };
             setSavedPresets(finalPresets);
@@ -690,9 +683,11 @@ const resetCoords = () => {
     const handleLoadPreset = (presetName) => {
         const data = savedPresets[presetName];
         if (data) {
-            if (Array.isArray(data)) setAffixes(data);
-            else if (data.affixes) setAffixes(data.affixes);
-            showToast(`✨ 已載入個人預設：${presetName}`);
+            let loaded = false;
+            if (Array.isArray(data)) { setAffixes(data); loaded = true; }
+            else if (data.affixes && Array.isArray(data.affixes)) { setAffixes(data.affixes); loaded = true; }
+            if (loaded) showToast(`✨ 已載入個人預設：${presetName}`);
+            else showToast("⚠️ 預設資料格式無效。");
         }
     };
 
@@ -834,7 +829,7 @@ const resetCoords = () => {
                                     }} 
                                     className="bg-slate-950 text-slate-200 border border-blue-800/50 rounded px-2 py-1.5 text-sm outline-none cursor-pointer flex-1 min-w-[120px]"
                                 >
-                                    {Object.entries(BUILT_IN_PRESETS[BUILT_IN_PRESETS[builtInCat].attributes ? builtInCat : Object.keys(BUILT_IN_PRESETS)[0]].attributes).map(([attrKey, attrData]) => (
+                                    {Object.entries(BUILT_IN_PRESETS[builtInCat]?.attributes || {}).map(([attrKey, attrData]) => (
                                         <option key={attrKey} value={attrKey}>{attrData.name}</option>
                                     ))}
                                 </select>
