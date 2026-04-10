@@ -302,6 +302,10 @@ export default function App() {
         let y = ((e.clientY - rect.top) / rect.height) * 100;
         setCoords(prev => ({ ...prev, [draggingNode]: { x: Math.max(0, Math.min(100, x)), y: Math.max(0, Math.min(100, y)) } }));
     };
+const resetCoords = () => {
+    setCoords(INITIAL_COORDS);
+    showToast("🔄 座標已重置為預設值！");
+};
 
     const toggleEditMode = () => {
         if (isEditMode) { localStorage.setItem('poe_genesis_coords', JSON.stringify(coords)); showToast("💾 座標校準已自動儲存於本地！"); }
