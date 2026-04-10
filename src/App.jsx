@@ -259,6 +259,7 @@ export default function App() {
     const mapRef = useRef(null);
     const fileInputRef = useRef(null);
     const bulkInputRef = useRef(null);
+    const toastTimerRef = useRef(null);
 
     useEffect(() => {
         const loadedPresets = localStorage.getItem('poe_genesis_presets');
@@ -387,36 +388,45 @@ export default function App() {
         return false;
     };
 
-    const toggleNode = (nodeId) => {
-        if (nodeId === 'start') return; 
-        setActiveNodes(prev => {
-            const next = new Set(prev);
-            const node = TREE_DATA[nodeId];
-            if (!node) return prev; 
-            if (next.has(nodeId)) {
-                next.delete(nodeId);
-                const descendants = getDescendants(nodeId);
-                descendants.forEach(d => next.delete(d));
-            } else {
-                if (node.req && !next.has(node.req)) { showToast(`請先點選前置: ${TREE_DATA[node.req]?.name || node.req}`); return prev; }
-                if (pointsUsed + node.cost > 20) { showToast('已達最高 20 點限制！'); return prev; }
-                if (node.mutex) {
-                    for (let activeId of next) {
-                        const activeNode = TREE_DATA[activeId];
-                        if (activeId !== nodeId && activeNode && activeNode.mutex === node.mutex) {
-                            next.delete(activeId);
-                            const descendants = getDescendants(activeId);
-                            descendants.forEach(d => next.delete(d));
-                        }
-                    }
-                }
-                next.add(nodeId);
-            }
-            return next;
-        });
-    };
+const toggleNode = (nodeId) => {
+    if (nodeId === 'start') return;
+    const node = TREE_DATA[nodeId];
+    if (!node) return;
 
-    const showToast = (msg) => { setToast(msg); setTimeout(() => setToast(''), 3000); };
+    const next = new Set(activeNodes);
+
+    if (next.has(nodeId)) {
+        next.delete(nodeId);
+        getDescendants(nodeId).forEach(d => next.delete(d));
+    } else {
+        if (node.req && !next.has(node.req)) {
+            showToast(`請先點選前置: ${TREE_DATA[node.req]?.name || node.req}`);
+            return;
+        }
+        if (getCost(next) + node.cost > 20) {
+            showToast('已達最高 20 點限制！');
+            return;
+        }
+        if (node.mutex) {
+            for (const activeId of next) {
+                const activeNode = TREE_DATA[activeId];
+                if (activeId !== nodeId && activeNode?.mutex === node.mutex) {
+                    next.delete(activeId);
+                    getDescendants(activeId).forEach(d => next.delete(d));
+                }
+            }
+        }
+        next.add(nodeId);
+    }
+    setActiveNodes(next);
+};
+
+
+const showToast = (msg) => {
+    if (toastTimerRef.current) clearTimeout(toastTimerRef.current);
+    setToast(msg);
+    toastTimerRef.current = setTimeout(() => setToast(''), 3000);
+};
 
     const getModifiers = (nodeSet) => {
         const mods = {};
