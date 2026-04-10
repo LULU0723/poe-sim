@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useRef, useEffect } from 'react';
+import React, { useState, useMemo, useRef, useEffect, useCallback } from 'react';
 import { Plus, Trash2, ShieldAlert, GitMerge, Settings2, Info, Wand2, Upload, Download, Map as MapIcon, List, Target, FolderOpen, Unlock, Lock, RotateCcw, ZoomIn, ZoomOut, Database, CheckSquare, Zap, Target as TargetIcon, GripVertical } from 'lucide-react';
 
 // ==========================================
@@ -271,7 +271,7 @@ export default function App() {
     const [builtInAttr, setBuiltInAttr] = useState('str');
     const [showAdvisor, setShowAdvisor] = useState(false);
 
-    // 💡 新增：拖曳排序狀態
+    // 拖曳排序狀態
     const [dragId, setDragId] = useState(null);
     const [dragOverId, setDragOverId] = useState(null);
 
@@ -310,24 +310,32 @@ export default function App() {
     };
 
     // ==========================================
-    // 💡 新增：處理詞綴拖曳邏輯的函式
+    // 💡 修復 Bug 1: 加上未定義的 resetCoords
     // ==========================================
-    const handleDragStart = (e, id) => {
+    const resetCoords = () => {
+        setCoords(INITIAL_COORDS);
+        showToast("🔄 座標已重置為預設值！");
+    };
+
+    // ==========================================
+    // 💡 修復 Bug 4: 加入 useCallback 避免重複渲染造成的效能問題
+    // ==========================================
+    const handleDragStart = useCallback((e, id) => {
         setDragId(id);
         e.dataTransfer.effectAllowed = "move";
         e.dataTransfer.setData("text/plain", id); // Firefox 需要這個才能拖曳
-    };
+    }, []);
 
-    const handleDragEnter = (e, id) => {
+    const handleDragEnter = useCallback((e, id) => {
         e.preventDefault();
         setDragOverId(id);
-    };
+    }, []);
 
-    const handleDragOver = (e) => {
+    const handleDragOver = useCallback((e) => {
         e.preventDefault(); // 必須 preventDefault 才能觸發 drop
-    };
+    }, []);
 
-    const handleDrop = (e, targetId) => {
+    const handleDrop = useCallback((e, targetId) => {
         e.preventDefault();
         if (!dragId || dragId === targetId) {
             setDragId(null);
@@ -335,33 +343,34 @@ export default function App() {
             return;
         }
 
-        const draggedIndex = affixes.findIndex(a => a.id === dragId);
-        const targetIndex = affixes.findIndex(a => a.id === targetId);
+        setAffixes(prevAffixes => {
+            const draggedIndex = prevAffixes.findIndex(a => a.id === dragId);
+            const targetIndex = prevAffixes.findIndex(a => a.id === targetId);
 
-        if (draggedIndex === -1 || targetIndex === -1) return;
+            if (draggedIndex === -1 || targetIndex === -1) return prevAffixes;
 
-        // 防呆：禁止前綴與後綴跨區交換
-        if (affixes[draggedIndex].type !== affixes[targetIndex].type) {
-            setDragId(null);
-            setDragOverId(null);
-            showToast("⚠️ 只能在同類型（前綴或後綴）之間拖曳排序！");
-            return;
-        }
+            // 防呆：禁止前綴與後綴跨區交換
+            if (prevAffixes[draggedIndex].type !== prevAffixes[targetIndex].type) {
+                showToast("⚠️ 只能在同類型（前綴或後綴）之間拖曳排序！");
+                return prevAffixes;
+            }
 
-        // 重新排序陣列
-        const newAffixes = [...affixes];
-        const [draggedItem] = newAffixes.splice(draggedIndex, 1);
-        newAffixes.splice(targetIndex, 0, draggedItem);
+            // 重新排序陣列
+            const newAffixes = [...prevAffixes];
+            const [draggedItem] = newAffixes.splice(draggedIndex, 1);
+            newAffixes.splice(targetIndex, 0, draggedItem);
 
-        setAffixes(newAffixes);
+            return newAffixes;
+        });
+
         setDragId(null);
         setDragOverId(null);
-    };
+    }, [dragId]);
 
-    const handleDragEnd = () => {
+    const handleDragEnd = useCallback(() => {
         setDragId(null);
         setDragOverId(null);
-    };
+    }, []);
     // ==========================================
 
     const applyAdvisorStrategy = (strategyType) => {
@@ -548,7 +557,12 @@ export default function App() {
         return score;
     };
 
+    // ==========================================
+    // 💡 修復 Bug 3: 防止最佳化按鈕的光速連點
+    // ==========================================
     const runOptimization = () => {
+        if (isOptimizing) return; // 防呆：如果在運算中，直接無視新的點擊
+        
         setIsOptimizing(true);
         setTimeout(() => {
             let bestScore = -Infinity;
@@ -638,22 +652,34 @@ export default function App() {
         reader.readAsText(file);
     };
 
+    // ==========================================
+    // 💡 修復 Bug 2: 批次匯入的多線程塞車問題 (使用 Promise.all)
+    // ==========================================
     const handleBulkImport = async (event) => {
-        const files = event.target.files;
+        const files = Array.from(event.target.files);
         if (!files.length) return;
-        let newPresets = { ...savedPresets };
+        
         let count = 0;
-        for (let i = 0; i < files.length; i++) {
-            const file = files[i];
+        const newPresetsData = {};
+
+        // 一次發起所有讀取請求，並等待所有人完成
+        await Promise.all(files.map(async (file) => {
             try {
                 const data = JSON.parse(await file.text());
-                newPresets[file.name.replace('.json', '')] = data;
+                newPresetsData[file.name.replace('.json', '')] = data;
                 count++;
-            } catch(e) {}
+            } catch(e) {
+                console.error(`無法解析檔案: ${file.name}`);
+            }
+        }));
+
+        if (count > 0) {
+            const finalPresets = { ...savedPresets, ...newPresetsData };
+            setSavedPresets(finalPresets);
+            localStorage.setItem('poe_genesis_presets', JSON.stringify(finalPresets));
+            showToast(`📂 成功將 ${count} 個檔案加入個人預設庫！`);
         }
-        setSavedPresets(newPresets);
-        localStorage.setItem('poe_genesis_presets', JSON.stringify(newPresets));
-        showToast(`📂 成功將 ${count} 個檔案加入個人預設庫！`);
+        
         event.target.value = null;
     };
 
@@ -804,7 +830,7 @@ export default function App() {
                                     }} 
                                     className="bg-slate-950 text-slate-200 border border-blue-800/50 rounded px-2 py-1.5 text-sm outline-none cursor-pointer flex-1 min-w-[120px]"
                                 >
-                                    {Object.entries(BUILT_IN_PRESETS[builtInCat].attributes).map(([attrKey, attrData]) => (
+                                    {Object.entries(BUILT_IN_PRESETS[BUILT_IN_PRESETS[builtInCat].attributes ? builtInCat : Object.keys(BUILT_IN_PRESETS)[0]].attributes).map(([attrKey, attrData]) => (
                                         <option key={attrKey} value={attrKey}>{attrData.name}</option>
                                     ))}
                                 </select>
