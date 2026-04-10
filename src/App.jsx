@@ -1,5 +1,5 @@
 import React, { useState, useMemo, useRef, useEffect } from 'react';
-import { Plus, Trash2, ShieldAlert, GitMerge, Settings2, Info, Wand2, Upload, Download, Map as MapIcon, List, Target, FolderOpen, Unlock, Lock, RotateCcw, ZoomIn, ZoomOut, Database, CheckSquare, Zap, Target as TargetIcon } from 'lucide-react';
+import { Plus, Trash2, ShieldAlert, GitMerge, Settings2, Info, Wand2, Upload, Download, Map as MapIcon, List, Target, FolderOpen, Unlock, Lock, RotateCcw, ZoomIn, ZoomOut, Database, CheckSquare, Zap, Target as TargetIcon, GripVertical } from 'lucide-react';
 
 // ==========================================
 // 1. 內建詞綴資料庫目錄
@@ -182,13 +182,32 @@ const TREE_DATA = {
 const INITIAL_COORDS = {};
 Object.keys(TREE_DATA).forEach(k => { INITIAL_COORDS[k] = { x: TREE_DATA[k].x, y: TREE_DATA[k].y }; });
 
-const AffixRow = ({ affix, updateAffix, removeAffix }) => (
-    <div className={`flex items-center gap-2 mb-2 p-2 rounded-lg border shadow-sm text-sm transition-colors ${
-        affix.category === 'target' ? 'bg-green-900/20 border-green-800/50' :
-        affix.category === 'acceptable' ? 'bg-blue-900/20 border-blue-800/50' :
-        affix.category === 'unwanted' ? 'bg-red-900/20 border-red-800/50' :
-        'bg-slate-800 border-slate-700'
-    }`}>
+// ==========================================
+// 💡 更新：AffixRow 加入拖曳支援
+// ==========================================
+const AffixRow = ({ affix, updateAffix, removeAffix, onDragStart, onDragEnter, onDragOver, onDrop, onDragEnd, isDragging, isDragOver }) => (
+    <div 
+        draggable
+        onDragStart={(e) => onDragStart(e, affix.id)}
+        onDragEnter={(e) => onDragEnter(e, affix.id)}
+        onDragOver={onDragOver}
+        onDrop={(e) => onDrop(e, affix.id)}
+        onDragEnd={onDragEnd}
+        className={`flex items-center gap-2 mb-2 p-2 rounded-lg border shadow-sm text-sm transition-all duration-200 ${
+            isDragging ? 'opacity-40 scale-95 z-50' : 'opacity-100 scale-100'
+        } ${
+            isDragOver ? 'border-purple-500 bg-purple-900/40 border-dashed scale-[1.02] shadow-purple-900/50' : 
+            affix.category === 'target' ? 'bg-green-900/20 border-green-800/50' :
+            affix.category === 'acceptable' ? 'bg-blue-900/20 border-blue-800/50' :
+            affix.category === 'unwanted' ? 'bg-red-900/20 border-red-800/50' :
+            'bg-slate-800 border-slate-700'
+        }`}
+    >
+        {/* 拖曳手把 (Grip Icon) */}
+        <div className="cursor-grab hover:text-white text-slate-500 active:cursor-grabbing px-1 touch-none">
+            <GripVertical size={16} />
+        </div>
+
         <select value={affix.category} onChange={(e) => updateAffix(affix.id, 'category', e.target.value)}
             className={`w-28 border rounded px-1 py-1.5 text-xs font-bold outline-none cursor-pointer ${
                 affix.category === 'target' ? 'bg-green-950 text-green-400 border-green-700' :
@@ -252,6 +271,10 @@ export default function App() {
     const [builtInAttr, setBuiltInAttr] = useState('str');
     const [showAdvisor, setShowAdvisor] = useState(false);
 
+    // 💡 新增：拖曳排序狀態
+    const [dragId, setDragId] = useState(null);
+    const [dragOverId, setDragOverId] = useState(null);
+
     const [zoom, setZoom] = useState(1);
     const [coords, setCoords] = useState(INITIAL_COORDS);
     const [isEditMode, setIsEditMode] = useState(false);
@@ -285,6 +308,61 @@ export default function App() {
         else { showToast("🛠️ 已開啟座標校準模式，請拖曳節點！"); }
         setIsEditMode(!isEditMode);
     };
+
+    // ==========================================
+    // 💡 新增：處理詞綴拖曳邏輯的函式
+    // ==========================================
+    const handleDragStart = (e, id) => {
+        setDragId(id);
+        e.dataTransfer.effectAllowed = "move";
+        e.dataTransfer.setData("text/plain", id); // Firefox 需要這個才能拖曳
+    };
+
+    const handleDragEnter = (e, id) => {
+        e.preventDefault();
+        setDragOverId(id);
+    };
+
+    const handleDragOver = (e) => {
+        e.preventDefault(); // 必須 preventDefault 才能觸發 drop
+    };
+
+    const handleDrop = (e, targetId) => {
+        e.preventDefault();
+        if (!dragId || dragId === targetId) {
+            setDragId(null);
+            setDragOverId(null);
+            return;
+        }
+
+        const draggedIndex = affixes.findIndex(a => a.id === dragId);
+        const targetIndex = affixes.findIndex(a => a.id === targetId);
+
+        if (draggedIndex === -1 || targetIndex === -1) return;
+
+        // 防呆：禁止前綴與後綴跨區交換
+        if (affixes[draggedIndex].type !== affixes[targetIndex].type) {
+            setDragId(null);
+            setDragOverId(null);
+            showToast("⚠️ 只能在同類型（前綴或後綴）之間拖曳排序！");
+            return;
+        }
+
+        // 重新排序陣列
+        const newAffixes = [...affixes];
+        const [draggedItem] = newAffixes.splice(draggedIndex, 1);
+        newAffixes.splice(targetIndex, 0, draggedItem);
+
+        setAffixes(newAffixes);
+        setDragId(null);
+        setDragOverId(null);
+    };
+
+    const handleDragEnd = () => {
+        setDragId(null);
+        setDragOverId(null);
+    };
+    // ==========================================
 
     const applyAdvisorStrategy = (strategyType) => {
         try {
@@ -321,11 +399,9 @@ export default function App() {
         }
     };
 
-    // --- 修正後的 讀取詞綴與策略 功能 ---
     const handleLoadBuiltIn = async () => {
         const presetData = BUILT_IN_PRESETS[builtInCat]?.attributes[builtInAttr];
         
-        // 1. 優先更新 UI 與天賦樹 (就算找不到 JSON 檔案也能作用)
         const targetBase = BUILT_IN_PRESETS[builtInCat].treeBase;
         if (targetBase) {
             setActiveNodes(prev => {
@@ -345,7 +421,6 @@ export default function App() {
             setShowAdvisor(false);
         }
 
-        // 2. 嘗試去讀取對應的 JSON 檔案
         if (presetData && presetData.file) {
             try {
                 const response = await fetch(presetData.file);
@@ -356,7 +431,6 @@ export default function App() {
                 
                 showToast(`📥 成功載入：${BUILT_IN_PRESETS[builtInCat].name} - ${presetData.name}`);
             } catch (error) { 
-                // 檔案不存在時不會再中斷程式，只會跳出這個溫馨提示
                 showToast(`⚠️ 詞綴庫尚未建檔！但已為您切換天賦基底與策略。`); 
             }
         } else { 
@@ -388,45 +462,44 @@ export default function App() {
         return false;
     };
 
-const toggleNode = (nodeId) => {
-    if (nodeId === 'start') return;
-    const node = TREE_DATA[nodeId];
-    if (!node) return;
+    const toggleNode = (nodeId) => {
+        if (nodeId === 'start') return;
+        const node = TREE_DATA[nodeId];
+        if (!node) return;
 
-    const next = new Set(activeNodes);
+        const next = new Set(activeNodes);
 
-    if (next.has(nodeId)) {
-        next.delete(nodeId);
-        getDescendants(nodeId).forEach(d => next.delete(d));
-    } else {
-        if (node.req && !next.has(node.req)) {
-            showToast(`請先點選前置: ${TREE_DATA[node.req]?.name || node.req}`);
-            return;
-        }
-        if (getCost(next) + node.cost > 20) {
-            showToast('已達最高 20 點限制！');
-            return;
-        }
-        if (node.mutex) {
-            for (const activeId of next) {
-                const activeNode = TREE_DATA[activeId];
-                if (activeId !== nodeId && activeNode?.mutex === node.mutex) {
-                    next.delete(activeId);
-                    getDescendants(activeId).forEach(d => next.delete(d));
+        if (next.has(nodeId)) {
+            next.delete(nodeId);
+            getDescendants(nodeId).forEach(d => next.delete(d));
+        } else {
+            if (node.req && !next.has(node.req)) {
+                showToast(`請先點選前置: ${TREE_DATA[node.req]?.name || node.req}`);
+                return;
+            }
+            if (getCost(next) + node.cost > 20) {
+                showToast('已達最高 20 點限制！');
+                return;
+            }
+            if (node.mutex) {
+                for (const activeId of next) {
+                    const activeNode = TREE_DATA[activeId];
+                    if (activeId !== nodeId && activeNode?.mutex === node.mutex) {
+                        next.delete(activeId);
+                        getDescendants(activeId).forEach(d => next.delete(d));
+                    }
                 }
             }
+            next.add(nodeId);
         }
-        next.add(nodeId);
-    }
-    setActiveNodes(next);
-};
+        setActiveNodes(next);
+    };
 
-
-const showToast = (msg) => {
-    if (toastTimerRef.current) clearTimeout(toastTimerRef.current);
-    setToast(msg);
-    toastTimerRef.current = setTimeout(() => setToast(''), 3000);
-};
+    const showToast = (msg) => {
+        if (toastTimerRef.current) clearTimeout(toastTimerRef.current);
+        setToast(msg);
+        toastTimerRef.current = setTimeout(() => setToast(''), 3000);
+    };
 
     const getModifiers = (nodeSet) => {
         const mods = {};
@@ -655,7 +728,6 @@ const showToast = (msg) => {
                     
                     {viewMode === 'map' ? (
                         <div className="flex-1 overflow-auto custom-scrollbar bg-slate-950 rounded-lg border border-slate-800 shadow-inner p-2 md:p-4">
-                            {/* --- 修正：使用 items-start 避免 Flexbox 裁切超出畫面的地圖 --- */}
                             <div className="w-full flex justify-center items-start min-w-max">
                                 <div ref={mapRef} className={`relative aspect-[1083/951] touch-none transition-all duration-200 ease-out ${isEditMode ? 'outline outline-2 outline-yellow-500/50 shadow-[0_0_20px_rgba(234,179,8,0.2)]' : ''}`} style={{ width: `${zoom * 100}%`, maxWidth: `${zoom * 800}px`, minWidth: `${zoom * 300}px` }} onPointerMove={handleMapPointerMove}>
                                     <svg className="absolute inset-0 w-full h-full pointer-events-none" viewBox="0 0 100 100" preserveAspectRatio="none">
@@ -705,9 +777,7 @@ const showToast = (msg) => {
 
                 <div className="lg:col-span-6 xl:col-span-6 flex flex-col gap-4 overflow-y-auto max-h-[80vh] custom-scrollbar pr-2">
                     
-                    {/* ========================================== */}
                     {/* 🛠️ 智慧做裝顧問面板 */}
-                    {/* ========================================== */}
                     <div className="bg-slate-900/80 rounded-xl border-2 border-blue-900/50 flex flex-col shadow-lg shadow-blue-900/10">
                         <div className="p-3 flex flex-col sm:flex-row items-center justify-between gap-3 bg-slate-900">
                             <div className="flex items-center gap-2 w-full sm:w-auto">
@@ -789,22 +859,42 @@ const showToast = (msg) => {
                         </div>
                     </div>
 
-                    {/* 前綴區域 */}
+                    {/* ========================================== */}
+                    {/* 💡 更新：前綴區域 (傳入拖曳事件 Props) */}
+                    {/* ========================================== */}
                     <div className="bg-slate-900/50 rounded-xl border border-slate-800 p-4">
                         <div className="flex justify-between items-center mb-3 border-b border-slate-800 pb-2">
                             <h2 className="text-base font-semibold text-blue-300 flex items-center gap-2"><ShieldAlert size={16}/> 前綴 (Prefixes)</h2>
                             <button type="button" onClick={() => addAffix('prefix')} className="text-xs bg-blue-600/20 text-blue-400 border border-blue-500/30 hover:bg-blue-600/40 px-2 py-1 rounded flex items-center gap-1 transition-colors"><Plus size={14}/> 新增前綴</button>
                         </div>
-                        <div className="space-y-2">{calculatedAffixes.filter(a => a.type === 'prefix').map(affix => (<AffixRow key={affix.id} affix={affix} updateAffix={updateAffix} removeAffix={removeAffix} />))}</div>
+                        <div className="space-y-2">
+                            {calculatedAffixes.filter(a => a.type === 'prefix').map(affix => (
+                                <AffixRow 
+                                    key={affix.id} affix={affix} updateAffix={updateAffix} removeAffix={removeAffix} 
+                                    onDragStart={handleDragStart} onDragEnter={handleDragEnter} onDragOver={handleDragOver} onDrop={handleDrop} onDragEnd={handleDragEnd}
+                                    isDragging={dragId === affix.id} isDragOver={dragOverId === affix.id && dragId !== affix.id}
+                                />
+                            ))}
+                        </div>
                     </div>
 
-                    {/* 後綴區域 */}
+                    {/* ========================================== */}
+                    {/* 💡 更新：後綴區域 (傳入拖曳事件 Props) */}
+                    {/* ========================================== */}
                     <div className="bg-slate-900/50 rounded-xl border border-slate-800 p-4">
                         <div className="flex justify-between items-center mb-3 border-b border-slate-800 pb-2">
                             <h2 className="text-base font-semibold text-red-300 flex items-center gap-2"><ShieldAlert size={16}/> 後綴 (Suffixes)</h2>
                             <button type="button" onClick={() => addAffix('suffix')} className="text-xs bg-red-600/20 text-red-400 border border-red-500/30 hover:bg-red-600/40 px-2 py-1 rounded flex items-center gap-1 transition-colors"><Plus size={14}/> 新增後綴</button>
                         </div>
-                        <div className="space-y-2">{calculatedAffixes.filter(a => a.type === 'suffix').map(affix => (<AffixRow key={affix.id} affix={affix} updateAffix={updateAffix} removeAffix={removeAffix} />))}</div>
+                        <div className="space-y-2">
+                            {calculatedAffixes.filter(a => a.type === 'suffix').map(affix => (
+                                <AffixRow 
+                                    key={affix.id} affix={affix} updateAffix={updateAffix} removeAffix={removeAffix} 
+                                    onDragStart={handleDragStart} onDragEnter={handleDragEnter} onDragOver={handleDragOver} onDrop={handleDrop} onDragEnd={handleDragEnd}
+                                    isDragging={dragId === affix.id} isDragOver={dragOverId === affix.id && dragId !== affix.id}
+                                />
+                            ))}
+                        </div>
                     </div>
                 </div>
             </div>
