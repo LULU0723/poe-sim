@@ -186,51 +186,52 @@ Object.keys(TREE_DATA).forEach(k => { INITIAL_COORDS[k] = { x: TREE_DATA[k].x, y
 // 💡 更新：AffixRow 加入拖曳支援
 // ==========================================
 const AffixRow = ({ affix, updateAffix, removeAffix, onDragStart, onDragEnter, onDragOver, onDrop, onDragEnd, isDragging, isDragOver }) => (
-    <div 
+    <div
         draggable
         onDragStart={(e) => onDragStart(e, affix.id)}
         onDragEnter={(e) => onDragEnter(e, affix.id)}
         onDragOver={onDragOver}
         onDrop={(e) => onDrop(e, affix.id)}
         onDragEnd={onDragEnd}
-        className={`flex items-center gap-2 mb-2 p-2 rounded-lg border shadow-sm text-sm transition-all duration-200 ${
+        className={`mb-2 p-2 rounded-lg border shadow-sm text-sm transition-all duration-200 ${
             isDragging ? 'opacity-40 scale-95 z-50' : 'opacity-100 scale-100'
         } ${
-            isDragOver ? 'border-purple-500 bg-purple-900/40 border-dashed scale-[1.02] shadow-purple-900/50' : 
+            isDragOver ? 'border-purple-500 bg-purple-900/40 border-dashed scale-[1.02] shadow-purple-900/50' :
             affix.category === 'target' ? 'bg-green-900/20 border-green-800/50' :
             affix.category === 'acceptable' ? 'bg-blue-900/20 border-blue-800/50' :
             affix.category === 'unwanted' ? 'bg-red-900/20 border-red-800/50' :
             'bg-slate-800 border-slate-700'
         }`}
     >
-        {/* 拖曳手把 (Grip Icon) */}
-        <div className="cursor-grab hover:text-white text-slate-500 active:cursor-grabbing px-1 touch-none">
-            <GripVertical size={16} />
+        {/* 第一行：拖曳 + 類別 + 名稱 + 標籤 + 刪除 */}
+        <div className="flex items-center gap-2">
+            <div className="cursor-grab hover:text-white text-slate-500 active:cursor-grabbing px-1 touch-none shrink-0">
+                <GripVertical size={16} />
+            </div>
+            <select value={affix.category} onChange={(e) => updateAffix(affix.id, 'category', e.target.value)}
+                className={`shrink-0 w-24 border rounded px-1 py-1 text-xs font-bold outline-none cursor-pointer ${
+                    affix.category === 'target' ? 'bg-green-950 text-green-400 border-green-700' :
+                    affix.category === 'acceptable' ? 'bg-blue-950 text-blue-400 border-blue-700' :
+                    affix.category === 'unwanted' ? 'bg-red-950 text-red-400 border-red-700' : 'bg-slate-900 text-slate-400 border-slate-600'
+                }`}
+            >
+                <option value="neutral">➖ 無</option>
+                <option value="target">🎯 目標詞</option>
+                <option value="acceptable">✅ 可接受</option>
+                <option value="unwanted">❌ 不想要</option>
+            </select>
+            <input value={affix.name} onChange={(e) => updateAffix(affix.id, 'name', e.target.value)} className="min-w-0 flex-1 bg-slate-900 border border-slate-600 rounded px-2 py-1 text-slate-200 text-xs" placeholder="詞綴名稱"/>
+            <button onClick={() => removeAffix(affix.id)} className="shrink-0 p-1 text-slate-500 hover:text-red-400 hover:bg-slate-700 rounded transition-colors"><Trash2 size={16} /></button>
         </div>
-
-        <select value={affix.category} onChange={(e) => updateAffix(affix.id, 'category', e.target.value)}
-            className={`w-28 border rounded px-1 py-1.5 text-xs font-bold outline-none cursor-pointer ${
-                affix.category === 'target' ? 'bg-green-950 text-green-400 border-green-700' :
-                affix.category === 'acceptable' ? 'bg-blue-950 text-blue-400 border-blue-700' :
-                affix.category === 'unwanted' ? 'bg-red-950 text-red-400 border-red-700' : 'bg-slate-900 text-slate-400 border-slate-600'
-            }`}
-        >
-            <option value="neutral">➖ 無 (Neutral)</option>
-            <option value="target">🎯 目標詞</option>
-            <option value="acceptable">✅ 可接受</option>
-            <option value="unwanted">❌ 不想要</option>
-        </select>
-        <input value={affix.name} onChange={(e) => updateAffix(affix.id, 'name', e.target.value)} className="w-1/4 bg-slate-900 border border-slate-600 rounded px-2 py-1 text-slate-200" placeholder="詞綴名稱"/>
-        <input value={affix.tags} onChange={(e) => updateAffix(affix.id, 'tags', e.target.value)} className="w-1/4 bg-slate-900 border border-slate-600 rounded px-2 py-1 text-slate-200" placeholder="標籤"/>
-        <input type="number" value={affix.baseWeight} onChange={(e) => updateAffix(affix.id, 'baseWeight', Number(e.target.value))} className="w-20 bg-slate-900 border border-slate-600 rounded px-2 py-1 text-slate-200 text-right" />
-        
-        <div className="flex-1 flex items-center justify-end gap-3 text-slate-300 px-2">
-            <span className="w-16 text-right font-mono" title={`倍率: ${affix.multiplier.toFixed(1)}x`}>{affix.currentWeight}</span>
-            <span className={`w-16 text-right font-mono font-bold ${affix.chance >= 20 ? 'text-green-400' : affix.chance > 0 ? 'text-blue-300' : 'text-slate-600'}`}>
+        {/* 第二行：標籤 + 基礎權重 + 當前權重 + 機率 */}
+        <div className="flex items-center gap-2 mt-1.5 pl-8">
+            <input value={affix.tags} onChange={(e) => updateAffix(affix.id, 'tags', e.target.value)} className="min-w-0 flex-1 bg-slate-900 border border-slate-600 rounded px-2 py-1 text-slate-200 text-xs" placeholder="標籤 (用逗號分隔)"/>
+            <input type="number" value={affix.baseWeight} onChange={(e) => updateAffix(affix.id, 'baseWeight', Number(e.target.value))} className="w-20 shrink-0 bg-slate-900 border border-slate-600 rounded px-2 py-1 text-slate-200 text-xs text-right" placeholder="權重"/>
+            <span className="shrink-0 w-14 text-right font-mono text-xs text-slate-400" title={`倍率: ${affix.multiplier.toFixed(1)}x`}>{affix.currentWeight}</span>
+            <span className={`shrink-0 w-14 text-right font-mono text-xs font-bold ${affix.chance >= 20 ? 'text-green-400' : affix.chance > 0 ? 'text-blue-300' : 'text-slate-600'}`}>
                 {affix.chance.toFixed(2)}%
             </span>
         </div>
-        <button onClick={() => removeAffix(affix.id)} className="p-1 text-slate-500 hover:text-red-400 hover:bg-slate-700 rounded transition-colors"><Trash2 size={16} /></button>
     </div>
 );
 
@@ -277,6 +278,8 @@ export default function App() {
 
     const [zoom, setZoom] = useState(1);
     const [coords, setCoords] = useState(INITIAL_COORDS);
+    const [optimizeResults, setOptimizeResults] = useState([]);
+    const [appliedResultIndex, setAppliedResultIndex] = useState(null);
     const [isEditMode, setIsEditMode] = useState(false);
     const [draggingNode, setDraggingNode] = useState(null);
     const mapRef = useRef(null);
@@ -432,10 +435,12 @@ export default function App() {
                 const response = await fetch(presetData.file);
                 if (!response.ok) throw new Error('File not found');
                 const data = await response.json();
-                if (Array.isArray(data)) setAffixes(data);
-                else if (data.affixes) setAffixes(data.affixes);
-                
-                showToast(`📥 成功載入：${BUILT_IN_PRESETS[builtInCat].name} - ${presetData.name}`);
+                let loaded = false;
+                if (Array.isArray(data)) { setAffixes(data); loaded = true; }
+                else if (data.affixes && Array.isArray(data.affixes)) { setAffixes(data.affixes); loaded = true; }
+
+                if (loaded) showToast(`📥 成功載入：${BUILT_IN_PRESETS[builtInCat].name} - ${presetData.name}`);
+                else showToast("⚠️ 詞綴庫格式無效，天賦基底已切換但詞綴未載入。");
             } catch (error) { 
                 showToast(`⚠️ 詞綴庫尚未建檔！但已為您切換天賦基底與策略。`); 
             }
@@ -554,16 +559,11 @@ export default function App() {
         return score;
     };
 
-    // ==========================================
-    // 💡 修復 Bug 3: 防止最佳化按鈕的光速連點
-    // ==========================================
     const runOptimization = () => {
-        if (isOptimizing) return; // 防呆：如果在運算中，直接無視新的點擊
-        
+        if (isOptimizing) return;
         setIsOptimizing(true);
         setTimeout(() => {
-            let bestScore = -Infinity;
-            let bestSet = new Set(['start']);
+            let topResults = [];
             const A_opts = [null, 'A1', 'A2', 'A3', 'A4', 'A5'];
             const B_opts = [null, 'B1', 'B2', 'B3', 'B4'];
             const C_opts = [null, 'C1', 'C2', 'C3', 'C4', 'C5'];
@@ -586,36 +586,43 @@ export default function App() {
                 const cost = getCost(testSet);
                 if (cost <= 20) {
                     const score = evaluateSetScore(testSet, affixes);
-                    if (score > bestScore) {
-                        bestScore = score;
-                        bestSet = testSet;
+                    if (topResults.length < 3 || score > topResults[topResults.length - 1].score) {
+                        topResults.push({ score, set: testSet });
+                        topResults.sort((a, b) => b.score - a.score);
+                        if (topResults.length > 3) topResults.pop();
                     }
                 }
             }}}}}}
 
-            let finalSet = new Set(bestSet);
-            let currentCost = getCost(finalSet);
-            let utilityNodes = Array.from(activeNodes).filter(id => !finalSet.has(id));
-            
-            let addedAny = true;
-            while(addedAny) {
-                addedAny = false;
-                for (let id of utilityNodes) {
-                    if (finalSet.has(id)) continue;
-                    let node = TREE_DATA[id];
-                    if (!node) continue; 
-                    if (node.req && !finalSet.has(node.req)) continue; 
-                    if (node.mutex && hasMutex(finalSet, node.mutex)) continue; 
-                    if (currentCost + node.cost <= 20) {
-                        finalSet.add(id);
-                        currentCost += node.cost;
-                        addedAny = true;
+            // 對第 1 名套用貪心填充剩餘點數
+            if (topResults.length > 0) {
+                let finalSet = new Set(topResults[0].set);
+                let currentCost = getCost(finalSet);
+                let utilityNodes = Array.from(activeNodes).filter(id => !finalSet.has(id));
+                let addedAny = true;
+                while(addedAny) {
+                    addedAny = false;
+                    for (let id of utilityNodes) {
+                        if (finalSet.has(id)) continue;
+                        let node = TREE_DATA[id];
+                        if (!node) continue;
+                        if (node.req && !finalSet.has(node.req)) continue;
+                        if (node.mutex && hasMutex(finalSet, node.mutex)) continue;
+                        if (currentCost + node.cost <= 20) {
+                            finalSet.add(id);
+                            currentCost += node.cost;
+                            addedAny = true;
+                        }
                     }
                 }
+                topResults[0] = { ...topResults[0], set: finalSet };
+                setActiveNodes(finalSet);
             }
-            setActiveNodes(finalSet);
+
+            setOptimizeResults(topResults);
+            setAppliedResultIndex(0);
             setIsOptimizing(false);
-            showToast("✨ 最佳化完成！已為您搭配出最高權重的天賦路徑。");
+            showToast("✨ 最佳化完成！已套用第 1 名方案。");
         }, 50);
     };
 
@@ -883,6 +890,46 @@ export default function App() {
                             <button type="button" onClick={() => { setSavedPresets({}); localStorage.removeItem('poe_genesis_presets'); showToast("🧹 已清空所有個人預設檔"); }} className="text-xs bg-slate-800 hover:bg-red-900 px-2 py-1.5 rounded border border-slate-600 text-slate-400 hover:text-slate-200 transition-colors" title="清空預設庫"><Trash2 size={14}/></button>
                         </div>
                     </div>
+
+                    {/* 最佳化結果前 3 名 */}
+                    {optimizeResults.length > 0 && (
+                        <div className="bg-slate-900/50 rounded-xl border border-purple-900/50 p-3 shadow-lg shadow-purple-900/10">
+                            <h2 className="text-sm font-semibold text-purple-300 mb-2 flex items-center gap-1"><Wand2 size={14}/> 最佳化結果</h2>
+                            <div className="grid grid-cols-3 gap-2">
+                                {optimizeResults.map((result, idx) => {
+                                    const medals = ['🥇', '🥈', '🥉'];
+                                    const keyNodes = Array.from(result.set).filter(id => id !== 'start' && TREE_DATA[id]?.mods);
+                                    const isApplied = appliedResultIndex === idx;
+                                    return (
+                                        <button
+                                            key={idx}
+                                            onClick={() => { setActiveNodes(new Set(result.set)); setAppliedResultIndex(idx); showToast(`✨ 已套用第 ${idx + 1} 名方案`); }}
+                                            className={`flex flex-col items-start p-2.5 rounded-lg border text-left transition-all ${
+                                                isApplied
+                                                    ? 'bg-purple-900/40 border-purple-500 shadow-purple-900/30 shadow-md'
+                                                    : 'bg-slate-900 border-slate-700 hover:border-purple-700 hover:bg-slate-800'
+                                            }`}
+                                        >
+                                            <div className="flex items-center gap-1 mb-1.5">
+                                                <span className="text-base">{medals[idx]}</span>
+                                                <span className={`text-xs font-bold ${isApplied ? 'text-purple-300' : 'text-slate-300'}`}>第 {idx + 1} 名</span>
+                                                {isApplied && <span className="text-[10px] bg-purple-700 text-white px-1 rounded ml-1">套用中</span>}
+                                            </div>
+                                            <div className="text-[10px] text-slate-400 mb-1">點數：{getCost(result.set)}/20</div>
+                                            <div className="flex flex-wrap gap-1">
+                                                {keyNodes.length === 0
+                                                    ? <span className="text-[10px] text-slate-600">無加成節點</span>
+                                                    : keyNodes.map(id => (
+                                                        <span key={id} className="text-[10px] bg-slate-800 text-purple-300 border border-purple-900 px-1 py-0.5 rounded font-mono">{id}</span>
+                                                    ))
+                                                }
+                                            </div>
+                                        </button>
+                                    );
+                                })}
+                            </div>
+                        </div>
+                    )}
 
                     {/* ========================================== */}
                     {/* 💡 更新：前綴區域 (傳入拖曳事件 Props) */}
