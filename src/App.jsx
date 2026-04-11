@@ -278,6 +278,7 @@ export default function App() {
 
     const [zoom, setZoom] = useState(1);
     const [coords, setCoords] = useState(INITIAL_COORDS);
+    const [nodePrefs, setNodePrefs] = useState({ D: 0, E: 0, F: 0, K: 0 });
     const [isEditMode, setIsEditMode] = useState(false);
     const [draggingNode, setDraggingNode] = useState(null);
     const mapRef = useRef(null);
@@ -544,7 +545,7 @@ export default function App() {
     };
     const calculatedAffixes = useMemo(() => calculateAffixesChances(affixes, currentModifiers), [affixes, currentModifiers]);
 
-    const evaluateSetScore = (testSet, affixList) => {
+    const evaluateSetScore = (testSet, affixList, prefs) => {
         const mods = getModifiers(testSet);
         const evaluated = calculateAffixesChances(affixList, mods);
         let score = 0;
@@ -554,6 +555,11 @@ export default function App() {
             else if (affix.category === 'unwanted') score -= affix.chance * 1000;
         });
         score -= getCost(testSet) * 0.1;
+        if (prefs) {
+            ['D', 'E', 'F', 'K'].forEach(id => {
+                if (testSet.has(id) && prefs[id]) score += prefs[id];
+            });
+        }
         return score;
     };
 
@@ -570,22 +576,40 @@ export default function App() {
             const M_opts = [null, 'M1', 'M2', 'M3', 'M4'];
             const N_opts = [null, 'N1', 'N2', 'N3', 'N4', 'N5'];
 
+            // 預先建立功能節點的所有組合 (D/E/F/K 各 true/false，共 16 種)
+            const funcCombos = [];
+            for (let d of [false, true]) for (let e of [false, true])
+            for (let f of [false, true]) for (let k of [false, true])
+                funcCombos.push({ d, e, f, k });
+
             for (let a of A_opts) { for (let b of B_opts) { for (let c of C_opts) {
             for (let l of L_opts) { for (let m of M_opts) { for (let n of N_opts) {
-                let testSet = new Set(['start']);
-                if (a || b || c) { testSet.add('a'); testSet.add('b'); testSet.add('c'); }
-                if (a) { testSet.add('d'); testSet.add('A'); testSet.add(a); }
-                if (b) { testSet.add('e'); testSet.add('B'); testSet.add(b); }
-                if (c) { testSet.add('f'); testSet.add('C'); testSet.add(c); }
-                if (l || m || n) { testSet.add('g'); testSet.add('j'); }
-                if (l) { testSet.add('k'); testSet.add('L'); testSet.add(l); }
-                if (m) { testSet.add('m'); testSet.add('M'); testSet.add(m); }
-                if (n) { testSet.add('n'); testSet.add('N'); testSet.add(n); }
+                for (let { d: useD, e: useE, f: useF, k: useK } of funcCombos) {
+                    let testSet = new Set(['start']);
 
-                const cost = getCost(testSet);
-                if (cost <= 20) {
-                    const score = evaluateSetScore(testSet, affixes);
-                    if (score > bestScore) { bestScore = score; bestSet = testSet; }
+                    // 需要走 a→b→c 路徑的情況
+                    if (a || b || c || useD || useE) { testSet.add('a'); testSet.add('b'); testSet.add('c'); }
+                    // F 只需 a→b
+                    if (useF) { testSet.add('a'); testSet.add('b'); testSet.add('F'); }
+                    if (useD) testSet.add('D');
+                    if (useE) testSet.add('E');
+
+                    if (a) { testSet.add('d'); testSet.add('A'); testSet.add(a); }
+                    if (b) { testSet.add('e'); testSet.add('B'); testSet.add(b); }
+                    if (c) { testSet.add('f'); testSet.add('C'); testSet.add(c); }
+
+                    // 需要走 g→j 路徑的情況
+                    if (l || m || n || useK) { testSet.add('g'); testSet.add('j'); }
+                    if (useK) testSet.add('K');
+                    if (l) { testSet.add('k'); testSet.add('L'); testSet.add(l); }
+                    if (m) { testSet.add('m'); testSet.add('M'); testSet.add(m); }
+                    if (n) { testSet.add('n'); testSet.add('N'); testSet.add(n); }
+
+                    const cost = getCost(testSet);
+                    if (cost <= 20) {
+                        const score = evaluateSetScore(testSet, affixes, nodePrefs);
+                        if (score > bestScore) { bestScore = score; bestSet = testSet; }
+                    }
                 }
             }}}}}}
 
@@ -856,6 +880,43 @@ export default function App() {
                                 </div>
                             </div>
                         )}
+                    </div>
+
+                    {/* 功能節點偏好設定 */}
+                    <div className="bg-slate-900/50 rounded-xl border border-slate-800 p-3 shadow-sm">
+                        <h2 className="text-sm font-semibold text-slate-300 mb-2 flex items-center gap-1">
+                            <Settings2 size={14} className="text-slate-400"/> 功能節點偏好 <span className="text-[11px] text-slate-500 font-normal ml-1">（影響最佳化時是否納入考慮）</span>
+                        </h2>
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                            {[
+                                { id: 'D', label: 'D (破裂)', desc: '鎖定一個詞綴，防止被滾走' },
+                                { id: 'E', label: 'E (連線+50)', desc: '額外提升連線品質' },
+                                { id: 'F', label: 'F (隨機品質)', desc: '隨機品質加成' },
+                                { id: 'K', label: 'K (移最低詞)', desc: '移除當前最低權重詞綴' },
+                            ].map(({ id, label, desc }) => (
+                                <div key={id} className="flex items-center gap-2 bg-slate-950 rounded-lg p-2 border border-slate-800">
+                                    <div className="min-w-0 flex-1">
+                                        <div className="text-xs font-bold text-slate-200 font-mono">{label}</div>
+                                        <div className="text-[10px] text-slate-500 truncate">{desc}</div>
+                                    </div>
+                                    <div className="flex shrink-0 gap-1">
+                                        {[{ val: 0, label: '不需要' }, { val: 2000, label: '普通' }, { val: 10000, label: '重要' }].map(opt => (
+                                            <button
+                                                key={opt.val}
+                                                onClick={() => setNodePrefs(p => ({ ...p, [id]: opt.val }))}
+                                                className={`text-[10px] px-2 py-1 rounded border transition-colors ${
+                                                    nodePrefs[id] === opt.val
+                                                        ? opt.val === 0 ? 'bg-slate-700 border-slate-500 text-slate-200'
+                                                          : opt.val === 2000 ? 'bg-blue-700 border-blue-500 text-white'
+                                                          : 'bg-purple-700 border-purple-500 text-white'
+                                                        : 'bg-slate-900 border-slate-700 text-slate-500 hover:border-slate-500 hover:text-slate-300'
+                                                }`}
+                                            >{opt.label}</button>
+                                        ))}
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
                     </div>
 
                     {/* 個人預設庫 */}
