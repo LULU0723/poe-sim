@@ -279,6 +279,7 @@ export default function App() {
     const [zoom, setZoom] = useState(1);
     const [coords, setCoords] = useState(INITIAL_COORDS);
     const [nodePrefs, setNodePrefs] = useState({ D: 0, E: 0, F: 0, K: 0 });
+    const [optimizeWarnings, setOptimizeWarnings] = useState([]);
     const [isEditMode, setIsEditMode] = useState(false);
     const [draggingNode, setDraggingNode] = useState(null);
     const mapRef = useRef(null);
@@ -566,6 +567,7 @@ export default function App() {
     const runOptimization = () => {
         if (isOptimizing) return;
         setIsOptimizing(true);
+        setOptimizeWarnings([]);
         setTimeout(() => {
             let bestScore = -Infinity;
             let bestSet = new Set(['start']);
@@ -576,29 +578,30 @@ export default function App() {
             const M_opts = [null, 'M1', 'M2', 'M3', 'M4'];
             const N_opts = [null, 'N1', 'N2', 'N3', 'N4', 'N5'];
 
-            // 預先建立功能節點的所有組合 (D/E/F/K 各 true/false，共 16 種)
-            const funcCombos = [];
-            for (let d of [false, true]) for (let e of [false, true])
-            for (let f of [false, true]) for (let k of [false, true])
-                funcCombos.push({ d, e, f, k });
+            // 只對有設定偏好的節點才枚舉（效能關鍵）
+            const prefNodeIds = Object.entries(nodePrefs).filter(([, v]) => v > 0).map(([k]) => k);
+            const funcCombos = [[]];
+            for (const id of prefNodeIds) {
+                const extended = funcCombos.map(combo => [...combo, id]);
+                funcCombos.push(...extended);
+            }
 
             for (let a of A_opts) { for (let b of B_opts) { for (let c of C_opts) {
             for (let l of L_opts) { for (let m of M_opts) { for (let n of N_opts) {
-                for (let { d: useD, e: useE, f: useF, k: useK } of funcCombos) {
-                    let testSet = new Set(['start']);
+                for (const funcNodes of funcCombos) {
+                    const useD = funcNodes.includes('D');
+                    const useE = funcNodes.includes('E');
+                    const useF = funcNodes.includes('F');
+                    const useK = funcNodes.includes('K');
 
-                    // 需要走 a→b→c 路徑的情況
+                    let testSet = new Set(['start']);
                     if (a || b || c || useD || useE) { testSet.add('a'); testSet.add('b'); testSet.add('c'); }
-                    // F 只需 a→b
                     if (useF) { testSet.add('a'); testSet.add('b'); testSet.add('F'); }
                     if (useD) testSet.add('D');
                     if (useE) testSet.add('E');
-
                     if (a) { testSet.add('d'); testSet.add('A'); testSet.add(a); }
                     if (b) { testSet.add('e'); testSet.add('B'); testSet.add(b); }
                     if (c) { testSet.add('f'); testSet.add('C'); testSet.add(c); }
-
-                    // 需要走 g→j 路徑的情況
                     if (l || m || n || useK) { testSet.add('g'); testSet.add('j'); }
                     if (useK) testSet.add('K');
                     if (l) { testSet.add('k'); testSet.add('L'); testSet.add(l); }
@@ -628,6 +631,26 @@ export default function App() {
                     if (currentCost + node.cost <= 20) { finalSet.add(id); currentCost += node.cost; addedAny = true; }
                 }
             }
+
+            // === 警告分析 ===
+            const warnings = [];
+            const resultMods = getModifiers(finalSet);
+            const resultAffixes = calculateAffixesChances(affixes, resultMods);
+
+            // 1. 目標詞機率過低
+            resultAffixes.filter(a => a.category === 'target' && a.chance < 10).forEach(a => {
+                warnings.push({ type: 'low_chance', msg: `「${a.name}」目標詞機率偏低（${a.chance.toFixed(1)}%），可能難以達成` });
+            });
+
+            // 2. 有偏好但沒被納入的功能節點（點數不足）
+            prefNodeIds.forEach(id => {
+                if (nodePrefs[id] > 0 && !finalSet.has(id)) {
+                    const labels = { D: 'D (破裂)', E: 'E (連線+50)', F: 'F (隨機品質)', K: 'K (移最低詞)' };
+                    warnings.push({ type: 'node_skipped', msg: `${labels[id]} 因點數不足無法納入，建議降低其他偏好或減少目標詞` });
+                }
+            });
+
+            setOptimizeWarnings(warnings);
             setActiveNodes(finalSet);
             setIsOptimizing(false);
             showToast("✨ 最佳化完成！已為您搭配出最高權重的天賦路徑。");
@@ -918,6 +941,25 @@ export default function App() {
                             ))}
                         </div>
                     </div>
+
+                    {/* 最佳化警告 */}
+                    {optimizeWarnings.length > 0 && (
+                        <div className="bg-yellow-950/30 rounded-xl border border-yellow-800/50 p-3">
+                            <h2 className="text-sm font-semibold text-yellow-400 mb-2 flex items-center gap-1">
+                                <ShieldAlert size={14}/> 最佳化提示
+                            </h2>
+                            <div className="flex flex-col gap-1.5">
+                                {optimizeWarnings.map((w, i) => (
+                                    <div key={i} className={`flex items-start gap-2 text-xs rounded px-2 py-1.5 ${
+                                        w.type === 'low_chance' ? 'bg-red-950/40 text-red-300' : 'bg-yellow-950/40 text-yellow-300'
+                                    }`}>
+                                        <span className="shrink-0 mt-0.5">{w.type === 'low_chance' ? '⚠️' : '💡'}</span>
+                                        <span>{w.msg}</span>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+                    )}
 
                     {/* 個人預設庫 */}
                     <div className="bg-slate-900/50 rounded-xl border border-slate-800 p-3 flex flex-col sm:flex-row items-center justify-between gap-3 shadow-sm">
