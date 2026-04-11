@@ -278,8 +278,6 @@ export default function App() {
 
     const [zoom, setZoom] = useState(1);
     const [coords, setCoords] = useState(INITIAL_COORDS);
-    const [optimizeResults, setOptimizeResults] = useState([]);
-    const [appliedResultIndex, setAppliedResultIndex] = useState(null);
     const [isEditMode, setIsEditMode] = useState(false);
     const [draggingNode, setDraggingNode] = useState(null);
     const mapRef = useRef(null);
@@ -563,7 +561,8 @@ export default function App() {
         if (isOptimizing) return;
         setIsOptimizing(true);
         setTimeout(() => {
-            let topResults = [];
+            let bestScore = -Infinity;
+            let bestSet = new Set(['start']);
             const A_opts = [null, 'A1', 'A2', 'A3', 'A4', 'A5'];
             const B_opts = [null, 'B1', 'B2', 'B3', 'B4'];
             const C_opts = [null, 'C1', 'C2', 'C3', 'C4', 'C5'];
@@ -586,43 +585,28 @@ export default function App() {
                 const cost = getCost(testSet);
                 if (cost <= 20) {
                     const score = evaluateSetScore(testSet, affixes);
-                    if (topResults.length < 3 || score > topResults[topResults.length - 1].score) {
-                        topResults.push({ score, set: testSet });
-                        topResults.sort((a, b) => b.score - a.score);
-                        if (topResults.length > 3) topResults.pop();
-                    }
+                    if (score > bestScore) { bestScore = score; bestSet = testSet; }
                 }
             }}}}}}
 
-            // 對第 1 名套用貪心填充剩餘點數
-            if (topResults.length > 0) {
-                let finalSet = new Set(topResults[0].set);
-                let currentCost = getCost(finalSet);
-                let utilityNodes = Array.from(activeNodes).filter(id => !finalSet.has(id));
-                let addedAny = true;
-                while(addedAny) {
-                    addedAny = false;
-                    for (let id of utilityNodes) {
-                        if (finalSet.has(id)) continue;
-                        let node = TREE_DATA[id];
-                        if (!node) continue;
-                        if (node.req && !finalSet.has(node.req)) continue;
-                        if (node.mutex && hasMutex(finalSet, node.mutex)) continue;
-                        if (currentCost + node.cost <= 20) {
-                            finalSet.add(id);
-                            currentCost += node.cost;
-                            addedAny = true;
-                        }
-                    }
+            let finalSet = new Set(bestSet);
+            let currentCost = getCost(finalSet);
+            let utilityNodes = Array.from(activeNodes).filter(id => !finalSet.has(id));
+            let addedAny = true;
+            while(addedAny) {
+                addedAny = false;
+                for (let id of utilityNodes) {
+                    if (finalSet.has(id)) continue;
+                    let node = TREE_DATA[id];
+                    if (!node) continue;
+                    if (node.req && !finalSet.has(node.req)) continue;
+                    if (node.mutex && hasMutex(finalSet, node.mutex)) continue;
+                    if (currentCost + node.cost <= 20) { finalSet.add(id); currentCost += node.cost; addedAny = true; }
                 }
-                topResults[0] = { ...topResults[0], set: finalSet };
-                setActiveNodes(finalSet);
             }
-
-            setOptimizeResults(topResults);
-            setAppliedResultIndex(0);
+            setActiveNodes(finalSet);
             setIsOptimizing(false);
-            showToast("✨ 最佳化完成！已套用第 1 名方案。");
+            showToast("✨ 最佳化完成！已為您搭配出最高權重的天賦路徑。");
         }, 50);
     };
 
@@ -890,46 +874,6 @@ export default function App() {
                             <button type="button" onClick={() => { setSavedPresets({}); localStorage.removeItem('poe_genesis_presets'); showToast("🧹 已清空所有個人預設檔"); }} className="text-xs bg-slate-800 hover:bg-red-900 px-2 py-1.5 rounded border border-slate-600 text-slate-400 hover:text-slate-200 transition-colors" title="清空預設庫"><Trash2 size={14}/></button>
                         </div>
                     </div>
-
-                    {/* 最佳化結果前 3 名 */}
-                    {optimizeResults.length > 0 && (
-                        <div className="bg-slate-900/50 rounded-xl border border-purple-900/50 p-3 shadow-lg shadow-purple-900/10">
-                            <h2 className="text-sm font-semibold text-purple-300 mb-2 flex items-center gap-1"><Wand2 size={14}/> 最佳化結果</h2>
-                            <div className="grid grid-cols-3 gap-2">
-                                {optimizeResults.map((result, idx) => {
-                                    const medals = ['🥇', '🥈', '🥉'];
-                                    const keyNodes = Array.from(result.set).filter(id => id !== 'start' && TREE_DATA[id]?.mods);
-                                    const isApplied = appliedResultIndex === idx;
-                                    return (
-                                        <button
-                                            key={idx}
-                                            onClick={() => { setActiveNodes(new Set(result.set)); setAppliedResultIndex(idx); showToast(`✨ 已套用第 ${idx + 1} 名方案`); }}
-                                            className={`flex flex-col items-start p-2.5 rounded-lg border text-left transition-all ${
-                                                isApplied
-                                                    ? 'bg-purple-900/40 border-purple-500 shadow-purple-900/30 shadow-md'
-                                                    : 'bg-slate-900 border-slate-700 hover:border-purple-700 hover:bg-slate-800'
-                                            }`}
-                                        >
-                                            <div className="flex items-center gap-1 mb-1.5">
-                                                <span className="text-base">{medals[idx]}</span>
-                                                <span className={`text-xs font-bold ${isApplied ? 'text-purple-300' : 'text-slate-300'}`}>第 {idx + 1} 名</span>
-                                                {isApplied && <span className="text-[10px] bg-purple-700 text-white px-1 rounded ml-1">套用中</span>}
-                                            </div>
-                                            <div className="text-[10px] text-slate-400 mb-1">點數：{getCost(result.set)}/20</div>
-                                            <div className="flex flex-wrap gap-1">
-                                                {keyNodes.length === 0
-                                                    ? <span className="text-[10px] text-slate-600">無加成節點</span>
-                                                    : keyNodes.map(id => (
-                                                        <span key={id} className="text-[10px] bg-slate-800 text-purple-300 border border-purple-900 px-1 py-0.5 rounded font-mono">{id}</span>
-                                                    ))
-                                                }
-                                            </div>
-                                        </button>
-                                    );
-                                })}
-                            </div>
-                        </div>
-                    )}
 
                     {/* ========================================== */}
                     {/* 💡 更新：前綴區域 (傳入拖曳事件 Props) */}
