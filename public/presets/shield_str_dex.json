@@ -1,18 +1,250 @@
 [
-  { "id": "1775716404001", "type": "prefix", "name": "# 最大生命", "tags": "生命", "baseWeight": 13000, "category": "neutral" },
-  { "id": "1775716404002", "type": "prefix", "name": "增加 #% 護甲", "tags": "防禦、護甲", "baseWeight": 7000, "category": "neutral" },
-  { "id": "1775716404003", "type": "prefix", "name": "增加 #% 閃避值", "tags": "防禦、閃避", "baseWeight": 7000, "category": "neutral" },
-  { "id": "1775716404004", "type": "prefix", "name": "增加 #% 護甲及閃避值", "tags": "防禦、護甲、閃避", "baseWeight": 8000, "category": "neutral" },
-  { "id": "1775716404005", "type": "prefix", "name": "# 點護甲 # 點閃避值", "tags": "防禦、護甲、閃避", "baseWeight": 5000, "category": "neutral" },
-  { "id": "1775716404006", "type": "prefix", "name": "# 點護甲 # 點閃避值 # 最大生命", "tags": "生命、防禦、護甲、閃避", "baseWeight": 3000, "category": "neutral" },
-  { "id": "1775716404007", "type": "prefix", "name": "增加 #% 格擋恢復速率", "tags": "格擋", "baseWeight": 6000, "category": "neutral" },
-  { "id": "1775716404008", "type": "suffix", "name": "# 力量", "tags": "能力", "baseWeight": 9000, "category": "neutral" },
-  { "id": "1775716404009", "type": "suffix", "name": "# 敏捷", "tags": "能力", "baseWeight": 9000, "category": "neutral" },
-  { "id": "1775716404010", "type": "suffix", "name": "# 每秒生命回復", "tags": "生命", "baseWeight": 11000, "category": "neutral" },
-  { "id": "1775716404011", "type": "suffix", "name": "#% 火焰抗性", "tags": "元素、火焰、抗性", "baseWeight": 8000, "category": "neutral" },
-  { "id": "1775716404012", "type": "suffix", "name": "#% 冰冷抗性", "tags": "元素、冰冷、抗性", "baseWeight": 8000, "category": "neutral" },
-  { "id": "1775716404013", "type": "suffix", "name": "#% 閃電抗性", "tags": "元素、閃電、抗性", "baseWeight": 8000, "category": "neutral" },
-  { "id": "1775716404014", "type": "suffix", "name": "#% 混沌抗性", "tags": "混沌、抗性", "baseWeight": 1500, "category": "neutral" },
-  { "id": "1775716404015", "type": "suffix", "name": "增加 #% 暈眩恢復和格擋恢復", "tags": "格擋", "baseWeight": 6000, "category": "neutral" },
-  { "id": "1775716404016", "type": "suffix", "name": "減少 #% 能力值需求", "tags": "", "baseWeight": 1700, "category": "neutral" }
+  {
+    "id": "1776012200001",
+    "type": "prefix",
+    "name": "# 最大生命",
+    "tags": "生命",
+    "baseWeight": 11000,
+    "category": "neutral"
+  },
+  {
+    "id": "1776012200002",
+    "type": "prefix",
+    "name": "增加 #% 護甲與閃避",
+    "tags": "防禦、護甲、閃避",
+    "baseWeight": 8000,
+    "category": "neutral"
+  },
+  {
+    "id": "1776012200003",
+    "type": "prefix",
+    "name": "增加 #% 護甲與閃避增加 #% 暈眩恢復和格擋恢復",
+    "tags": "防禦、護甲、閃避",
+    "baseWeight": 6000,
+    "category": "neutral"
+  },
+  {
+    "id": "1776012200004",
+    "type": "prefix",
+    "name": "# 點護甲# 點閃避值",
+    "tags": "防禦、護甲、閃避",
+    "baseWeight": 7000,
+    "category": "neutral"
+  },
+  {
+    "id": "1776012200005",
+    "type": "prefix",
+    "name": "# 點護甲# 最大生命",
+    "tags": "生命、防禦、護甲",
+    "baseWeight": 1500,
+    "category": "neutral"
+  },
+  {
+    "id": "1776012200006",
+    "type": "prefix",
+    "name": "# 點閃避值# 最大生命",
+    "tags": "生命、防禦、閃避",
+    "baseWeight": 1500,
+    "category": "neutral"
+  },
+  {
+    "id": "1776012200007",
+    "type": "prefix",
+    "name": "此物品插槽中近戰寶石等級 #",
+    "tags": "攻擊、寶石",
+    "baseWeight": 2000,
+    "category": "neutral"
+  },
+  {
+    "id": "1776012200008",
+    "type": "prefix",
+    "name": "反射 # 物理傷害給近戰攻擊者",
+    "tags": "物理",
+    "baseWeight": 4000,
+    "category": "neutral"
+  },
+  {
+    "id": "1776012200009",
+    "type": "prefix",
+    "name": "增加 #% 格擋率",
+    "tags": "",
+    "baseWeight": 7000,
+    "category": "neutral"
+  },
+  {
+    "id": "1776012200010",
+    "type": "prefix",
+    "name": "#% 法術傷害格擋率",
+    "tags": "",
+    "baseWeight": 3000,
+    "category": "neutral"
+  },
+  {
+    "id": "1776012200011",
+    "type": "suffix",
+    "name": "# 力量",
+    "tags": "能力",
+    "baseWeight": 4500,
+    "category": "neutral"
+  },
+  {
+    "id": "1776012200012",
+    "type": "suffix",
+    "name": "# 敏捷",
+    "tags": "能力",
+    "baseWeight": 4500,
+    "category": "neutral"
+  },
+  {
+    "id": "1776012200013",
+    "type": "suffix",
+    "name": "增加 #% 攻擊速度",
+    "tags": "攻擊、速度",
+    "baseWeight": 2000,
+    "category": "neutral"
+  },
+  {
+    "id": "1776012200014",
+    "type": "suffix",
+    "name": "# 命中值",
+    "tags": "攻擊",
+    "baseWeight": 4600,
+    "category": "neutral"
+  },
+  {
+    "id": "1776012200015",
+    "type": "suffix",
+    "name": "# 每秒生命回復",
+    "tags": "生命",
+    "baseWeight": 10000,
+    "category": "neutral"
+  },
+  {
+    "id": "1776012200016",
+    "type": "suffix",
+    "name": "#% 火焰抗性",
+    "tags": "元素、火焰、抗性",
+    "baseWeight": 8000,
+    "category": "neutral"
+  },
+  {
+    "id": "1776012200017",
+    "type": "suffix",
+    "name": "#% 冰冷抗性",
+    "tags": "元素、冰冷、抗性",
+    "baseWeight": 8000,
+    "category": "neutral"
+  },
+  {
+    "id": "1776012200018",
+    "type": "suffix",
+    "name": "#% 閃電抗性",
+    "tags": "元素、閃電、抗性",
+    "baseWeight": 8000,
+    "category": "neutral"
+  },
+  {
+    "id": "1776012200019",
+    "type": "suffix",
+    "name": "#% 混沌抗性",
+    "tags": "混沌、抗性",
+    "baseWeight": 1500,
+    "category": "neutral"
+  },
+  {
+    "id": "1776012200020",
+    "type": "suffix",
+    "name": "#% 全部元素抗性",
+    "tags": "元素、抗性",
+    "baseWeight": 6000,
+    "category": "neutral"
+  },
+  {
+    "id": "1776012200021",
+    "type": "suffix",
+    "name": "增加 #% 暈眩恢復和格擋恢復",
+    "tags": "",
+    "baseWeight": 6000,
+    "category": "neutral"
+  },
+  {
+    "id": "1776012200022",
+    "type": "suffix",
+    "name": "減少 #% 能力值需求",
+    "tags": "",
+    "baseWeight": 1500,
+    "category": "neutral"
+  },
+  {
+    "id": "1776012200023",
+    "type": "suffix",
+    "name": "#% 機率避免元素異常狀態",
+    "tags": "元素、火焰、冰冷、閃電、異常狀態",
+    "baseWeight": 4000,
+    "category": "neutral"
+  },
+  {
+    "id": "1776012200024",
+    "type": "suffix",
+    "name": "#% 額外物理傷害減免",
+    "tags": "物理",
+    "baseWeight": 2500,
+    "category": "neutral"
+  },
+  {
+    "id": "1776012200025",
+    "type": "suffix",
+    "name": "#% 壓抑法術傷害率",
+    "tags": "",
+    "baseWeight": 2500,
+    "category": "neutral"
+  },
+  {
+    "id": "1776012200026",
+    "type": "suffix",
+    "name": "減少 #% 承受的暴擊傷害",
+    "tags": "暴擊",
+    "baseWeight": 4000,
+    "category": "neutral"
+  },
+  {
+    "id": "1776012200027",
+    "type": "suffix",
+    "name": "#% 最大火焰抗性",
+    "tags": "元素、火焰、抗性",
+    "baseWeight": 750,
+    "category": "neutral"
+  },
+  {
+    "id": "1776012200028",
+    "type": "suffix",
+    "name": "#% 最大冰冷抗性",
+    "tags": "元素、冰冷、抗性",
+    "baseWeight": 750,
+    "category": "neutral"
+  },
+  {
+    "id": "1776012200029",
+    "type": "suffix",
+    "name": "#% 最大閃電抗性",
+    "tags": "元素、閃電、抗性",
+    "baseWeight": 750,
+    "category": "neutral"
+  },
+  {
+    "id": "1776012200030",
+    "type": "suffix",
+    "name": "#% 最大混沌抗性",
+    "tags": "混沌、抗性",
+    "baseWeight": 375,
+    "category": "neutral"
+  },
+  {
+    "id": "1776012200031",
+    "type": "suffix",
+    "name": "#% 最大全部抗性",
+    "tags": "抗性",
+    "baseWeight": 250,
+    "category": "neutral"
+  }
 ]
