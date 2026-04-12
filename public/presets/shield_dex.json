@@ -1,0 +1,16 @@
+[
+  { "id": "1775716402001", "type": "prefix", "name": "# 最大生命", "tags": "生命", "baseWeight": 13000, "category": "neutral" },
+  { "id": "1775716402002", "type": "prefix", "name": "增加 #% 閃避值", "tags": "防禦、閃避", "baseWeight": 8000, "category": "neutral" },
+  { "id": "1775716402003", "type": "prefix", "name": "# 點閃避值", "tags": "防禦、閃避", "baseWeight": 11000, "category": "neutral" },
+  { "id": "1775716402004", "type": "prefix", "name": "# 點閃避值 # 最大生命", "tags": "生命、防禦、閃避", "baseWeight": 3500, "category": "neutral" },
+  { "id": "1775716402005", "type": "prefix", "name": "增加 #% 格擋恢復速率", "tags": "格擋", "baseWeight": 6000, "category": "neutral" },
+  { "id": "1775716402006", "type": "suffix", "name": "# 敏捷", "tags": "能力", "baseWeight": 9000, "category": "neutral" },
+  { "id": "1775716402007", "type": "suffix", "name": "# 每秒生命回復", "tags": "生命", "baseWeight": 11000, "category": "neutral" },
+  { "id": "1775716402008", "type": "suffix", "name": "#% 火焰抗性", "tags": "元素、火焰、抗性", "baseWeight": 8000, "category": "neutral" },
+  { "id": "1775716402009", "type": "suffix", "name": "#% 冰冷抗性", "tags": "元素、冰冷、抗性", "baseWeight": 8000, "category": "neutral" },
+  { "id": "1775716402010", "type": "suffix", "name": "#% 閃電抗性", "tags": "元素、閃電、抗性", "baseWeight": 8000, "category": "neutral" },
+  { "id": "1775716402011", "type": "suffix", "name": "#% 混沌抗性", "tags": "混沌、抗性", "baseWeight": 1500, "category": "neutral" },
+  { "id": "1775716402012", "type": "suffix", "name": "增加 #% 暈眩恢復和格擋恢復", "tags": "格擋", "baseWeight": 6000, "category": "neutral" },
+  { "id": "1775716402013", "type": "suffix", "name": "減少 #% 能力值需求", "tags": "", "baseWeight": 1700, "category": "neutral" },
+  { "id": "1775716402014", "type": "suffix", "name": "#% 壓抑法術傷害率", "tags": "", "baseWeight": 5000, "category": "neutral" }
+]

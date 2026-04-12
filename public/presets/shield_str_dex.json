@@ -1,0 +1,18 @@
+[
+  { "id": "1775716404001", "type": "prefix", "name": "# 最大生命", "tags": "生命", "baseWeight": 13000, "category": "neutral" },
+  { "id": "1775716404002", "type": "prefix", "name": "增加 #% 護甲", "tags": "防禦、護甲", "baseWeight": 7000, "category": "neutral" },
+  { "id": "1775716404003", "type": "prefix", "name": "增加 #% 閃避值", "tags": "防禦、閃避", "baseWeight": 7000, "category": "neutral" },
+  { "id": "1775716404004", "type": "prefix", "name": "增加 #% 護甲及閃避值", "tags": "防禦、護甲、閃避", "baseWeight": 8000, "category": "neutral" },
+  { "id": "1775716404005", "type": "prefix", "name": "# 點護甲 # 點閃避值", "tags": "防禦、護甲、閃避", "baseWeight": 5000, "category": "neutral" },
+  { "id": "1775716404006", "type": "prefix", "name": "# 點護甲 # 點閃避值 # 最大生命", "tags": "生命、防禦、護甲、閃避", "baseWeight": 3000, "category": "neutral" },
+  { "id": "1775716404007", "type": "prefix", "name": "增加 #% 格擋恢復速率", "tags": "格擋", "baseWeight": 6000, "category": "neutral" },
+  { "id": "1775716404008", "type": "suffix", "name": "# 力量", "tags": "能力", "baseWeight": 9000, "category": "neutral" },
+  { "id": "1775716404009", "type": "suffix", "name": "# 敏捷", "tags": "能力", "baseWeight": 9000, "category": "neutral" },
+  { "id": "1775716404010", "type": "suffix", "name": "# 每秒生命回復", "tags": "生命", "baseWeight": 11000, "category": "neutral" },
+  { "id": "1775716404011", "type": "suffix", "name": "#% 火焰抗性", "tags": "元素、火焰、抗性", "baseWeight": 8000, "category": "neutral" },
+  { "id": "1775716404012", "type": "suffix", "name": "#% 冰冷抗性", "tags": "元素、冰冷、抗性", "baseWeight": 8000, "category": "neutral" },
+  { "id": "1775716404013", "type": "suffix", "name": "#% 閃電抗性", "tags": "元素、閃電、抗性", "baseWeight": 8000, "category": "neutral" },
+  { "id": "1775716404014", "type": "suffix", "name": "#% 混沌抗性", "tags": "混沌、抗性", "baseWeight": 1500, "category": "neutral" },
+  { "id": "1775716404015", "type": "suffix", "name": "增加 #% 暈眩恢復和格擋恢復", "tags": "格擋", "baseWeight": 6000, "category": "neutral" },
+  { "id": "1775716404016", "type": "suffix", "name": "減少 #% 能力值需求", "tags": "", "baseWeight": 1700, "category": "neutral" }
+]

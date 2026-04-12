@@ -61,6 +61,17 @@ const BUILT_IN_PRESETS = {
         name: '🧵 腰帶 (Belt)', treeBase: 'H3', isArmour: false,
         attributes: { 'none': { name: '通用屬性 (無需求)', file: '/presets/belt_general.json' } }
     },
+    'Shield': {
+        name: '🛡️ 盾牌 (Shield)', treeBase: 'G1', isArmour: true,
+        attributes: {
+            'str':     { name: '💪 純力 (護甲)',       file: '/presets/shield_str.json' },
+            'dex':     { name: '🦅 純敏 (閃避)',       file: '/presets/shield_dex.json' },
+            'int':     { name: '🧠 純智 (能盾)',       file: '/presets/shield_int.json' },
+            'str_dex': { name: '⚔️ 力敏 (護甲/閃避)', file: '/presets/shield_str_dex.json' },
+            'str_int': { name: '🛡️ 力智 (護甲/能盾)', file: '/presets/shield_str_int.json' },
+            'dex_int': { name: '🌀 敏智 (閃避/能盾)', file: '/presets/shield_dex_int.json' }
+        }
+    },
     'Jewel': {
         name: '💎 珠寶 (Jewel)', treeBase: 'i', isArmour: false,
         attributes: {
