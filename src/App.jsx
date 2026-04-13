@@ -830,10 +830,19 @@ export default function App() {
                                         else if (canActivate || isEditMode) nodeClass += "bg-slate-700 border-slate-400 hover:bg-blue-600 hover:border-blue-300 z-10";
                                         else nodeClass += "bg-slate-900 border-slate-800 opacity-50 z-0";
                                         if (id === 'start') nodeClass += isActive ? " !bg-blue-600 !border-blue-300 w-10 h-10 -ml-5 -mt-5" : " w-10 h-10 -ml-5 -mt-5";
+                                        const nodeX = coords[id]?.x ?? node.x;
+                                        const nodeY = coords[id]?.y ?? node.y;
+                                        const tipPos = nodeX < 25
+                                            ? "left-full ml-2 top-0"    // 左側節點 → tooltip 往右
+                                            : nodeX > 78
+                                            ? "right-full mr-2 top-0"   // 右側節點 → tooltip 往左
+                                            : nodeY < 22
+                                            ? "top-full mt-2 left-0"    // 頂部節點 → tooltip 往下
+                                            : "bottom-full mb-2 left-0"; // 預設 → tooltip 往上
                                         return (
-                                            <div key={id} className={nodeClass} style={{ left: `${coords[id]?.x ?? node.x}%`, top: `${coords[id]?.y ?? node.y}%`, cursor: isEditMode ? (draggingNode === id ? 'grabbing' : 'grab') : (canActivate ? 'pointer' : 'not-allowed') }} onPointerDown={(e) => { if (isEditMode) { e.stopPropagation(); setDraggingNode(id); } else if (canActivate) { toggleNode(id); } }}>
+                                            <div key={id} className={nodeClass} style={{ left: `${nodeX}%`, top: `${nodeY}%`, cursor: isEditMode ? (draggingNode === id ? 'grabbing' : 'grab') : (canActivate ? 'pointer' : 'not-allowed') }} onPointerDown={(e) => { if (isEditMode) { e.stopPropagation(); setDraggingNode(id); } else if (canActivate) { toggleNode(id); } }}>
                                                 <span className={`font-bold select-none ${id === 'start' ? 'text-xs' : 'text-[9px]'} ${isActive ? 'text-white' : 'text-slate-300'}`}>{id === 'start' ? '起' : id}</span>
-                                                <div className="absolute bottom-full mb-2 hidden group-hover:block bg-slate-900 text-slate-200 text-xs px-2 py-1.5 rounded border border-slate-700 pointer-events-none z-50 max-w-[200px] whitespace-normal">
+                                                <div className={`absolute ${tipPos} hidden group-hover:block bg-slate-900 text-slate-200 text-xs px-2 py-1.5 rounded border border-slate-700 pointer-events-none z-50 max-w-[200px] whitespace-normal`}>
                                                     <div className="font-bold text-purple-400 whitespace-nowrap">{id}: {node.name}</div>
                                                     {node.desc && <div className="text-[10px] text-slate-400 mt-0.5 leading-relaxed">{node.desc}</div>}
                                                     {isEditMode && <div className="text-[10px] text-yellow-400 mt-1">拖曳以移動位置</div>}
