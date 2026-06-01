@@ -282,6 +282,7 @@ export default function App() {
     const [builtInCat, setBuiltInCat] = useState('Helmet');
     const [builtInAttr, setBuiltInAttr] = useState('str');
     const [showAdvisor, setShowAdvisor] = useState(false);
+    const [showAssumptions, setShowAssumptions] = useState(false);
 
     // 拖曳排序狀態
     const [dragId, setDragId] = useState(null);
@@ -860,7 +861,35 @@ export default function App() {
                 </div>
 
                 <div className="lg:col-span-6 xl:col-span-6 flex flex-col gap-4 overflow-y-auto max-h-[80vh] custom-scrollbar pr-2">
-                    
+
+                    {/* ℹ️ 底層假設說明（可折疊） */}
+                    <div className="bg-slate-900/50 rounded-xl border border-slate-800 shadow-sm">
+                        <button
+                            type="button"
+                            onClick={() => setShowAssumptions(v => !v)}
+                            className="w-full flex items-center justify-between gap-2 px-4 py-3 text-left hover:bg-slate-900/80 rounded-xl transition-colors"
+                        >
+                            <span className="flex items-center gap-2 text-sm font-semibold text-slate-300">
+                                <Info size={15} className="text-slate-400 shrink-0" /> 底層假設說明
+                                <span className="hidden sm:inline text-[11px] text-slate-500 font-normal">（計算邏輯基於以下假設，未必等同官方機制）</span>
+                            </span>
+                            <span className={`text-slate-500 text-xs transition-transform duration-200 ${showAssumptions ? 'rotate-180' : ''}`}>▼</span>
+                        </button>
+                        {showAssumptions && (
+                            <div className="px-4 pb-4 pt-1 border-t border-slate-800 text-xs text-slate-400 leading-relaxed space-y-2">
+                                <p className="text-slate-500">⚠️ 以下多為尚未經官方證實的推測，若實測與模擬不符，請以遊戲為準。</p>
+                                <ol className="list-decimal list-outside ml-4 space-y-1.5">
+                                    <li><span className="text-slate-300 font-semibold">基底詞綴池無法突破：</span>基底洗不出的詞綴，基礎權重為 0，點再多 +% 也是 0。匯入詞綴庫請確保是該基底原本就有的詞綴。</li>
+                                    <li><span className="text-slate-300 font-semibold">減益相加、可歸零：</span>同一詞綴被多個減益命中時相加，例 −60% + −60% → 倍率歸零，等同從池中消失。</li>
+                                    <li><span className="text-slate-300 font-semibold">多標籤加成相加：</span>一條詞綴同時帶多個受益標籤時倍率相加，例 +500% + +500% = 11 倍（而非相乘或取最高）。</li>
+                                    <li><span className="text-slate-300 font-semibold">基底初始權重均等：</span>6 種防具基底初始掉落機率相同，再由 g 節點（×0.15 / ×4）稀釋或強化。</li>
+                                    <li><span className="text-slate-300 font-semibold">共用 PoEDB 權重表：</span>詞綴基礎權重參考 PoEDB，假設創世之樹直接套用同一套權重。</li>
+                                    <li><span className="text-slate-300 font-semibold">單次抽取機率：</span>面板百分比為「抽一條前／後綴時抽中該詞綴」的機率，不模擬成品的多詞綴生成、同群組互斥與前後綴數量分配。</li>
+                                </ol>
+                            </div>
+                        )}
+                    </div>
+
                     {/* 🛠️ 智慧做裝顧問面板 */}
                     <div className="bg-slate-900/80 rounded-xl border-2 border-blue-900/50 flex flex-col shadow-lg shadow-blue-900/10">
                         <div className="p-3 flex flex-col sm:flex-row items-center justify-between gap-3 bg-slate-900">
