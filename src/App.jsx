@@ -121,6 +121,18 @@ const BASE_STRATEGIES = {
 // --- 3.29 裝備類創生之樹規則 ---
 const EQUIPMENT_MAX_POINTS = 16;
 
+// 內建預設曾使用不同的中文標籤名稱；在計算前統一成天賦樹採用的標籤。
+const TAG_EXPANSIONS = {
+    '能力': ['屬性'],
+    '法術': ['施法'],
+    '攻擊速度': ['攻擊', '速度']
+};
+
+const normalizeAffixTags = (rawTags) => {
+    const tags = String(rawTags || '').split(/[,，、]+/).map(tag => tag.trim()).filter(Boolean);
+    return [...new Set(tags.flatMap(tag => TAG_EXPANSIONS[tag] || [tag]))];
+};
+
 // --- 天賦樹靜態數據 ---
 const TREE_DATA = {
     'start': { name: '起點', cost: 0, children: ['a', 'g'], desc: '天賦樹起始節點', x: 80.8, y: 81.5 },
@@ -157,12 +169,12 @@ const TREE_DATA = {
     'C4': { name: 'C4 (-60%物理詞綴)', cost: 1, req: 'C', mutex: 'C', mods: { '物理': -0.6 }, desc: '物理類詞綴機率-60%（reduced，與其他reduced相加）', x: 75.7, y: 14.2 },
     'C5': { name: 'C5 (-60%混沌詞綴)', cost: 1, req: 'C', mutex: 'C', mods: { '混沌': -0.6 }, desc: '混沌類詞綴機率-60%（reduced，與其他reduced相加）', x: 72.6, y: 20.8 },
     'g': { name: 'g (25%機率額外掉落)', cost: 1, req: 'start', children: ['j', 'g1', 'g2', 'g3', 'g4', 'g5', 'g6', 'h'], desc: '25%機率額外掉落一件裝備', x: 63.8, y: 71.7 },
-    'g1': { name: 'g1 (×0.15 智力需求基底)', cost: 1, req: 'g', mods: { '智力': -0.85 }, desc: '智力需求裝備掉落機率×0.15（less，相乘計算，待驗證）', x: 58.5, y: 65.2 },
-    'g2': { name: 'g2 (×4 智力需求基底)', cost: 1, req: 'g', mods: { '智力': 3.0 }, desc: '智力需求裝備掉落機率×4（more，相乘計算，待驗證）', x: 68.6, y: 62.9 },
-    'g3': { name: 'g3 (×4 敏捷需求基底)', cost: 1, req: 'g', mods: { '敏捷': 3.0 }, desc: '敏捷需求裝備掉落機率×4（more，相乘計算，待驗證）', x: 72.5, y: 71.4 },
-    'g4': { name: 'g4 (×0.15 敏捷需求基底)', cost: 1, req: 'g', mods: { '敏捷': -0.85 }, desc: '敏捷需求裝備掉落機率×0.15（less，相乘計算，待驗證）', x: 69.1, y: 79.7 },
-    'g5': { name: 'g5 (×0.15 力量需求基底)', cost: 1, req: 'g', mods: { '力量': -0.85 }, desc: '力量需求裝備掉落機率×0.15（less，相乘計算，待驗證）', x: 60.6, y: 79.5 },
-    'g6': { name: 'g6 (×4 力量需求基底)', cost: 1, req: 'g', mods: { '力量': 3.0 }, desc: '力量需求裝備掉落機率×4（more，相乘計算，待驗證）', x: 56.3, y: 72.3 },
+    'g1': { name: 'g1 (×0.15 智力需求基底)', cost: 1, req: 'g', baseMods: { '智力': -0.85 }, desc: '智力需求裝備掉落機率×0.15（less，相乘計算，待驗證）', x: 58.5, y: 65.2 },
+    'g2': { name: 'g2 (×4 智力需求基底)', cost: 1, req: 'g', baseMods: { '智力': 3.0 }, desc: '智力需求裝備掉落機率×4（more，相乘計算，待驗證）', x: 68.6, y: 62.9 },
+    'g3': { name: 'g3 (×4 敏捷需求基底)', cost: 1, req: 'g', baseMods: { '敏捷': 3.0 }, desc: '敏捷需求裝備掉落機率×4（more，相乘計算，待驗證）', x: 72.5, y: 71.4 },
+    'g4': { name: 'g4 (×0.15 敏捷需求基底)', cost: 1, req: 'g', baseMods: { '敏捷': -0.85 }, desc: '敏捷需求裝備掉落機率×0.15（less，相乘計算，待驗證）', x: 69.1, y: 79.7 },
+    'g5': { name: 'g5 (×0.15 力量需求基底)', cost: 1, req: 'g', baseMods: { '力量': -0.85 }, desc: '力量需求裝備掉落機率×0.15（less，相乘計算，待驗證）', x: 60.6, y: 79.5 },
+    'g6': { name: 'g6 (×4 力量需求基底)', cost: 1, req: 'g', baseMods: { '力量': 3.0 }, desc: '力量需求裝備掉落機率×4（more，相乘計算，待驗證）', x: 56.3, y: 72.3 },
     'h': { name: 'h (25%機率額外掉落)', cost: 1, req: 'g', children: ['H', 'i'], desc: '25%機率額外掉落一件裝備', x: 50.7, y: 79.3 },
     'i': { name: 'i (鎖定珠寶)', cost: 1, req: 'h', desc: '掉落鎖定為珠寶（機率+5000%）', x: 39.1, y: 74.9 },
     'H': { name: 'H (飾品機率×6)', cost: 1, req: 'h', children: ['H1', 'H2', 'H3'], desc: '掉落飾品的機率+500%（increased，約×6）', x: 43.7, y: 87.5 },
@@ -195,6 +207,29 @@ const TREE_DATA = {
 
 const INITIAL_COORDS = {};
 Object.keys(TREE_DATA).forEach(k => { INITIAL_COORDS[k] = { x: TREE_DATA[k].x, y: TREE_DATA[k].y }; });
+
+// 基底鎖定與屬性需求偏向屬於玩家已選定的產出條件，最佳化時必須保留並預留點數。
+const OPTIMIZER_REQUIRED_SELECTION_NODES = new Set([
+    'G1', 'G2', 'G3', 'G4', 'G5',
+    'H1', 'H2', 'H3', 'i',
+    'g1', 'g2', 'g3', 'g4', 'g5', 'g6'
+]);
+
+const addNodeWithAncestors = (nodeSet, nodeId) => {
+    let currentId = nodeId;
+    while (currentId && TREE_DATA[currentId]) {
+        nodeSet.add(currentId);
+        currentId = TREE_DATA[currentId].req;
+    }
+};
+
+const getOptimizerRequiredNodes = (activeNodes) => {
+    const required = new Set(['start']);
+    activeNodes.forEach(nodeId => {
+        if (OPTIMIZER_REQUIRED_SELECTION_NODES.has(nodeId)) addNodeWithAncestors(required, nodeId);
+    });
+    return required;
+};
 
 // ==========================================
 // 💡 更新：AffixRow 加入拖曳支援
@@ -541,7 +576,7 @@ export default function App() {
             let preTotal = 0; let sufTotal = 0;
             const results = affixList.map(affix => {
                 let multiplier = 1.0;
-                const affixTags = String(affix.tags || '').split(/[,，、]+/).map(t => t.trim()).filter(t => t);
+                const affixTags = normalizeAffixTags(affix.tags);
                 affixTags.forEach(tag => { if (mods[tag]) multiplier += mods[tag]; });
                 multiplier = Math.max(0, multiplier);
                 const currentWeight = Math.floor((Number(affix.baseWeight) || 0) * multiplier);
@@ -581,11 +616,12 @@ export default function App() {
 
     const runOptimization = () => {
         if (isOptimizing) return;
+        const requiredNodes = getOptimizerRequiredNodes(activeNodes);
         setIsOptimizing(true);
         setOptimizeWarnings([]);
         setTimeout(() => {
             let bestScore = -Infinity;
-            let bestSet = new Set(['start']);
+            let bestSet = new Set(requiredNodes);
             const A_opts = [null, 'A1', 'A2', 'A3', 'A4', 'A5'];
             const B_opts = [null, 'B1', 'B2', 'B3', 'B4'];
             const C_opts = [null, 'C1', 'C2', 'C3', 'C4', 'C5'];
@@ -609,7 +645,7 @@ export default function App() {
                     const useF = funcNodes.includes('F');
                     const useK = funcNodes.includes('K');
 
-                    let testSet = new Set(['start']);
+                    let testSet = new Set(requiredNodes);
                     if (a || b || c || useD || useE) { testSet.add('a'); testSet.add('b'); testSet.add('c'); }
                     if (useF) { testSet.add('a'); testSet.add('b'); testSet.add('F'); }
                     if (useD) testSet.add('D');
@@ -866,7 +902,7 @@ export default function App() {
 
                 <div className="lg:col-span-6 xl:col-span-6 flex flex-col gap-4 overflow-y-auto max-h-[80vh] custom-scrollbar pr-2">
 
-                    {/* ℹ️ 底層假設說明（可折疊） */}
+                    {/* ℹ️ 模擬依據與限制（可折疊） */}
                     <div className="bg-slate-900/50 rounded-xl border border-slate-800 shadow-sm">
                         <button
                             type="button"
@@ -874,22 +910,36 @@ export default function App() {
                             className="w-full flex items-center justify-between gap-2 px-4 py-3 text-left hover:bg-slate-900/80 rounded-xl transition-colors"
                         >
                             <span className="flex items-center gap-2 text-sm font-semibold text-slate-300">
-                                <Info size={15} className="text-slate-400 shrink-0" /> 底層假設說明
-                                <span className="hidden sm:inline text-[11px] text-slate-500 font-normal">（計算邏輯基於以下假設，未必等同官方機制）</span>
+                                <Info size={15} className="text-slate-400 shrink-0" /> 模擬依據與限制
+                                <span className="hidden sm:inline text-[11px] text-slate-500 font-normal">（區分官方資料、模型假設與未模擬項目）</span>
                             </span>
                             <span className={`text-slate-500 text-xs transition-transform duration-200 ${showAssumptions ? 'rotate-180' : ''}`}>▼</span>
                         </button>
                         {showAssumptions && (
-                            <div className="px-4 pb-4 pt-1 border-t border-slate-800 text-xs text-slate-400 leading-relaxed space-y-2">
-                                <p className="text-slate-500">⚠️ 以下多為尚未經官方證實的推測，若實測與模擬不符，請以遊戲為準。</p>
-                                <ol className="list-decimal list-outside ml-4 space-y-1.5">
-                                    <li><span className="text-slate-300 font-semibold">基底詞綴池無法突破：</span>基底洗不出的詞綴，基礎權重為 0，點再多 +% 也是 0。匯入詞綴庫請確保是該基底原本就有的詞綴。</li>
-                                    <li><span className="text-slate-300 font-semibold">減益相加、可歸零：</span>同一詞綴被多個減益命中時相加，例 −60% + −60% → 倍率歸零，等同從池中消失。</li>
-                                    <li><span className="text-slate-300 font-semibold">多標籤加成相加：</span>一條詞綴同時帶多個受益標籤時倍率相加，例 +300% + +300% = 7 倍（而非相乘或取最高）。</li>
-                                    <li><span className="text-slate-300 font-semibold">基底初始權重均等：</span>6 種防具基底初始掉落機率相同，再由 g 節點（×0.15 / ×4）稀釋或強化。</li>
-                                    <li><span className="text-slate-300 font-semibold">共用 PoEDB 權重表：</span>詞綴基礎權重參考 PoEDB，假設創生之樹直接套用同一套權重。</li>
-                                    <li><span className="text-slate-300 font-semibold">單次抽取機率：</span>面板百分比為「抽一條前／後綴時抽中該詞綴」的機率，不模擬成品的多詞綴生成、同群組互斥與前後綴數量分配。</li>
-                                </ol>
+                            <div className="px-4 pb-4 pt-2 border-t border-slate-800 text-xs text-slate-400 leading-relaxed space-y-3">
+                                <div>
+                                    <p className="font-semibold text-emerald-400 mb-1">✓ 3.29 已確認並套用</p>
+                                    <ul className="list-disc list-outside ml-4 space-y-1">
+                                        <li>裝備分支上限 16 點、額外裝備小天賦 25%、指定詞綴類型核心天賦 +300%。</li>
+                                        <li>基底原本無法產生的詞綴，其基礎權重仍為 0，不會因機率加成而出現。</li>
+                                    </ul>
+                                </div>
+                                <div>
+                                    <p className="font-semibold text-yellow-400 mb-1">△ 模型假設（待實測）</p>
+                                    <ul className="list-disc list-outside ml-4 space-y-1">
+                                        <li>同一詞綴命中多個標籤時採相加：+300% + +300% = 7 倍；−60% + −60% 會降至 0。</li>
+                                        <li>詞綴基礎權重沿用 PoEDB 的一般物品權重表。</li>
+                                        <li>策略顧問假設六種屬性需求基底的初始權重相同；這不包含 3.29 已確認的高階基底偏向。</li>
+                                    </ul>
+                                </div>
+                                <div>
+                                    <p className="font-semibold text-sky-400 mb-1">○ 目前未模擬</p>
+                                    <ul className="list-disc list-outside ml-4 space-y-1">
+                                        <li>官方未公布數值的內建詞綴階級降低、高階基底偏向，以及較低的內建額外裝備機率。</li>
+                                        <li>珠寶基底分布、完整多詞綴生成、同群組互斥、前後綴數量與聯合出現機率。</li>
+                                        <li>面板百分比只代表「抽取一條前綴或後綴時」抽中該詞綴的相對機率。</li>
+                                    </ul>
+                                </div>
                             </div>
                         )}
                     </div>
@@ -938,6 +988,9 @@ export default function App() {
                                 </h3>
                                 <p className="text-xs text-blue-200 mb-3 leading-relaxed">
                                     {BASE_STRATEGIES[builtInAttr].desc}
+                                </p>
+                                <p className="text-[11px] text-yellow-500/80 mb-3 leading-relaxed">
+                                    此顧問只處理屬性需求基底的相對偏向；3.29 的高階基底傾向因官方未公布數值，暫不納入計算。
                                 </p>
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                                     <button type="button" onClick={() => applyAdvisorStrategy('cp')} className="flex flex-col items-start bg-slate-900 hover:bg-slate-800 border border-slate-700 hover:border-yellow-600/50 p-2.5 rounded transition-all group">
