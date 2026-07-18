@@ -74,6 +74,10 @@ npm run build
 # 驗證全部預設 JSON 並建置
 npm run check
 
+# 單獨執行模型測試或程式碼檢查
+npm run test
+npm run lint
+
 # 預覽建置結果
 npm run preview
 ```
@@ -150,7 +154,12 @@ npm run preview
 poe-sim/
 ├── index.html
 ├── package.json
+├── eslint.config.js            # ESLint 9 設定
 ├── vite.config.js
+├── scripts/
+│   └── validate-presets.mjs    # 預設資料完整性檢查
+├── test/
+│   └── model.test.js           # 機率、路徑與最佳化測試
 ├── public/
 │   ├── favicon.svg
 │   ├── icons.svg
@@ -161,15 +170,15 @@ poe-sim/
 │       └── ...                 # 共 30+ 個檔案
 └── src/
     ├── main.jsx                # 進入點
-    ├── App.jsx                 # 所有邏輯（單檔，~1050 行）
+    ├── App.jsx                 # 頁面狀態與畫面組裝
     ├── index.css
+    ├── components/             # 詞綴列、樹節點、說明面板
+    ├── data/                   # 3.29 天賦資料、預設目錄與策略
+    ├── domain/                 # 機率、路徑、標籤與最佳化核心
     └── assets/
 ```
 
-`App.jsx` 內三大常數：
-- `BUILT_IN_PRESETS`（內建詞綴庫目錄）
-- `BASE_STRATEGIES`（策略顧問推薦規則）
-- `TREE_DATA`（天賦樹節點：座標、cost、mutex、mods）
+資料、運算與畫面已分離：3.29 改版數值集中在 `src/data/treeData.js`，機率公式與最佳化器位於 `src/domain/`，可以不啟動瀏覽器直接用 `npm run test` 驗證。
 
 ---
 
