@@ -118,6 +118,9 @@ const BASE_STRATEGIES = {
     }
 };
 
+// --- 3.29 裝備類創生之樹規則 ---
+const EQUIPMENT_MAX_POINTS = 16;
+
 // --- 天賦樹靜態數據 ---
 const TREE_DATA = {
     'start': { name: '起點', cost: 0, children: ['a', 'g'], desc: '天賦樹起始節點', x: 80.8, y: 81.5 },
@@ -133,7 +136,7 @@ const TREE_DATA = {
     'c': { name: 'c (25%機率物等+1)', cost: 1, req: 'b', children: ['d', 'e', 'f', 'D', 'E'], desc: '25%機率使裝備物品等級+1', x: 55.7, y: 44.2 },
     'D': { name: 'D (33%機率破裂)', cost: 1, req: 'c', desc: '33%機率使裝備獲得破裂詞綴（鎖定一個詞綴）', x: 33.2, y: 32.5 },
     'E': { name: 'E (連線×50取最佳)', cost: 1, req: 'c', desc: '插槽與連線多擲50次，保留最佳結果', x: 48.9, y: 19.6 },
-    'd': { name: 'd (50%機率額外掉落)', cost: 1, req: 'c', children: ['A'], desc: '50%機率額外掉落一件裝備', x: 30.6, y: 41.0 },
+    'd': { name: 'd (25%機率額外掉落)', cost: 1, req: 'c', children: ['A'], desc: '25%機率額外掉落一件裝備', x: 30.6, y: 41.0 },
     'A': { name: 'A (棄絕之魂)', cost: 0, req: 'd', children: ['A1', 'A2', 'A3', 'A4', 'A5'], desc: '解鎖棄絕系列（減少指定類別詞綴出現機率）', x: 18.2, y: 35.0 },
     'A1': { name: 'A1 (-60%防禦詞綴)', cost: 1, req: 'A', mutex: 'A', mods: { '防禦': -0.6 }, desc: '防禦類詞綴機率-60%（reduced，與其他reduced相加）', x: 24.1, y: 40.4 },
     'A2': { name: 'A2 (-60%屬性詞綴)', cost: 1, req: 'A', mutex: 'A', mods: { '屬性': -0.6 }, desc: '屬性類詞綴機率-60%（reduced，與其他reduced相加）', x: 15.1, y: 41.5 },
@@ -160,7 +163,7 @@ const TREE_DATA = {
     'g4': { name: 'g4 (×0.15 敏捷需求基底)', cost: 1, req: 'g', mods: { '敏捷': -0.85 }, desc: '敏捷需求裝備掉落機率×0.15（less，相乘計算，待驗證）', x: 69.1, y: 79.7 },
     'g5': { name: 'g5 (×0.15 力量需求基底)', cost: 1, req: 'g', mods: { '力量': -0.85 }, desc: '力量需求裝備掉落機率×0.15（less，相乘計算，待驗證）', x: 60.6, y: 79.5 },
     'g6': { name: 'g6 (×4 力量需求基底)', cost: 1, req: 'g', mods: { '力量': 3.0 }, desc: '力量需求裝備掉落機率×4（more，相乘計算，待驗證）', x: 56.3, y: 72.3 },
-    'h': { name: 'h (50%機率額外掉落)', cost: 1, req: 'g', children: ['H', 'i'], desc: '50%機率額外掉落一件裝備', x: 50.7, y: 79.3 },
+    'h': { name: 'h (25%機率額外掉落)', cost: 1, req: 'g', children: ['H', 'i'], desc: '25%機率額外掉落一件裝備', x: 50.7, y: 79.3 },
     'i': { name: 'i (鎖定珠寶)', cost: 1, req: 'h', desc: '掉落鎖定為珠寶（機率+5000%）', x: 39.1, y: 74.9 },
     'H': { name: 'H (飾品機率×6)', cost: 1, req: 'h', children: ['H1', 'H2', 'H3'], desc: '掉落飾品的機率+500%（increased，約×6）', x: 43.7, y: 87.5 },
     'H1': { name: 'H1 (鎖定護身符)', cost: 1, req: 'H', mutex: 'H', desc: '掉落鎖定為護身符（機率+5000%）', x: 37.8, y: 81.6 },
@@ -170,24 +173,24 @@ const TREE_DATA = {
     'K': { name: 'K (移除最低詞綴)', cost: 1, req: 'j', desc: '移除裝備上等級最低的詞綴', x: 46.3, y: 52.8 },
     'k': { name: 'k (詞綴評級+20)', cost: 1, req: 'j', children: ['L'], desc: '詞綴等級評分+20，有助於出現更高階詞綴', x: 32.5, y: 53.6 },
     'L': { name: 'L (奉獻技術)', cost: 0, req: 'k', children: ['L1', 'L2', 'L3', 'L4', 'L5'], desc: '解鎖奉獻系列（大幅提升指定類別詞綴出現機率）', x: 13.7, y: 54.3 },
-    'L1': { name: 'L1 (+500%混沌詞綴)', cost: 1, req: 'L', mutex: 'L', mods: { '混沌': 5.0 }, desc: '混沌類詞綴機率+500%（increased，與其他increased相加）', x: 19.3, y: 48.9 },
-    'L2': { name: 'L2 (+500%物理詞綴)', cost: 1, req: 'L', mutex: 'L', mods: { '物理': 5.0 }, desc: '物理類詞綴機率+500%（increased，與其他increased相加）', x: 11.2, y: 47.8 },
-    'L3': { name: 'L3 (+500%火焰詞綴)', cost: 1, req: 'L', mutex: 'L', mods: { '火焰': 5.0 }, desc: '火焰類詞綴機率+500%（increased，與其他increased相加）', x: 6.7, y: 53.8 },
-    'L4': { name: 'L4 (+500%冰冷詞綴)', cost: 1, req: 'L', mutex: 'L', mods: { '冰冷': 5.0 }, desc: '冰冷類詞綴機率+500%（increased，與其他increased相加）', x: 8.8, y: 60.4 },
-    'L5': { name: 'L5 (+500%閃電詞綴)', cost: 1, req: 'L', mutex: 'L', mods: { '閃電': 5.0 }, desc: '閃電類詞綴機率+500%（increased，與其他increased相加）', x: 16.8, y: 60.5 },
+    'L1': { name: 'L1 (+300%混沌詞綴)', cost: 1, req: 'L', mutex: 'L', mods: { '混沌': 3.0 }, desc: '混沌類詞綴機率+300%（increased，與其他increased相加）', x: 19.3, y: 48.9 },
+    'L2': { name: 'L2 (+300%物理詞綴)', cost: 1, req: 'L', mutex: 'L', mods: { '物理': 3.0 }, desc: '物理類詞綴機率+300%（increased，與其他increased相加）', x: 11.2, y: 47.8 },
+    'L3': { name: 'L3 (+300%火焰詞綴)', cost: 1, req: 'L', mutex: 'L', mods: { '火焰': 3.0 }, desc: '火焰類詞綴機率+300%（increased，與其他increased相加）', x: 6.7, y: 53.8 },
+    'L4': { name: 'L4 (+300%冰冷詞綴)', cost: 1, req: 'L', mutex: 'L', mods: { '冰冷': 3.0 }, desc: '冰冷類詞綴機率+300%（increased，與其他increased相加）', x: 8.8, y: 60.4 },
+    'L5': { name: 'L5 (+300%閃電詞綴)', cost: 1, req: 'L', mutex: 'L', mods: { '閃電': 3.0 }, desc: '閃電類詞綴機率+300%（increased，與其他increased相加）', x: 16.8, y: 60.5 },
     'm': { name: 'm (數值重骰取最佳)', cost: 1, req: 'j', children: ['M'], desc: '詞綴數值額外重骰一次，保留較高結果（不影響詞綴種類）', x: 26.2, y: 62.9 },
     'M': { name: 'M (奉獻熱誠)', cost: 0, req: 'm', children: ['M1', 'M2', 'M3', 'M4'], desc: '解鎖奉獻系列（大幅提升指定類別詞綴出現機率）', x: 12.6, y: 69.7 },
-    'M1': { name: 'M1 (+500%暴擊詞綴)', cost: 1, req: 'M', mutex: 'M', mods: { '暴擊': 5.0 }, desc: '暴擊類詞綴機率+500%（increased，與其他increased相加）', x: 18.8, y: 64.8 },
-    'M2': { name: 'M2 (+500%攻擊詞綴)', cost: 1, req: 'M', mutex: 'M', mods: { '攻擊': 5.0 }, desc: '攻擊類詞綴機率+500%（increased，與其他increased相加）', x: 11.5, y: 62.6 },
-    'M3': { name: 'M3 (+500%施法詞綴)', cost: 1, req: 'M', mutex: 'M', mods: { '施法': 5.0 }, desc: '施法類詞綴機率+500%（increased，與其他increased相加）', x: 7.8, y: 69.7 },
-    'M4': { name: 'M4 (+500%速度詞綴)', cost: 1, req: 'M', mutex: 'M', mods: { '速度': 5.0 }, desc: '速度類詞綴機率+500%（increased，與其他increased相加）', x: 14.1, y: 75.7 },
-    'n': { name: 'n (50%機率額外掉落)', cost: 1, req: 'j', children: ['N'], desc: '50%機率額外掉落一件裝備', x: 30.1, y: 73.8 },
+    'M1': { name: 'M1 (+300%暴擊詞綴)', cost: 1, req: 'M', mutex: 'M', mods: { '暴擊': 3.0 }, desc: '暴擊類詞綴機率+300%（increased，與其他increased相加）', x: 18.8, y: 64.8 },
+    'M2': { name: 'M2 (+300%攻擊詞綴)', cost: 1, req: 'M', mutex: 'M', mods: { '攻擊': 3.0 }, desc: '攻擊類詞綴機率+300%（increased，與其他increased相加）', x: 11.5, y: 62.6 },
+    'M3': { name: 'M3 (+300%施法詞綴)', cost: 1, req: 'M', mutex: 'M', mods: { '施法': 3.0 }, desc: '施法類詞綴機率+300%（increased，與其他increased相加）', x: 7.8, y: 69.7 },
+    'M4': { name: 'M4 (+300%速度詞綴)', cost: 1, req: 'M', mutex: 'M', mods: { '速度': 3.0 }, desc: '速度類詞綴機率+300%（increased，與其他increased相加）', x: 14.1, y: 75.7 },
+    'n': { name: 'n (25%機率額外掉落)', cost: 1, req: 'j', children: ['N'], desc: '25%機率額外掉落一件裝備', x: 30.1, y: 73.8 },
     'N': { name: 'N (奉獻之魂)', cost: 0, req: 'n', children: ['N1', 'N2', 'N3', 'N4', 'N5'], desc: '解鎖奉獻系列（大幅提升指定類別詞綴出現機率）', x: 20.9, y: 83.6 },
-    'N1': { name: 'N1 (+500%生命詞綴)', cost: 1, req: 'N', mutex: 'N', mods: { '生命': 5.0 }, desc: '生命類詞綴機率+500%（increased，與其他increased相加）', x: 16.3, y: 78.0 },
-    'N2': { name: 'N2 (+500%魔力詞綴)', cost: 1, req: 'N', mutex: 'N', mods: { '魔力': 5.0 }, desc: '魔力類詞綴機率+500%（increased，與其他increased相加）', x: 13.1, y: 83.5 },
-    'N3': { name: 'N3 (+500%防禦詞綴)', cost: 1, req: 'N', mutex: 'N', mods: { '防禦': 5.0 }, desc: '防禦類詞綴機率+500%（increased，與其他increased相加）', x: 17.2, y: 90.0 },
-    'N4': { name: 'N4 (+500%屬性詞綴)', cost: 1, req: 'N', mutex: 'N', mods: { '屬性': 5.0 }, desc: '屬性類詞綴機率+500%（increased，與其他increased相加）', x: 24.9, y: 89.5 },
-    'N5': { name: 'N5 (+500%抗性詞綴)', cost: 1, req: 'N', mutex: 'N', mods: { '抗性': 5.0 }, desc: '抗性類詞綴機率+500%（increased，與其他increased相加）', x: 26.7, y: 82.6 }
+    'N1': { name: 'N1 (+300%生命詞綴)', cost: 1, req: 'N', mutex: 'N', mods: { '生命': 3.0 }, desc: '生命類詞綴機率+300%（increased，與其他increased相加）', x: 16.3, y: 78.0 },
+    'N2': { name: 'N2 (+300%魔力詞綴)', cost: 1, req: 'N', mutex: 'N', mods: { '魔力': 3.0 }, desc: '魔力類詞綴機率+300%（increased，與其他increased相加）', x: 13.1, y: 83.5 },
+    'N3': { name: 'N3 (+300%防禦詞綴)', cost: 1, req: 'N', mutex: 'N', mods: { '防禦': 3.0 }, desc: '防禦類詞綴機率+300%（increased，與其他increased相加）', x: 17.2, y: 90.0 },
+    'N4': { name: 'N4 (+300%屬性詞綴)', cost: 1, req: 'N', mutex: 'N', mods: { '屬性': 3.0 }, desc: '屬性類詞綴機率+300%（increased，與其他increased相加）', x: 24.9, y: 89.5 },
+    'N5': { name: 'N5 (+300%抗性詞綴)', cost: 1, req: 'N', mutex: 'N', mods: { '抗性': 3.0 }, desc: '抗性類詞綴機率+300%（increased，與其他increased相加）', x: 26.7, y: 82.6 }
 };
 
 const INITIAL_COORDS = {};
@@ -500,8 +503,8 @@ export default function App() {
                 showToast(`請先點選前置: ${TREE_DATA[node.req]?.name || node.req}`);
                 return;
             }
-            if (getCost(next) + node.cost > 20) {
-                showToast('已達最高 20 點限制！');
+            if (getCost(next) + node.cost > EQUIPMENT_MAX_POINTS) {
+                showToast(`已達最高 ${EQUIPMENT_MAX_POINTS} 點限制！`);
                 return;
             }
             if (node.mutex) {
@@ -621,7 +624,7 @@ export default function App() {
                     if (n) { testSet.add('n'); testSet.add('N'); testSet.add(n); }
 
                     const cost = getCost(testSet);
-                    if (cost <= 20) {
+                    if (cost <= EQUIPMENT_MAX_POINTS) {
                         const score = evaluateSetScore(testSet, affixes, nodePrefs);
                         if (score > bestScore) { bestScore = score; bestSet = testSet; }
                     }
@@ -640,7 +643,7 @@ export default function App() {
                     if (!node) continue;
                     if (node.req && !finalSet.has(node.req)) continue;
                     if (node.mutex && hasMutex(finalSet, node.mutex)) continue;
-                    if (currentCost + node.cost <= 20) { finalSet.add(id); currentCost += node.cost; addedAny = true; }
+                    if (currentCost + node.cost <= EQUIPMENT_MAX_POINTS) { finalSet.add(id); currentCost += node.cost; addedAny = true; }
                 }
             }
 
@@ -768,7 +771,7 @@ export default function App() {
                         <button onClick={() => setViewMode('map')} className={`flex items-center gap-1 px-3 py-1.5 text-xs font-bold transition-colors ${viewMode === 'map' ? 'bg-blue-600 text-white' : 'text-slate-400 hover:bg-slate-800'}`}><MapIcon size={14}/> 視覺地圖</button>
                         <button onClick={() => setViewMode('list')} className={`flex items-center gap-1 px-3 py-1.5 text-xs font-bold transition-colors ${viewMode === 'list' ? 'bg-blue-600 text-white' : 'text-slate-400 hover:bg-slate-800'}`}><List size={14}/> 結構清單</button>
                     </div>
-                    <div className="flex items-center gap-2"><Settings2 className="text-slate-400" size={18} /><span className="text-slate-300 text-sm font-medium">點數:</span><span className={`text-lg font-mono font-bold ${pointsUsed === 20 ? 'text-red-400' : 'text-purple-400'}`}>{pointsUsed}/20</span></div>
+                    <div className="flex items-center gap-2"><Settings2 className="text-slate-400" size={18} /><span className="text-slate-300 text-sm font-medium">點數:</span><span className={`text-lg font-mono font-bold ${pointsUsed === EQUIPMENT_MAX_POINTS ? 'text-red-400' : 'text-purple-400'}`}>{pointsUsed}/{EQUIPMENT_MAX_POINTS}</span></div>
                     <div className="h-5 w-px bg-slate-700 mx-1 hidden xl:block"></div>
                     <button onClick={runOptimization} disabled={isOptimizing || isEditMode} className={`flex items-center gap-1 px-3 py-1.5 rounded text-sm font-bold shadow-lg transition-all ${isOptimizing || isEditMode ? 'bg-slate-700 text-slate-400 cursor-not-allowed' : 'bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-500 hover:to-blue-500 text-white shadow-purple-900/30 hover:scale-105'}`}><Wand2 size={14} className={isOptimizing ? "animate-spin" : ""} /> 最佳化</button>
                     <div className="flex gap-1">
@@ -881,7 +884,7 @@ export default function App() {
                                 <ol className="list-decimal list-outside ml-4 space-y-1.5">
                                     <li><span className="text-slate-300 font-semibold">基底詞綴池無法突破：</span>基底洗不出的詞綴，基礎權重為 0，點再多 +% 也是 0。匯入詞綴庫請確保是該基底原本就有的詞綴。</li>
                                     <li><span className="text-slate-300 font-semibold">減益相加、可歸零：</span>同一詞綴被多個減益命中時相加，例 −60% + −60% → 倍率歸零，等同從池中消失。</li>
-                                    <li><span className="text-slate-300 font-semibold">多標籤加成相加：</span>一條詞綴同時帶多個受益標籤時倍率相加，例 +500% + +500% = 11 倍（而非相乘或取最高）。</li>
+                                    <li><span className="text-slate-300 font-semibold">多標籤加成相加：</span>一條詞綴同時帶多個受益標籤時倍率相加，例 +300% + +300% = 7 倍（而非相乘或取最高）。</li>
                                     <li><span className="text-slate-300 font-semibold">基底初始權重均等：</span>6 種防具基底初始掉落機率相同，再由 g 節點（×0.15 / ×4）稀釋或強化。</li>
                                     <li><span className="text-slate-300 font-semibold">共用 PoEDB 權重表：</span>詞綴基礎權重參考 PoEDB，假設創世之樹直接套用同一套權重。</li>
                                     <li><span className="text-slate-300 font-semibold">單次抽取機率：</span>面板百分比為「抽一條前／後綴時抽中該詞綴」的機率，不模擬成品的多詞綴生成、同群組互斥與前後綴數量分配。</li>
