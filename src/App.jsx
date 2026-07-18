@@ -761,9 +761,10 @@ export default function App() {
             <header className="mb-6 pb-4 border-b border-slate-800 flex flex-col xl:flex-row justify-between items-center gap-4">
                 <div>
                     <h1 className="text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-blue-400 flex items-center gap-2">
-                        <GitMerge /> 創世之樹 策略最佳化模擬器
+                        <GitMerge className="shrink-0" />
+                        <span className="min-w-0">Path of Exile 3.29 創生之樹｜策略最佳化模擬器</span>
                     </h1>
-                    <p className="text-slate-400 text-sm mt-1">支援原圖 UI 熱區點擊與演算法最佳化配置</p>
+                    <p className="text-slate-400 text-sm mt-1">依照 16 點上限規劃路線、模擬詞綴權重，並一鍵找出評分最高的配置。</p>
                 </div>
                 
                 <div className="flex flex-wrap justify-center items-center gap-3 bg-slate-900 p-2 lg:p-3 rounded-lg border border-slate-800 shadow-inner">
@@ -886,7 +887,7 @@ export default function App() {
                                     <li><span className="text-slate-300 font-semibold">減益相加、可歸零：</span>同一詞綴被多個減益命中時相加，例 −60% + −60% → 倍率歸零，等同從池中消失。</li>
                                     <li><span className="text-slate-300 font-semibold">多標籤加成相加：</span>一條詞綴同時帶多個受益標籤時倍率相加，例 +300% + +300% = 7 倍（而非相乘或取最高）。</li>
                                     <li><span className="text-slate-300 font-semibold">基底初始權重均等：</span>6 種防具基底初始掉落機率相同，再由 g 節點（×0.15 / ×4）稀釋或強化。</li>
-                                    <li><span className="text-slate-300 font-semibold">共用 PoEDB 權重表：</span>詞綴基礎權重參考 PoEDB，假設創世之樹直接套用同一套權重。</li>
+                                    <li><span className="text-slate-300 font-semibold">共用 PoEDB 權重表：</span>詞綴基礎權重參考 PoEDB，假設創生之樹直接套用同一套權重。</li>
                                     <li><span className="text-slate-300 font-semibold">單次抽取機率：</span>面板百分比為「抽一條前／後綴時抽中該詞綴」的機率，不模擬成品的多詞綴生成、同群組互斥與前後綴數量分配。</li>
                                 </ol>
                             </div>
