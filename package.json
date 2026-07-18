@@ -6,8 +6,10 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
+    "check": "npm run validate:presets && npm run build",
     "lint": "eslint .",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "validate:presets": "node scripts/validate-presets.mjs"
   },
   "dependencies": {
     "@tailwindcss/vite": "^4.2.2",
