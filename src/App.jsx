@@ -1,311 +1,24 @@
-import React, { useState, useMemo, useRef, useEffect, useCallback } from 'react';
-import { Plus, Trash2, ShieldAlert, GitMerge, Settings2, Info, Wand2, Upload, Download, Map as MapIcon, List, Target, FolderOpen, Unlock, Lock, RotateCcw, ZoomIn, ZoomOut, Database, CheckSquare, Zap, Target as TargetIcon, GripVertical } from 'lucide-react';
+import { useState, useMemo, useRef, useEffect, useCallback } from 'react';
+import { Plus, Trash2, ShieldAlert, GitMerge, Settings2, Wand2, Upload, Download, Map as MapIcon, List, Target, FolderOpen, Unlock, Lock, RotateCcw, ZoomIn, ZoomOut, Database, CheckSquare, Zap, Target as TargetIcon } from 'lucide-react';
 
-// ==========================================
-// 1. 內建詞綴資料庫目錄
-// ==========================================
-const BUILT_IN_PRESETS = {
-    'Helmet': {
-        name: '⛑️ 頭盔 (Helmet)', treeBase: 'G2', isArmour: true,
-        attributes: {
-            'str': { name: '💪 純力 (護甲)', file: '/presets/helmet_str.json' },
-            'dex': { name: '🦅 純敏 (閃避)', file: '/presets/helmet_dex.json' },
-            'int': { name: '🧠 純智 (能盾)', file: '/presets/helmet_int.json' },
-            'str_dex': { name: '⚔️ 力敏 (護甲/閃避)', file: '/presets/helmet_str_dex.json' },
-            'str_int': { name: '🛡️ 力智 (護甲/能盾)', file: '/presets/helmet_str_int.json' },
-            'dex_int': { name: '🌀 敏智 (閃避/能盾)', file: '/presets/helmet_dex_int.json' }
-        }
-    },
-    'BodyArmour': {
-        name: '🦺 胸甲 (Body Armour)', treeBase: 'G3', isArmour: true,
-        attributes: {
-            'str': { name: '💪 純力 (護甲)', file: '/presets/body_armour_str.json' },
-            'dex': { name: '🦅 純敏 (閃避)', file: '/presets/body_armour_dex.json' },
-            'int': { name: '🧠 純智 (能盾)', file: '/presets/body_armour_int.json' },
-            'str_dex': { name: '⚔️ 力敏 (護甲/閃避)', file: '/presets/body_armour_str_dex.json' },
-            'str_int': { name: '🛡️ 力智 (護甲/能盾)', file: '/presets/body_armour_str_int.json' },
-            'dex_int': { name: '🌀 敏智 (閃避/能盾)', file: '/presets/body_armour_dex_int.json' }
-        }
-    },
-    'Gloves': {
-        name: '🧤 手套 (Gloves)', treeBase: 'G4', isArmour: true,
-        attributes: {
-            'str': { name: '💪 純力 (護甲)', file: '/presets/gloves_str.json' },
-            'dex': { name: '🦅 純敏 (閃避)', file: '/presets/gloves_dex.json' },
-            'int': { name: '🧠 純智 (能盾)', file: '/presets/gloves_int.json' },
-            'str_dex': { name: '⚔️ 力敏 (護甲/閃避)', file: '/presets/gloves_str_dex.json' },
-            'str_int': { name: '🛡️ 力智 (護甲/能盾)', file: '/presets/gloves_str_int.json' },
-            'dex_int': { name: '🌀 敏智 (閃避/能盾)', file: '/presets/gloves_dex_int.json' }
-        }
-    },
-    'Boots': {
-        name: '🥾 鞋子 (Boots)', treeBase: 'G5', isArmour: true,
-        attributes: {
-            'str': { name: '💪 純力 (護甲)', file: '/presets/boots_str.json' },
-            'dex': { name: '🦅 純敏 (閃避)', file: '/presets/boots_dex.json' },
-            'int': { name: '🧠 純智 (能盾)', file: '/presets/boots_int.json' },
-            'str_dex': { name: '⚔️ 力敏 (護甲/閃避)', file: '/presets/boots_str_dex.json' },
-            'str_int': { name: '🛡️ 力智 (護甲/能盾)', file: '/presets/boots_str_int.json' },
-            'dex_int': { name: '🌀 敏智 (閃避/能盾)', file: '/presets/boots_dex_int.json' }
-        }
-    },
-    'Amulet': {
-        name: '📿 護身符 (Amulet)', treeBase: 'H1', isArmour: false,
-        attributes: { 'none': { name: '通用屬性 (無需求)', file: '/presets/amulet_general.json' } }
-    },
-    'Ring': {
-        name: '💍 戒指 (Ring)', treeBase: 'H2', isArmour: false,
-        attributes: { 'none': { name: '通用屬性 (無需求)', file: '/presets/ring_general.json' } }
-    },
-    'Belt': {
-        name: '🧵 腰帶 (Belt)', treeBase: 'H3', isArmour: false,
-        attributes: { 'none': { name: '通用屬性 (無需求)', file: '/presets/belt_general.json' } }
-    },
-    'Shield': {
-        name: '🛡️ 盾牌 (Shield)', treeBase: 'G1', isArmour: true,
-        attributes: {
-            'str':     { name: '💪 純力 (護甲)',       file: '/presets/shield_str.json' },
-            'dex':     { name: '🦅 純敏 (閃避)',       file: '/presets/shield_dex.json' },
-            'int':     { name: '🧠 純智 (能盾)',       file: '/presets/shield_int.json' },
-            'str_dex': { name: '⚔️ 力敏 (護甲/閃避)', file: '/presets/shield_str_dex.json' },
-            'str_int': { name: '🛡️ 力智 (護甲/能盾)', file: '/presets/shield_str_int.json' },
-            'dex_int': { name: '🌀 敏智 (閃避/能盾)', file: '/presets/shield_dex_int.json' }
-        }
-    },
-    'Jewel': {
-        name: '💎 珠寶 (Jewel)', treeBase: 'i', isArmour: false,
-        attributes: {
-            'crimson': { name: '🔴 赤紅 (偏力量/近戰)', file: '/presets/jewel_crimson.json' },
-            'cobalt': { name: '🔵 鈷藍 (偏智力/法術)', file: '/presets/jewel_cobalt.json' },
-            'viridian': { name: '🟢 翠綠 (偏敏捷/弓箭)', file: '/presets/jewel_viridian.json' }
-        }
+import { AffixRow } from './components/AffixRow.jsx';
+import { AssumptionsPanel } from './components/AssumptionsPanel.jsx';
+import { TreeNode } from './components/TreeNode.jsx';
+import { BUILT_IN_PRESETS, BASE_STRATEGIES } from './data/presets.js';
+import { EQUIPMENT_MAX_POINTS, INITIAL_COORDS, TREE_DATA } from './data/treeData.js';
+import { optimizeTree } from './domain/optimizer.js';
+import { calculateAffixChances } from './domain/probability.js';
+import { getCost, getDescendants, getModifiers } from './domain/tree.js';
+
+const readStoredJson = (key, fallbackValue) => {
+    if (typeof localStorage === 'undefined') return fallbackValue;
+    try {
+        const storedValue = localStorage.getItem(key);
+        return storedValue ? JSON.parse(storedValue) : fallbackValue;
+    } catch (error) {
+        console.warn(`Failed to parse ${key} from localStorage:`, error);
+        return fallbackValue;
     }
-};
-
-// ==========================================
-// 2. 基底演算法策略庫 (Advisor Strategies)
-// ==========================================
-const BASE_STRATEGIES = {
-    'str': {
-        desc: '純力底極易被力智/力敏稀釋。最佳策略是砍斷智敏來源。',
-        cp: { nodes: ['g1', 'g4'], cost: 2, label: '-85% 智敏' },
-        max: { nodes: ['g1', 'g4', 'g6'], cost: 3, label: '-85% 智敏, +300% 力' }
-    },
-    'dex': {
-        desc: '純敏底極易被敏智/力敏稀釋。最佳策略是砍斷力智來源。',
-        cp: { nodes: ['g1', 'g5'], cost: 2, label: '-85% 力智' },
-        max: { nodes: ['g1', 'g5', 'g3'], cost: 3, label: '-85% 力智, +300% 敏' }
-    },
-    'int': {
-        desc: '純智底極易被力智/敏智稀釋。最佳策略是砍斷力敏來源。',
-        cp: { nodes: ['g4', 'g5'], cost: 2, label: '-85% 力敏' },
-        max: { nodes: ['g4', 'g5', 'g2'], cost: 3, label: '-85% 力敏, +300% 智' }
-    },
-    'str_dex': {
-        desc: '力敏複合底。只需斷絕智力來源即可大幅提升機率。',
-        cp: { nodes: ['g1'], cost: 1, label: '-85% 智' },
-        max: { nodes: ['g1', 'g6', 'g3'], cost: 3, label: '-85% 智, +300% 力敏' }
-    },
-    'str_int': {
-        desc: '力智複合底。只需斷絕敏捷來源即可大幅提升機率。',
-        cp: { nodes: ['g4'], cost: 1, label: '-85% 敏' },
-        max: { nodes: ['g4', 'g6', 'g2'], cost: 3, label: '-85% 敏, +300% 力智' }
-    },
-    'dex_int': {
-        desc: '敏智複合底。只需斷絕力量來源即可大幅提升機率。',
-        cp: { nodes: ['g5'], cost: 1, label: '-85% 力' },
-        max: { nodes: ['g5', 'g3', 'g2'], cost: 3, label: '-85% 力, +300% 敏智' }
-    }
-};
-
-// --- 3.29 裝備類創生之樹規則 ---
-const EQUIPMENT_MAX_POINTS = 16;
-
-// 內建預設曾使用不同的中文標籤名稱；在計算前統一成天賦樹採用的標籤。
-const TAG_EXPANSIONS = {
-    '能力': ['屬性'],
-    '法術': ['施法'],
-    '攻擊速度': ['攻擊', '速度']
-};
-
-const normalizeAffixTags = (rawTags) => {
-    const tags = String(rawTags || '').split(/[,，、]+/).map(tag => tag.trim()).filter(Boolean);
-    return [...new Set(tags.flatMap(tag => TAG_EXPANSIONS[tag] || [tag]))];
-};
-
-// --- 天賦樹靜態數據 ---
-const TREE_DATA = {
-    'start': { name: '起點', cost: 0, children: ['a', 'g'], desc: '天賦樹起始節點', x: 80.8, y: 81.5 },
-    'a': { name: 'a (連線×10取最佳)', cost: 1, req: 'start', children: ['b', 'G'], desc: '插槽與連線多擲10次，保留最佳結果', x: 82.2, y: 61.5 },
-    'G': { name: 'G (防具機率×6)', cost: 1, req: 'a', children: ['G1', 'G2', 'G3', 'G4', 'G5'], desc: '掉落防具的機率+500%（increased，約×6）', x: 90.9, y: 36.6 },
-    'G1': { name: 'G1 (鎖定護盾)', cost: 1, req: 'G', mutex: 'G', desc: '掉落鎖定為護盾（機率+5000%）', x: 83.8, y: 33.4 },
-    'G2': { name: 'G2 (鎖定頭盔)', cost: 1, req: 'G', mutex: 'G', desc: '掉落鎖定為頭盔（機率+5000%）', x: 88.3, y: 27.3 },
-    'G3': { name: 'G3 (鎖定胸甲)', cost: 1, req: 'G', mutex: 'G', desc: '掉落鎖定為胸甲（機率+5000%）', x: 96.3, y: 30.8 },
-    'G4': { name: 'G4 (鎖定手套)', cost: 1, req: 'G', mutex: 'G', desc: '掉落鎖定為手套（機率+5000%）', x: 96.5, y: 40.5 },
-    'G5': { name: 'G5 (鎖定鞋子)', cost: 1, req: 'G', mutex: 'G', desc: '掉落鎖定為鞋子（機率+5000%）', x: 92.2, y: 46.4 },
-    'b': { name: 'b (詞綴評級+20)', cost: 1, req: 'a', children: ['c', 'F'], desc: '詞綴等級評分+20，有助於出現更高階詞綴', x: 68.6, y: 55.0 },
-    'F': { name: 'F (隨機品質)', cost: 1, req: 'b', desc: '護甲掉落時品質為隨機數值（而非固定0%）', x: 64.8, y: 41.3 },
-    'c': { name: 'c (25%機率物等+1)', cost: 1, req: 'b', children: ['d', 'e', 'f', 'D', 'E'], desc: '25%機率使裝備物品等級+1', x: 55.7, y: 44.2 },
-    'D': { name: 'D (33%機率破裂)', cost: 1, req: 'c', desc: '33%機率使裝備獲得破裂詞綴（鎖定一個詞綴）', x: 33.2, y: 32.5 },
-    'E': { name: 'E (連線×50取最佳)', cost: 1, req: 'c', desc: '插槽與連線多擲50次，保留最佳結果', x: 48.9, y: 19.6 },
-    'd': { name: 'd (25%機率額外掉落)', cost: 1, req: 'c', children: ['A'], desc: '25%機率額外掉落一件裝備', x: 30.6, y: 41.0 },
-    'A': { name: 'A (棄絕之魂)', cost: 0, req: 'd', children: ['A1', 'A2', 'A3', 'A4', 'A5'], desc: '解鎖棄絕系列（減少指定類別詞綴出現機率）', x: 18.2, y: 35.0 },
-    'A1': { name: 'A1 (-60%防禦詞綴)', cost: 1, req: 'A', mutex: 'A', mods: { '防禦': -0.6 }, desc: '防禦類詞綴機率-60%（reduced，與其他reduced相加）', x: 24.1, y: 40.4 },
-    'A2': { name: 'A2 (-60%屬性詞綴)', cost: 1, req: 'A', mutex: 'A', mods: { '屬性': -0.6 }, desc: '屬性類詞綴機率-60%（reduced，與其他reduced相加）', x: 15.1, y: 41.5 },
-    'A3': { name: 'A3 (-60%抗性詞綴)', cost: 1, req: 'A', mutex: 'A', mods: { '抗性': -0.6 }, desc: '抗性類詞綴機率-60%（reduced，與其他reduced相加）', x: 10.8, y: 34.9 },
-    'A4': { name: 'A4 (-60%魔力詞綴)', cost: 1, req: 'A', mutex: 'A', mods: { '魔力': -0.6 }, desc: '魔力類詞綴機率-60%（reduced，與其他reduced相加）', x: 13.9, y: 28.1 },
-    'A5': { name: 'A5 (-60%生命詞綴)', cost: 1, req: 'A', mutex: 'A', mods: { '生命': -0.6 }, desc: '生命類詞綴機率-60%（reduced，與其他reduced相加）', x: 21.8, y: 28.3 },
-    'e': { name: 'e (數值重骰取最佳)', cost: 1, req: 'c', children: ['B'], desc: '詞綴數值額外重骰一次，保留較高結果（不影響詞綴種類）', x: 43.6, y: 30.0 },
-    'B': { name: 'B (棄絕熱誠)', cost: 0, req: 'e', children: ['B1', 'B2', 'B3', 'B4'], desc: '解鎖棄絕系列（減少指定類別詞綴出現機率）', x: 37.9, y: 16.5 },
-    'B1': { name: 'B1 (-60%速度詞綴)', cost: 1, req: 'B', mutex: 'B', mods: { '速度': -0.6 }, desc: '速度類詞綴機率-60%（reduced，與其他reduced相加）', x: 31.4, y: 21.9 },
-    'B2': { name: 'B2 (-60%施法詞綴)', cost: 1, req: 'B', mutex: 'B', mods: { '施法': -0.6 }, desc: '施法類詞綴機率-60%（reduced，與其他reduced相加）', x: 32.5, y: 13.5 },
-    'B3': { name: 'B3 (-60%攻擊詞綴)', cost: 1, req: 'B', mutex: 'B', mods: { '攻擊': -0.6 }, desc: '攻擊類詞綴機率-60%（reduced，與其他reduced相加）', x: 40.7, y: 10.4 },
-    'B4': { name: 'B4 (-60%暴擊詞綴)', cost: 1, req: 'B', mutex: 'B', mods: { '暴擊': -0.6 }, desc: '暴擊類詞綴機率-60%（reduced，與其他reduced相加）', x: 44.0, y: 19.0 },
-    'f': { name: 'f (詞綴評級+20)', cost: 1, req: 'c', children: ['C'], desc: '詞綴等級評分+20，有助於出現更高階詞綴', x: 59.5, y: 28.6 },
-    'C': { name: 'C (棄絕技術)', cost: 0, req: 'f', children: ['C1', 'C2', 'C3', 'C4', 'C5'], desc: '解鎖棄絕系列（減少指定類別詞綴出現機率）', x: 69.0, y: 14.0 },
-    'C1': { name: 'C1 (-60%閃電詞綴)', cost: 1, req: 'C', mutex: 'C', mods: { '閃電': -0.6 }, desc: '閃電類詞綴機率-60%（reduced，與其他reduced相加）', x: 62.2, y: 14.4 },
-    'C2': { name: 'C2 (-60%冰冷詞綴)', cost: 1, req: 'C', mutex: 'C', mods: { '冰冷': -0.6 }, desc: '冰冷類詞綴機率-60%（reduced，與其他reduced相加）', x: 65.0, y: 7.4 },
-    'C3': { name: 'C3 (-60%火焰詞綴)', cost: 1, req: 'C', mutex: 'C', mods: { '火焰': -0.6 }, desc: '火焰類詞綴機率-60%（reduced，與其他reduced相加）', x: 73.1, y: 7.4 },
-    'C4': { name: 'C4 (-60%物理詞綴)', cost: 1, req: 'C', mutex: 'C', mods: { '物理': -0.6 }, desc: '物理類詞綴機率-60%（reduced，與其他reduced相加）', x: 75.7, y: 14.2 },
-    'C5': { name: 'C5 (-60%混沌詞綴)', cost: 1, req: 'C', mutex: 'C', mods: { '混沌': -0.6 }, desc: '混沌類詞綴機率-60%（reduced，與其他reduced相加）', x: 72.6, y: 20.8 },
-    'g': { name: 'g (25%機率額外掉落)', cost: 1, req: 'start', children: ['j', 'g1', 'g2', 'g3', 'g4', 'g5', 'g6', 'h'], desc: '25%機率額外掉落一件裝備', x: 63.8, y: 71.7 },
-    'g1': { name: 'g1 (×0.15 智力需求基底)', cost: 1, req: 'g', baseMods: { '智力': -0.85 }, desc: '智力需求裝備掉落機率×0.15（less，相乘計算，待驗證）', x: 58.5, y: 65.2 },
-    'g2': { name: 'g2 (×4 智力需求基底)', cost: 1, req: 'g', baseMods: { '智力': 3.0 }, desc: '智力需求裝備掉落機率×4（more，相乘計算，待驗證）', x: 68.6, y: 62.9 },
-    'g3': { name: 'g3 (×4 敏捷需求基底)', cost: 1, req: 'g', baseMods: { '敏捷': 3.0 }, desc: '敏捷需求裝備掉落機率×4（more，相乘計算，待驗證）', x: 72.5, y: 71.4 },
-    'g4': { name: 'g4 (×0.15 敏捷需求基底)', cost: 1, req: 'g', baseMods: { '敏捷': -0.85 }, desc: '敏捷需求裝備掉落機率×0.15（less，相乘計算，待驗證）', x: 69.1, y: 79.7 },
-    'g5': { name: 'g5 (×0.15 力量需求基底)', cost: 1, req: 'g', baseMods: { '力量': -0.85 }, desc: '力量需求裝備掉落機率×0.15（less，相乘計算，待驗證）', x: 60.6, y: 79.5 },
-    'g6': { name: 'g6 (×4 力量需求基底)', cost: 1, req: 'g', baseMods: { '力量': 3.0 }, desc: '力量需求裝備掉落機率×4（more，相乘計算，待驗證）', x: 56.3, y: 72.3 },
-    'h': { name: 'h (25%機率額外掉落)', cost: 1, req: 'g', children: ['H', 'i'], desc: '25%機率額外掉落一件裝備', x: 50.7, y: 79.3 },
-    'i': { name: 'i (鎖定珠寶)', cost: 1, req: 'h', desc: '掉落鎖定為珠寶（機率+5000%）', x: 39.1, y: 74.9 },
-    'H': { name: 'H (飾品機率×6)', cost: 1, req: 'h', children: ['H1', 'H2', 'H3'], desc: '掉落飾品的機率+500%（increased，約×6）', x: 43.7, y: 87.5 },
-    'H1': { name: 'H1 (鎖定護身符)', cost: 1, req: 'H', mutex: 'H', desc: '掉落鎖定為護身符（機率+5000%）', x: 37.8, y: 81.6 },
-    'H2': { name: 'H2 (鎖定戒指)', cost: 1, req: 'H', mutex: 'H', desc: '掉落鎖定為戒指（機率+5000%）', x: 36.7, y: 88.7 },
-    'H3': { name: 'H3 (鎖定腰帶)', cost: 1, req: 'H', mutex: 'H', desc: '掉落鎖定為腰帶（機率+5000%）', x: 41.2, y: 94.4 },
-    'j': { name: 'j (25%機率物等+1)', cost: 1, req: 'g', children: ['K', 'k', 'm', 'n'], desc: '25%機率使裝備物品等級+1', x: 49.3, y: 62.9 },
-    'K': { name: 'K (移除最低詞綴)', cost: 1, req: 'j', desc: '移除裝備上等級最低的詞綴', x: 46.3, y: 52.8 },
-    'k': { name: 'k (詞綴評級+20)', cost: 1, req: 'j', children: ['L'], desc: '詞綴等級評分+20，有助於出現更高階詞綴', x: 32.5, y: 53.6 },
-    'L': { name: 'L (奉獻技術)', cost: 0, req: 'k', children: ['L1', 'L2', 'L3', 'L4', 'L5'], desc: '解鎖奉獻系列（大幅提升指定類別詞綴出現機率）', x: 13.7, y: 54.3 },
-    'L1': { name: 'L1 (+300%混沌詞綴)', cost: 1, req: 'L', mutex: 'L', mods: { '混沌': 3.0 }, desc: '混沌類詞綴機率+300%（increased，與其他increased相加）', x: 19.3, y: 48.9 },
-    'L2': { name: 'L2 (+300%物理詞綴)', cost: 1, req: 'L', mutex: 'L', mods: { '物理': 3.0 }, desc: '物理類詞綴機率+300%（increased，與其他increased相加）', x: 11.2, y: 47.8 },
-    'L3': { name: 'L3 (+300%火焰詞綴)', cost: 1, req: 'L', mutex: 'L', mods: { '火焰': 3.0 }, desc: '火焰類詞綴機率+300%（increased，與其他increased相加）', x: 6.7, y: 53.8 },
-    'L4': { name: 'L4 (+300%冰冷詞綴)', cost: 1, req: 'L', mutex: 'L', mods: { '冰冷': 3.0 }, desc: '冰冷類詞綴機率+300%（increased，與其他increased相加）', x: 8.8, y: 60.4 },
-    'L5': { name: 'L5 (+300%閃電詞綴)', cost: 1, req: 'L', mutex: 'L', mods: { '閃電': 3.0 }, desc: '閃電類詞綴機率+300%（increased，與其他increased相加）', x: 16.8, y: 60.5 },
-    'm': { name: 'm (數值重骰取最佳)', cost: 1, req: 'j', children: ['M'], desc: '詞綴數值額外重骰一次，保留較高結果（不影響詞綴種類）', x: 26.2, y: 62.9 },
-    'M': { name: 'M (奉獻熱誠)', cost: 0, req: 'm', children: ['M1', 'M2', 'M3', 'M4'], desc: '解鎖奉獻系列（大幅提升指定類別詞綴出現機率）', x: 12.6, y: 69.7 },
-    'M1': { name: 'M1 (+300%暴擊詞綴)', cost: 1, req: 'M', mutex: 'M', mods: { '暴擊': 3.0 }, desc: '暴擊類詞綴機率+300%（increased，與其他increased相加）', x: 18.8, y: 64.8 },
-    'M2': { name: 'M2 (+300%攻擊詞綴)', cost: 1, req: 'M', mutex: 'M', mods: { '攻擊': 3.0 }, desc: '攻擊類詞綴機率+300%（increased，與其他increased相加）', x: 11.5, y: 62.6 },
-    'M3': { name: 'M3 (+300%施法詞綴)', cost: 1, req: 'M', mutex: 'M', mods: { '施法': 3.0 }, desc: '施法類詞綴機率+300%（increased，與其他increased相加）', x: 7.8, y: 69.7 },
-    'M4': { name: 'M4 (+300%速度詞綴)', cost: 1, req: 'M', mutex: 'M', mods: { '速度': 3.0 }, desc: '速度類詞綴機率+300%（increased，與其他increased相加）', x: 14.1, y: 75.7 },
-    'n': { name: 'n (25%機率額外掉落)', cost: 1, req: 'j', children: ['N'], desc: '25%機率額外掉落一件裝備', x: 30.1, y: 73.8 },
-    'N': { name: 'N (奉獻之魂)', cost: 0, req: 'n', children: ['N1', 'N2', 'N3', 'N4', 'N5'], desc: '解鎖奉獻系列（大幅提升指定類別詞綴出現機率）', x: 20.9, y: 83.6 },
-    'N1': { name: 'N1 (+300%生命詞綴)', cost: 1, req: 'N', mutex: 'N', mods: { '生命': 3.0 }, desc: '生命類詞綴機率+300%（increased，與其他increased相加）', x: 16.3, y: 78.0 },
-    'N2': { name: 'N2 (+300%魔力詞綴)', cost: 1, req: 'N', mutex: 'N', mods: { '魔力': 3.0 }, desc: '魔力類詞綴機率+300%（increased，與其他increased相加）', x: 13.1, y: 83.5 },
-    'N3': { name: 'N3 (+300%防禦詞綴)', cost: 1, req: 'N', mutex: 'N', mods: { '防禦': 3.0 }, desc: '防禦類詞綴機率+300%（increased，與其他increased相加）', x: 17.2, y: 90.0 },
-    'N4': { name: 'N4 (+300%屬性詞綴)', cost: 1, req: 'N', mutex: 'N', mods: { '屬性': 3.0 }, desc: '屬性類詞綴機率+300%（increased，與其他increased相加）', x: 24.9, y: 89.5 },
-    'N5': { name: 'N5 (+300%抗性詞綴)', cost: 1, req: 'N', mutex: 'N', mods: { '抗性': 3.0 }, desc: '抗性類詞綴機率+300%（increased，與其他increased相加）', x: 26.7, y: 82.6 }
-};
-
-const INITIAL_COORDS = {};
-Object.keys(TREE_DATA).forEach(k => { INITIAL_COORDS[k] = { x: TREE_DATA[k].x, y: TREE_DATA[k].y }; });
-
-// 基底鎖定與屬性需求偏向屬於玩家已選定的產出條件，最佳化時必須保留並預留點數。
-const OPTIMIZER_REQUIRED_SELECTION_NODES = new Set([
-    'G1', 'G2', 'G3', 'G4', 'G5',
-    'H1', 'H2', 'H3', 'i',
-    'g1', 'g2', 'g3', 'g4', 'g5', 'g6'
-]);
-
-const addNodeWithAncestors = (nodeSet, nodeId) => {
-    let currentId = nodeId;
-    while (currentId && TREE_DATA[currentId]) {
-        nodeSet.add(currentId);
-        currentId = TREE_DATA[currentId].req;
-    }
-};
-
-const getOptimizerRequiredNodes = (activeNodes) => {
-    const required = new Set(['start']);
-    activeNodes.forEach(nodeId => {
-        if (OPTIMIZER_REQUIRED_SELECTION_NODES.has(nodeId)) addNodeWithAncestors(required, nodeId);
-    });
-    return required;
-};
-
-// ==========================================
-// 💡 更新：AffixRow 加入拖曳支援
-// ==========================================
-const AffixRow = ({ affix, updateAffix, removeAffix, onDragStart, onDragEnter, onDragOver, onDrop, onDragEnd, isDragging, isDragOver }) => (
-    <div
-        draggable
-        onDragStart={(e) => onDragStart(e, affix.id)}
-        onDragEnter={(e) => onDragEnter(e, affix.id)}
-        onDragOver={onDragOver}
-        onDrop={(e) => onDrop(e, affix.id)}
-        onDragEnd={onDragEnd}
-        className={`mb-2 p-2 rounded-lg border shadow-sm text-sm transition-all duration-200 ${
-            isDragging ? 'opacity-40 scale-95 z-50' : 'opacity-100 scale-100'
-        } ${
-            isDragOver ? 'border-purple-500 bg-purple-900/40 border-dashed scale-[1.02] shadow-purple-900/50' :
-            affix.category === 'target' ? 'bg-green-900/20 border-green-800/50' :
-            affix.category === 'acceptable' ? 'bg-blue-900/20 border-blue-800/50' :
-            affix.category === 'unwanted' ? 'bg-red-900/20 border-red-800/50' :
-            'bg-slate-800 border-slate-700'
-        }`}
-    >
-        {/* 第一行：拖曳 + 類別 + 名稱 + 標籤 + 刪除 */}
-        <div className="flex items-center gap-2">
-            <div className="cursor-grab hover:text-white text-slate-500 active:cursor-grabbing px-1 touch-none shrink-0">
-                <GripVertical size={16} />
-            </div>
-            <select value={affix.category} onChange={(e) => updateAffix(affix.id, 'category', e.target.value)}
-                className={`shrink-0 w-24 border rounded px-1 py-1 text-xs font-bold outline-none cursor-pointer ${
-                    affix.category === 'target' ? 'bg-green-950 text-green-400 border-green-700' :
-                    affix.category === 'acceptable' ? 'bg-blue-950 text-blue-400 border-blue-700' :
-                    affix.category === 'unwanted' ? 'bg-red-950 text-red-400 border-red-700' : 'bg-slate-900 text-slate-400 border-slate-600'
-                }`}
-            >
-                <option value="neutral">➖ 無</option>
-                <option value="target">🎯 目標詞</option>
-                <option value="acceptable">✅ 可接受</option>
-                <option value="unwanted">❌ 不想要</option>
-            </select>
-            <input value={affix.name} onChange={(e) => updateAffix(affix.id, 'name', e.target.value)} className="min-w-0 flex-1 bg-slate-900 border border-slate-600 rounded px-2 py-1 text-slate-200 text-xs" placeholder="詞綴名稱"/>
-            <button onClick={() => removeAffix(affix.id)} className="shrink-0 p-1 text-slate-500 hover:text-red-400 hover:bg-slate-700 rounded transition-colors"><Trash2 size={16} /></button>
-        </div>
-        {/* 第二行：標籤 + 基礎權重 + 當前權重 + 機率 */}
-        <div className="flex items-center gap-2 mt-1.5 pl-8">
-            <input value={affix.tags} onChange={(e) => updateAffix(affix.id, 'tags', e.target.value)} className="min-w-0 flex-1 bg-slate-900 border border-slate-600 rounded px-2 py-1 text-slate-200 text-xs" placeholder="標籤 (用逗號分隔)"/>
-            <input type="number" value={affix.baseWeight} onChange={(e) => updateAffix(affix.id, 'baseWeight', Number(e.target.value))} className="w-20 shrink-0 bg-slate-900 border border-slate-600 rounded px-2 py-1 text-slate-200 text-xs text-right" placeholder="權重"/>
-            <span className="shrink-0 w-14 text-right font-mono text-xs text-slate-400" title={`倍率: ${affix.multiplier.toFixed(1)}x`}>{affix.currentWeight}</span>
-            <span className={`shrink-0 w-14 text-right font-mono text-xs font-bold ${affix.chance >= 20 ? 'text-green-400' : affix.chance > 0 ? 'text-blue-300' : 'text-slate-600'}`}>
-                {affix.chance.toFixed(2)}%
-            </span>
-        </div>
-    </div>
-);
-
-const TreeNode = ({ nodeId, depth = 0, activeNodes, toggleNode }) => {
-    const node = TREE_DATA[nodeId];
-    if (!node) return null; 
-    const isActive = activeNodes.has(nodeId);
-    const canActivate = nodeId === 'start' || activeNodes.has(node.req);
-    let bgClass = isActive ? 'bg-purple-600 border-purple-400 shadow-[0_0_10px_rgba(168,85,247,0.4)]' : 'bg-slate-800 border-slate-600 hover:bg-slate-700';
-    if (!canActivate && !isActive) bgClass = 'bg-slate-900 border-slate-800 opacity-50 cursor-not-allowed';
-    if (nodeId === 'start') bgClass = 'bg-blue-600 border-blue-400 font-bold shadow-[0_0_10px_rgba(59,130,246,0.4)]';
-
-    return (
-        <div className="flex flex-col relative">
-            <div className={`flex items-center w-fit px-3 py-1.5 my-1 rounded-md border-2 transition-all ${bgClass} ${canActivate ? 'cursor-pointer' : ''}`} onClick={() => canActivate && toggleNode(nodeId)}>
-                <span className="text-sm text-slate-100">{node.name}</span>
-                {node.mods && isActive && <span className="ml-2 px-1.5 py-0.5 rounded text-[10px] bg-slate-900 text-purple-300 font-bold border border-purple-800">生效中</span>}
-            </div>
-            {node.children && (
-                <div className="flex flex-col pl-6 ml-4 border-l-2 border-slate-700">
-                    {node.children.map(childId => <TreeNode key={childId} nodeId={childId} depth={depth + 1} activeNodes={activeNodes} toggleNode={toggleNode} />)}
-                </div>
-            )}
-        </div>
-    );
 };
 
 export default function App() {
@@ -314,7 +27,7 @@ export default function App() {
     const [toast, setToast] = useState('');
     const [isOptimizing, setIsOptimizing] = useState(false);
     const [viewMode, setViewMode] = useState('map'); 
-    const [savedPresets, setSavedPresets] = useState({});
+    const [savedPresets, setSavedPresets] = useState(() => readStoredJson('poe_genesis_presets', {}));
     
     // 內建資料庫與策略顧問狀態
     const [builtInCat, setBuiltInCat] = useState('Helmet');
@@ -327,7 +40,10 @@ export default function App() {
     const [dragOverId, setDragOverId] = useState(null);
 
     const [zoom, setZoom] = useState(1);
-    const [coords, setCoords] = useState(INITIAL_COORDS);
+    const [coords, setCoords] = useState(() => ({
+        ...INITIAL_COORDS,
+        ...readStoredJson('poe_genesis_coords', {})
+    }));
     const [nodePrefs, setNodePrefs] = useState({ D: 0, E: 0, F: 0, K: 0 });
     const [optimizeWarnings, setOptimizeWarnings] = useState([]);
     const [isEditMode, setIsEditMode] = useState(false);
@@ -338,11 +54,6 @@ export default function App() {
     const toastTimerRef = useRef(null);
 
     useEffect(() => {
-        const loadedPresets = localStorage.getItem('poe_genesis_presets');
-        if (loadedPresets) { try { setSavedPresets(JSON.parse(loadedPresets)); } catch (e) { console.warn('Failed to parse saved presets from localStorage:', e); } }
-        const loadedCoords = localStorage.getItem('poe_genesis_coords');
-        if (loadedCoords) { try { setCoords({ ...INITIAL_COORDS, ...JSON.parse(loadedCoords) }); } catch (e) { console.warn('Failed to parse saved coords from localStorage:', e); } }
-
         const handleGlobalPointerUp = () => setDraggingNode(null);
         window.addEventListener('pointerup', handleGlobalPointerUp);
         return () => window.removeEventListener('pointerup', handleGlobalPointerUp);
@@ -428,7 +139,7 @@ export default function App() {
             const targetBase = BUILT_IN_PRESETS[builtInCat].treeBase;
             const strategyNodes = BASE_STRATEGIES[builtInAttr]?.[strategyType]?.nodes || [];
             
-            setActiveNodes(prev => {
+            setActiveNodes(() => {
                 const next = new Set(['start']); 
                 
                 if (targetBase && TREE_DATA[targetBase]) {
@@ -491,7 +202,7 @@ export default function App() {
 
                 if (loaded) showToast(`📥 成功載入：${BUILT_IN_PRESETS[builtInCat].name} - ${presetData.name}`);
                 else showToast("⚠️ 詞綴庫格式無效，天賦基底已切換但詞綴未載入。");
-            } catch (error) { 
+            } catch {
                 showToast(`⚠️ 詞綴庫尚未建檔！但已為您切換天賦基底與策略。`); 
             }
         } else { 
@@ -499,29 +210,7 @@ export default function App() {
         }
     };
 
-    const getDescendants = (nodeId) => {
-        let descendants = [];
-        const node = TREE_DATA[nodeId];
-        if (node && node.children) {
-            for (let childId of node.children) { descendants.push(childId); descendants = descendants.concat(getDescendants(childId)); }
-        }
-        return descendants;
-    };
-
-    const getCost = (nodeSet) => {
-        let total = 0;
-        if (!nodeSet) return 0;
-        nodeSet.forEach(id => { const node = TREE_DATA[id]; if (node && typeof node.cost === 'number') total += node.cost; });
-        return total;
-    };
-    
     const pointsUsed = useMemo(() => getCost(activeNodes), [activeNodes]);
-
-    const hasMutex = (nodeSet, mutexName) => {
-        if (!nodeSet) return false;
-        for (let id of nodeSet) { const node = TREE_DATA[id]; if (node && node.mutex === mutexName) return true; }
-        return false;
-    };
 
     const toggleNode = (nodeId) => {
         if (nodeId === 'start') return;
@@ -562,149 +251,30 @@ export default function App() {
         toastTimerRef.current = setTimeout(() => setToast(''), 3000);
     };
 
-    const getModifiers = (nodeSet) => {
-        const mods = {};
-        if (!nodeSet) return mods;
-        nodeSet.forEach(id => { const node = TREE_DATA[id]; if (node && node.mods) { for (const [tag, val] of Object.entries(node.mods)) { mods[tag] = (mods[tag] || 0) + val; } } });
-        return mods;
-    };
     const currentModifiers = useMemo(() => getModifiers(activeNodes), [activeNodes]);
-
-    const calculateAffixesChances = (affixList, mods) => {
-        try {
-            if (!Array.isArray(affixList)) return [];
-            let preTotal = 0; let sufTotal = 0;
-            const results = affixList.map(affix => {
-                let multiplier = 1.0;
-                const affixTags = normalizeAffixTags(affix.tags);
-                affixTags.forEach(tag => { if (mods[tag]) multiplier += mods[tag]; });
-                multiplier = Math.max(0, multiplier);
-                const currentWeight = Math.floor((Number(affix.baseWeight) || 0) * multiplier);
-                if (affix.type === 'prefix') preTotal += currentWeight;
-                if (affix.type === 'suffix') sufTotal += currentWeight;
-                return { ...affix, currentWeight, multiplier };
-            });
-            return results.map(affix => {
-                const total = affix.type === 'prefix' ? preTotal : sufTotal;
-                const chance = total === 0 ? 0 : (affix.currentWeight / total) * 100;
-                return { ...affix, chance };
-            });
-        } catch (e) {
-            console.error(e);
-            return [];
-        }
-    };
-    const calculatedAffixes = useMemo(() => calculateAffixesChances(affixes, currentModifiers), [affixes, currentModifiers]);
-
-    const evaluateSetScore = (testSet, affixList, prefs) => {
-        const mods = getModifiers(testSet);
-        const evaluated = calculateAffixesChances(affixList, mods);
-        let score = 0;
-        evaluated.forEach(affix => {
-            if (affix.category === 'target') score += affix.chance * 1000;
-            else if (affix.category === 'acceptable') score += affix.chance * 100;
-            else if (affix.category === 'unwanted') score -= affix.chance * 1000;
-        });
-        score -= getCost(testSet) * 0.1;
-        if (prefs) {
-            ['D', 'E', 'F', 'K'].forEach(id => {
-                if (testSet.has(id) && prefs[id]) score += prefs[id];
-            });
-        }
-        return score;
-    };
+    const calculatedAffixes = useMemo(() => calculateAffixChances(affixes, currentModifiers), [affixes, currentModifiers]);
 
     const runOptimization = () => {
         if (isOptimizing) return;
-        const requiredNodes = getOptimizerRequiredNodes(activeNodes);
+
         setIsOptimizing(true);
         setOptimizeWarnings([]);
         setTimeout(() => {
-            let bestScore = -Infinity;
-            let bestSet = new Set(requiredNodes);
-            const A_opts = [null, 'A1', 'A2', 'A3', 'A4', 'A5'];
-            const B_opts = [null, 'B1', 'B2', 'B3', 'B4'];
-            const C_opts = [null, 'C1', 'C2', 'C3', 'C4', 'C5'];
-            const L_opts = [null, 'L1', 'L2', 'L3', 'L4', 'L5'];
-            const M_opts = [null, 'M1', 'M2', 'M3', 'M4'];
-            const N_opts = [null, 'N1', 'N2', 'N3', 'N4', 'N5'];
-
-            // 只對有設定偏好的節點才枚舉（效能關鍵）
-            const prefNodeIds = Object.entries(nodePrefs).filter(([, v]) => v > 0).map(([k]) => k);
-            const funcCombos = [[]];
-            for (const id of prefNodeIds) {
-                const extended = funcCombos.map(combo => [...combo, id]);
-                funcCombos.push(...extended);
+            try {
+                const result = optimizeTree({
+                    activeNodes,
+                    affixes,
+                    preferences: nodePrefs
+                });
+                setOptimizeWarnings(result.warnings);
+                setActiveNodes(result.activeNodes);
+                showToast("✨ 最佳化完成！已為您搭配出最高權重的天賦路徑。");
+            } catch (error) {
+                console.error(error);
+                showToast("⚠️ 最佳化失敗，請檢查詞綴資料後再試一次。");
+            } finally {
+                setIsOptimizing(false);
             }
-
-            for (let a of A_opts) { for (let b of B_opts) { for (let c of C_opts) {
-            for (let l of L_opts) { for (let m of M_opts) { for (let n of N_opts) {
-                for (const funcNodes of funcCombos) {
-                    const useD = funcNodes.includes('D');
-                    const useE = funcNodes.includes('E');
-                    const useF = funcNodes.includes('F');
-                    const useK = funcNodes.includes('K');
-
-                    let testSet = new Set(requiredNodes);
-                    if (a || b || c || useD || useE) { testSet.add('a'); testSet.add('b'); testSet.add('c'); }
-                    if (useF) { testSet.add('a'); testSet.add('b'); testSet.add('F'); }
-                    if (useD) testSet.add('D');
-                    if (useE) testSet.add('E');
-                    if (a) { testSet.add('d'); testSet.add('A'); testSet.add(a); }
-                    if (b) { testSet.add('e'); testSet.add('B'); testSet.add(b); }
-                    if (c) { testSet.add('f'); testSet.add('C'); testSet.add(c); }
-                    if (l || m || n || useK) { testSet.add('g'); testSet.add('j'); }
-                    if (useK) testSet.add('K');
-                    if (l) { testSet.add('k'); testSet.add('L'); testSet.add(l); }
-                    if (m) { testSet.add('m'); testSet.add('M'); testSet.add(m); }
-                    if (n) { testSet.add('n'); testSet.add('N'); testSet.add(n); }
-
-                    const cost = getCost(testSet);
-                    if (cost <= EQUIPMENT_MAX_POINTS) {
-                        const score = evaluateSetScore(testSet, affixes, nodePrefs);
-                        if (score > bestScore) { bestScore = score; bestSet = testSet; }
-                    }
-                }
-            }}}}}}
-
-            let finalSet = new Set(bestSet);
-            let currentCost = getCost(finalSet);
-            let utilityNodes = Array.from(activeNodes).filter(id => !finalSet.has(id));
-            let addedAny = true;
-            while(addedAny) {
-                addedAny = false;
-                for (let id of utilityNodes) {
-                    if (finalSet.has(id)) continue;
-                    let node = TREE_DATA[id];
-                    if (!node) continue;
-                    if (node.req && !finalSet.has(node.req)) continue;
-                    if (node.mutex && hasMutex(finalSet, node.mutex)) continue;
-                    if (currentCost + node.cost <= EQUIPMENT_MAX_POINTS) { finalSet.add(id); currentCost += node.cost; addedAny = true; }
-                }
-            }
-
-            // === 警告分析 ===
-            const warnings = [];
-            const resultMods = getModifiers(finalSet);
-            const resultAffixes = calculateAffixesChances(affixes, resultMods);
-
-            // 1. 目標詞機率過低
-            resultAffixes.filter(a => a.category === 'target' && a.chance < 10).forEach(a => {
-                warnings.push({ type: 'low_chance', msg: `「${a.name}」目標詞機率偏低（${a.chance.toFixed(1)}%），可能難以達成` });
-            });
-
-            // 2. 有偏好但沒被納入的功能節點（點數不足）
-            prefNodeIds.forEach(id => {
-                if (nodePrefs[id] > 0 && !finalSet.has(id)) {
-                    const labels = { D: 'D (破裂)', E: 'E (連線+50)', F: 'F (隨機品質)', K: 'K (移最低詞)' };
-                    warnings.push({ type: 'node_skipped', msg: `${labels[id]} 因點數不足無法納入，建議降低其他偏好或減少目標詞` });
-                }
-            });
-
-            setOptimizeWarnings(warnings);
-            setActiveNodes(finalSet);
-            setIsOptimizing(false);
-            showToast("✨ 最佳化完成！已為您搭配出最高權重的天賦路徑。");
         }, 50);
     };
 
@@ -734,7 +304,7 @@ export default function App() {
                 else if (importedData.affixes && Array.isArray(importedData.affixes)) { setAffixes(importedData.affixes); imported = true; }
                 if (imported) showToast("✅ 成功匯入詞綴資料！");
                 else showToast("⚠️ 檔案格式無效，未找到詞綴資料。");
-            } catch (err) { showToast("❌ 檔案格式錯誤。"); }
+            } catch { showToast("❌ 檔案格式錯誤。"); }
             event.target.value = null;
         };
         reader.readAsText(file);
@@ -753,7 +323,7 @@ export default function App() {
             try {
                 const data = JSON.parse(await file.text());
                 newPresetsData[file.name.replace('.json', '')] = data;
-            } catch(e) {
+            } catch {
                 console.error(`無法解析檔案: ${file.name}`);
             }
         }));
@@ -902,47 +472,10 @@ export default function App() {
 
                 <div className="lg:col-span-6 xl:col-span-6 flex flex-col gap-4 overflow-y-auto max-h-[80vh] custom-scrollbar pr-2">
 
-                    {/* ℹ️ 模擬依據與限制（可折疊） */}
-                    <div className="bg-slate-900/50 rounded-xl border border-slate-800 shadow-sm">
-                        <button
-                            type="button"
-                            onClick={() => setShowAssumptions(v => !v)}
-                            className="w-full flex items-center justify-between gap-2 px-4 py-3 text-left hover:bg-slate-900/80 rounded-xl transition-colors"
-                        >
-                            <span className="flex items-center gap-2 text-sm font-semibold text-slate-300">
-                                <Info size={15} className="text-slate-400 shrink-0" /> 模擬依據與限制
-                                <span className="hidden sm:inline text-[11px] text-slate-500 font-normal">（區分官方資料、模型假設與未模擬項目）</span>
-                            </span>
-                            <span className={`text-slate-500 text-xs transition-transform duration-200 ${showAssumptions ? 'rotate-180' : ''}`}>▼</span>
-                        </button>
-                        {showAssumptions && (
-                            <div className="px-4 pb-4 pt-2 border-t border-slate-800 text-xs text-slate-400 leading-relaxed space-y-3">
-                                <div>
-                                    <p className="font-semibold text-emerald-400 mb-1">✓ 3.29 已確認並套用</p>
-                                    <ul className="list-disc list-outside ml-4 space-y-1">
-                                        <li>裝備分支上限 16 點、額外裝備小天賦 25%、指定詞綴類型核心天賦 +300%。</li>
-                                        <li>基底原本無法產生的詞綴，其基礎權重仍為 0，不會因機率加成而出現。</li>
-                                    </ul>
-                                </div>
-                                <div>
-                                    <p className="font-semibold text-yellow-400 mb-1">△ 模型假設（待實測）</p>
-                                    <ul className="list-disc list-outside ml-4 space-y-1">
-                                        <li>同一詞綴命中多個標籤時採相加：+300% + +300% = 7 倍；−60% + −60% 會降至 0。</li>
-                                        <li>詞綴基礎權重沿用 PoEDB 的一般物品權重表。</li>
-                                        <li>策略顧問假設六種屬性需求基底的初始權重相同；這不包含 3.29 已確認的高階基底偏向。</li>
-                                    </ul>
-                                </div>
-                                <div>
-                                    <p className="font-semibold text-sky-400 mb-1">○ 目前未模擬</p>
-                                    <ul className="list-disc list-outside ml-4 space-y-1">
-                                        <li>官方未公布數值的內建詞綴階級降低、高階基底偏向，以及較低的內建額外裝備機率。</li>
-                                        <li>珠寶基底分布、完整多詞綴生成、同群組互斥、前後綴數量與聯合出現機率。</li>
-                                        <li>面板百分比只代表「抽取一條前綴或後綴時」抽中該詞綴的相對機率。</li>
-                                    </ul>
-                                </div>
-                            </div>
-                        )}
-                    </div>
+                    <AssumptionsPanel
+                        isOpen={showAssumptions}
+                        onToggle={() => setShowAssumptions(value => !value)}
+                    />
 
                     {/* 🛠️ 智慧做裝顧問面板 */}
                     <div className="bg-slate-900/80 rounded-xl border-2 border-blue-900/50 flex flex-col shadow-lg shadow-blue-900/10">
